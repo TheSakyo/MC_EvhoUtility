@@ -39,7 +39,8 @@ public class WorldHandler {
         try {
 
             ChunkGenerator generator = (ChunkGenerator)Class.forName(ConfigFile.getString(main.worldconfig, "serverworlds." + worldname + ".Generator")).getDeclaredConstructor().newInstance();
-            Bukkit.createWorld(new WorldCreator(worldname).type(type).environment(env).generateStructures(bool).generator(generator));
+            WorldCreator wc = new WorldCreator(worldname).type(type).environment(env).generateStructures(bool);
+            Bukkit.getServer().createWorld(wc);
 
         } catch(ClassNotFoundException | NullPointerException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 
@@ -47,7 +48,8 @@ public class WorldHandler {
             main.console.sendMessage(GI + "...");
             main.console.sendMessage(GI + "...");
 
-            Bukkit.createWorld(new WorldCreator(worldname).type(type).environment(env).generateStructures(bool));
+            WorldCreator wc = new WorldCreator(worldname).type(type).environment(env).generateStructures(bool);
+            Bukkit.getServer().createWorld(wc);
         }
 
         main.console.sendMessage(main.prefix + YI + worldname + ChatColor.RESET + " : " + ChatColor.GREEN + "Chargé");

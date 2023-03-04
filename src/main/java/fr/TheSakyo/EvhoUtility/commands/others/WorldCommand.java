@@ -73,9 +73,7 @@ public class WorldCommand implements CommandExecutor {
 				return true;
 			}
 
-		}
-
-		else if(args.length == 1) {
+		} else if(args.length == 1) {
 
 			if(sender instanceof Player p) {
 
@@ -539,7 +537,7 @@ public class WorldCommand implements CommandExecutor {
 		wc.generateStructures(false);
 	    wc.createWorld();
 
-	    World world = Bukkit.getServer().getWorld(worldname); // Récupère le monde créer
+	    World world = Bukkit.getServer().getWorld(worldname); // Récupère le monde créé
 
 		// Ajoute au point de spawn du monde des blocs en bedrock dans un rayon de 2.
 	    CustomMethod.setTypeBlocks(world.getSpawnLocation().getBlock(), 2, Material.BEDROCK);
