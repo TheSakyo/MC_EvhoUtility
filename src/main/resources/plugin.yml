@@ -1,0 +1,496 @@
+name: EvhoUtility
+version: latest
+api-version: 1.15
+author: TheSakyo
+description: Plugin Utilitaire du serveur Evhonia !
+main: fr.TheSakyo.EvhoUtility.UtilityMain
+softdepend: [LuckPerms]
+
+
+commands:
+   utilityreload:
+     description: Commande pour recharger le plugin (EvhoUtility)
+     
+   utilityrl:
+     description: Commande alias de 'utilityreload' (EvhoUtility)
+
+
+   bypass:
+     description: Commande pour contourner les actions bloqué par certains plugins (EvhoUtility)
+     
+
+   world:
+     description: Commande pour gérer les monde(s) du serveur (EvhoUtility)
+   
+   
+   gamemode:
+     description: Commande pour définir le mode jeux du Joueur (EvhoUtility)
+     
+   gm:
+     description: Commande alias de 'gamemode' (EvhoUtility)
+
+
+   speed:
+     description: Commande pour définir la vitesse du joueur (EvhoUtility)
+      
+          
+
+   fly:
+     description: Commande pour voler (EvhoUtility)
+     
+   flyspeed:
+     description: Commande définit la vitesse de vol (EvhoUtility)
+
+
+   heal:
+     description: Commande pour se soigner (EvhoUtility)
+
+
+   food:
+     description: Commande pour se rassasier (EvhoUtility)
+
+     
+   more:
+     description: Commande pour s'ajouter un nombre définit de l'item étant en main (EvhoUtility)
+ 
+     
+   repair:
+     description: Commande pour réparer un items (EvhoUtility)
+
+
+   AFK:
+     description: Commande pour l'AFK (EvhoUtility)
+     
+     
+   cleararmor:
+     description: Commande pour vider les armures dans l'inventaire d'un joueur (EvhoUtility)
+
+
+   clearinventory:
+     description: Commande pour vider l'inventaire d'un joueur (EvhoUtility)
+
+   clearinv:
+     description: Commande alias de 'clearinv' (EvhoUtility)
+     
+     
+   invsee:
+     description: Commande pour ouvrir un inventaire (EvhoUtility)
+
+
+   enderchest:
+     description: Commande pour ouvrir un enderchest (coffre de l'ender) (EvhoUtility)
+
+   ender:
+     description: Commande alias de 'enderchest' (EvhoUtility)
+     
+     
+
+   godmode:
+     description: Commande pour être en mode 'dieux' (EvhoUtility)
+     
+   god:
+     description: Commande alias de 'godmode' (EvhoUtility)
+
+
+
+   lightning:
+     description: Commande pour faire apparaître des éclairs (EvhoUtility)
+      
+   light:
+     description: Commande alias de 'lightning' (EvhoUtility)
+
+
+   ptime:
+     description: Commande pour définir le temp du joueur en question seulement (EvhoUtility)
+
+   pweather:
+     description: Commande pour définir la météo du joueur en question seulement (EvhoUtility)
+
+     
+   day:
+     description: Commande pour définir le temps étant le jour (EvhoUtility)
+
+   noon:
+     description: Commande pour définir le temps étant midi (EvhoUtility)
+
+   sunset:
+     description: Commande pour définir le temps étant le coucher du soleil (EvhoUtility)
+          
+
+   night:
+     description: Commande pour définir le temps étant la nuit (EvhoUtility)
+
+   midnight:
+     description: Commande pour définir le temps étant minuit (EvhoUtility)
+
+   sunrise:
+     description: Commande pour définir le temps étant le lever du soleil (EvhoUtility)
+
+
+   sun:
+     description: Commande pour définir la météo étant étant un temps ensoleillé (EvhoUtility)
+
+   rain:
+     description: Commande pour définir la météo étant étant un temps pluvieux (EvhoUtility)
+
+   thunder:
+     description: Commande pour définir la météo étant étant un temps pluvieux et orageux (EvhoUtility)
+
+
+   evholag:
+     description: Commande pour gérer les lags (EvhoUtility)
+
+   elag:
+     description: Commande alias de 'evholag' (EvhoUtility)
+     
+   lag:
+     description: Commande alias de 'evholag' (EvhoUtility)
+
+
+   hologram:
+       description: Commande pour créer un hologramme (EvhoUtility)
+
+   hg:
+     description: Commande de 'hologram' (EvhoUtility)
+
+
+   image:
+     description: Commande pour créer une image (EvhoUtility)
+
+
+   deathmessage:
+     description: Commande pour définir sur vrai ou faux les messages de mort globaux de Minecraft (EvhoUtility)
+
+   dm:
+     description: Commande alias 'deathmessage' (EvhoUtility)
+
+
+   achievementsmessage:
+     description: Commande pour définir sur vrai ou faux les achievements globaux de Minecraft (EvhoUtility)
+
+   advancementsmessage:
+     description: Commande alias de 'achievementsmessage' (EvhoUtility)
+
+   am:
+     description: Commande alias de 'achievementsmessage' (EvhoUtility)
+       
+
+   skull:
+     description: Commande pour obtenir une tete de Joueur (EvhoUtility)
+     
+         
+     
+   staff:
+     description: Commande pour ouvrir le menu Staff (EvhoUtility)
+
+
+
+   resetboard:
+     description: Commande pour remettre le scoreboard du joueur à zéro (EvhoUtility)
+
+   zone:
+     description: Commande pour sélectionner une Zone quelconque (EvhoUtility)
+
+          
+     
+   playercount:
+     description: Commande pour le nombre de joueur(s) en ligne (bungee) (EvhoUtility)
+
+   playerlist:
+     description: Commande pour voir la liste des joueur(s) en ligne (bungee) (EvhoUtility)
+
+
+   npc:
+     description: Commande pour ajouter un 'npc' (EvhoUtility)
+
+
+   proxycmd:
+     description: Commande pour faire effectuer des commandes vers le Serveur Proxy (EvhoUtility)
+     
+   proxycommand:
+     description: Commande alias de 'proxycmd' (EvhoUtility)
+     
+          
+permissions:
+   evhoutility.reload:
+     description: Permission pour la commande /utilityreload (EvhoUtility)
+     default: op
+
+   evhoutility.bypass:
+     description: Permission pour la commande /bypass (EvhoUtility)
+     default: op
+
+   utility.bypass:
+     description: Permission pour contourner certaine action (EvhoUtility)
+     default: false
+
+   evhoutility.world:
+     description: Permission pour la commande /world (EvhoUtility)
+     default: op
+
+
+   evhoutility.signscolor:
+     description: Permission pour mettre des codes couleurs aux pancartes (EvhoUtility)
+     default: op
+
+   evhoutility.chatcolor:
+     description: Permission pour mettre des codes couleurs aux chat (EvhoUtility)
+     default: op
+
+     
+   evhoutility.gamemode:
+     description: Permission pour la commande /gamemode (EvhoUtility)
+     default: op
+
+   evhoutility.gamemode.other:
+     description: Permission pour la commande /gamemode pour un autre joueur (EvhoUtility)
+     default: op
+         
+     
+   evhoutility.fly:
+     description: Permission pour la commande /fly (EvhoUtility)
+     default: op
+     
+   evhoutility.fly.other:
+     description: Permission pour la commande /fly pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+   evhoutility.speed:
+     description: Permission pour la commande /speed (EvhoUtility)
+     default: op
+     
+   evhoutility.speed.other:
+     description: Permission pour la commande /speed pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+   evhoutility.flyspeed:
+     description: Permission pour la commande /flyspeed (EvhoUtility)
+     default: op
+     
+   evhoutility.flyspeed.other:
+     description: Permission pour la commande /flyspeed pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+   evhoutility.heal:
+     description: Permission pour la commande /heal (EvhoUtility)
+     default: op
+     
+   evhoutility.heal.other:
+     description: Permission pour la commande /heal pour un autre joueur (EvhoUtility)
+     default: op
+
+
+   evhoutility.food:
+     description: Permission pour la commande /food (EvhoUtility)
+     default: op
+
+   evhoutility.food.other:
+     description: Permission pour la commande /food pour un autre joueur (EvhoUtility)
+     default: op
+
+
+   evhoutility.more:
+     description: Permission pour la commande /more (EvhoUtility)
+     default: op
+
+   evhoutility.more.other:
+     description: Permission pour la commande /more pour un autre joueur (EvhoUtility)
+     default: op
+
+
+   evhoutility.repair:
+     description: Permission pour la commande /repair (EvhoUtility)
+     default: op 
+
+   evhoutility.repair.other:
+     description: Permission pour la commande /repair pour un autre joueur (EvhoUtility)
+     default: op 
+      
+
+   evhoutility.godmode:
+     description: Permission pour la commande /godmode (EvhoUtility)
+     default: op
+
+   evhoutility.godmode.other:
+     description: Permission pour la commande /godmode pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+   evhoutility.lightning:
+     description: Permission pour la commande /lightning (EvhoUtility)
+     default: op  
+
+   evhoutility.lightning.other:
+     description: Permission pour la commande /lightning pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+     
+   evhoutility.clear:
+     description: Permission pour la commande /clearamor et /clearinventory (EvhoUtility)
+     default: op    
+
+   evhoutility.clear.other:
+     description: Permission pour la commande /clearamor et /clearinventory pour un autre joueur (EvhoUtility)
+     default: op  
+      
+      
+   evhoutility.invsee:
+     description: Permission pour la commande /invsee (EvhoUtility)
+     default: op
+
+   evhoutility.invsee.move:
+     description: Permission pour la déplacer les objet(s) dans l'inventaire d'un autre Joueur (EvhoUtility)
+     default: op
+
+
+   evhoutility.enderchest:
+     description: Permission pour la commande /enderchest (EvhoUtility)
+     default: op
+
+   evhoutility.enderchest.other:
+     description: Permission pour la commande /enderchest pour un autre joueur (EvhoUtility)
+     default: op
+
+  
+         
+   evhoutility.ptime:
+     description: Permission pour la commande /ptime (EvhoUtility)
+     default: op
+     
+   evhoutility.ptime.other:
+     description: Permission pour la commande /ptime pour un autre joueur (EvhoUtility)
+     default: op
+
+
+
+   evhoutility.pweather:
+     description: Permission pour la commande /pweather (EvhoUtility)
+     default: op
+     
+   evhoutility.pweather.other:
+     description: Permission pour la commande /pweather pour un autre joueur (EvhoUtility)
+     default: op
+     
+     
+
+   evhoutility.time:
+     description: Permission pour la commande /time (EvhoUtility)
+     default: op
+
+
+   evhoutility.weather:
+     description: Permission pour la commande /weather (EvhoUtility)
+     default: op
+
+
+   evhoutility.AFK:
+     description: Permission pour la commande /AFK (EvhoUtility)
+     default: op
+ 
+   
+   evhoutility.lag:
+     description: Permission pour la commande /evholag (EvhoUtility)
+     default: op
+
+
+   evhoutility.hologram:
+     description: Permission pour la commande /hologram (EvhoUtility)
+     default: op
+     
+     
+   evhoutility.image:
+     description: Permission pour la commande /image (EvhoUtility)
+     default: op
+
+
+   evhoutility.deathmessage:
+     description: Permission pour la commande /deathmessage (EvhoUtility)
+     default: op
+
+
+   evhoutility.achievementsmessage:
+     description: Permission pour la commande /achievements (EvhoUtility)
+     default: op
+               
+               
+   evhoutility.skull:
+     description: Permission pour la commande /skull (EvhoUtility)
+     default: op
+
+   evhoutility.skull.other:
+     description: Permission pour la commande /skull (EvhoUtility)
+     default: op
+              
+          
+   evhoutility.staff:
+     description: Permission pour la commande /staff (EvhoUtility)
+     default: op
+
+   evhoutility.zone:
+     description: Permission pour la commande /zone (EvhoUtility)
+     default: op
+
+
+
+   evhoutility.resetboard:
+     description: Permission pour la commande /resetboard (EvhoUtility)
+     default: op
+
+   evhoutility.resetboard.other:
+     description: Permission pour la commande /resetboard pour un autre joueur (EvhoUtility)
+     default: op
+
+
+
+   evhoutility.playercount:
+     description: Permission pour la commande de /playercount (bungee) (EvhoUtility)
+     default: op
+
+   evhoutility.playerlist:
+     description: Permission pour la commande de /playerlist (bungee) (EvhoUtility)
+     default: op
+
+
+   evhoutility.npc:
+     description: Permission pour la commande /npc (EvhoUtility)
+     default: op
+
+
+   evhoutility.emojify:
+     description: Permission pour écrire en convertissant le texte avec des émojis définit (EvhoUtility)
+     default: op
+
+
+   OldCombatMechanics.*:
+     description: Donne accès à toutes les permissions du OCM (EvhoUtility)
+     default: op
+     children:
+       OldCombatMechanics.toggle: true
+       OldCombatMechanics.enable: true
+       OldCombatMechanics.disable: true
+       OldCombatMechanics.test: true
+       OldCombatMechanics.swordblock: true
+
+   OldCombatMechanics.toggle:
+     description: Permet d'activer et de désactiver le temps de recharge des attaques. (EvhoUtility)
+     default: op
+
+   OldCombatMechanics.enable:
+     description: Permet d'activer le délai de récupération des attaques pour le serveur ou le monde (EvhoUtility)
+     default: op
+
+   OldCombatMechanics.disable:
+     description: Permet de désactiver le temps de recharge des attaques pour le serveur ou le monde (EvhoUtility)
+     default: op
+
+   OldCombatMechanics.test:
+     description: Permet d'exécuter des tests de dommages automatisés en jeu (EvhoUtility)
+     default: op
+
+   OldCombatMechanics.swordblock:
+     description: Permet aux joueurs de bloquer avec leur sabre (EvhoUtility)
+     default: op

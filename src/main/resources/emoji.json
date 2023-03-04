@@ -1,0 +1,624 @@
+[
+  {
+    "emoji": "☺",
+    "aliases": [
+      ":smiling:",
+      ":heureux:"
+    ],
+    "emoticons": [
+      ":)",
+      ":]",
+      ":-)",
+      ":-]",
+      "=)",
+      "=]",
+      "=-)",
+      "=-]"
+    ]
+  },
+  {
+    "emoji": "☹",
+    "aliases": [
+      ":frowning:",
+      ":mécontent:"
+    ],
+    "emoticons": [
+      ":(",
+      " : [",
+      ":-(",
+      ":-[",
+      "=(",
+      "=[",
+      "=-(",
+      "=-["
+    ]
+  },
+  {
+    "emoji": "☠",
+    "aliases": [
+      ":skull:",
+      ":crane:"
+    ],
+    "emoticons": [
+      "x(",
+      "xO"
+    ]
+  },
+  {
+    "emoji": "❣",
+    "aliases": [
+      ":love_exclamation:",
+      ":coeur_fort:",
+      ":amour:"
+    ],
+    "emoticons": [
+      "<33"
+    ]
+  },
+  {
+    "emoji": "❤",
+    "aliases": [
+      ":love:",
+      ":coeur:"
+    ],
+    "emoticons": [
+      "<3"
+    ]
+  },
+  {
+    "emoji": "✌",
+    "aliases": [
+      ":victory:",
+      ":victoire:"
+    ],
+    "emoticons": [
+      ":v:"
+    ]
+  },
+  {
+    "emoji": "☝",
+    "aliases": [
+      ":index_up:"
+    ],
+    "emoticons": [
+      ":hand_up:",
+      ":main_haut:"
+    ]
+  },
+  {
+    "emoji": "✍",
+    "aliases": [
+      ":writing"
+    ],
+    "emoticons": [
+      ":write:",
+      ":ecrire:"
+    ]
+  },
+  {
+    "emoji": "✈",
+    "aliases": [
+      ":airplane_symbol:",
+      ":mode_avion:"
+    ],
+    "emoticons": [
+      ":airplane:",
+      ":avion:"
+    ]
+  },
+  {
+    "emoji": "⌛",
+    "aliases": [
+      ":time_symbol:"
+    ],
+    "emoticons": [
+      ":time:",
+      ":temps:"
+    ]
+  },
+  {
+    "emoji": "⌚",
+    "aliases": [
+      ":watch_symbol:",
+      ":clock_symbol:"
+    ],
+    "emoticons": [
+      ":watch:",
+      ":clock:",
+      ":montre:"
+    ]
+  },
+  {
+    "emoji": "☀",
+    "aliases": [
+      ":sun_symbol:",
+      ":sunlight:"
+    ],
+    "emoticons": [
+      ":sun:",
+      ":soleil:"
+    ]
+  },
+  {
+    "emoji": "☁",
+    "aliases": [
+      ":cloud_weather:",
+      ":cloudy:",
+      ":nuageux:"
+    ],
+    "emoticons": [
+      ":cloud:",
+      ":nuage:"
+    ]
+  },
+  {
+    "emoji": "☁",
+    "aliases": [
+      ":umbrella_symbol:"
+    ],
+    "emoticons": [
+      ":umbrella:",
+      ":parapluie:"
+    ]
+  },
+  {
+    "emoji": "❄",
+    "aliases": [
+      ":snowflask_cymbol:"
+    ],
+    "emoticons": [
+      ":snowflask:",
+      ":neige:"
+    ]
+  },
+  {
+    "emoji": "☃",
+    "aliases": [
+      ":snowman_symbol:"
+    ],
+    "emoticons": [
+      ":snowman:",
+      ":bonhomme_de_neige:"
+    ]
+  },
+  {
+    "emoji": "☃",
+    "aliases": [
+      ":comet_symbol:"
+    ],
+    "emoticons": [
+      ":comet:",
+      ":comette:"
+    ]
+  },
+  {
+    "emoji": "♦",
+    "aliases": [
+      ":diamond_suit:"
+    ],
+    "emoticons": [
+      ":diamond:",
+      ":diamant:"
+    ]
+  },
+  {
+    "emoji": "☎",
+    "aliases": [
+      ":telephone:"
+    ],
+    "emoticons": [
+      ":phone:",
+      ":dring:"
+    ]
+  },
+  {
+    "emoji": "⌨",
+    "aliases": [
+      ":keyboard_computer:"
+    ],
+    "emoticons": [
+      ":keyboard:",
+      ":clavier:"
+    ]
+  },
+  {
+    "emoji": "✉",
+    "aliases": [
+      ":envelope:",
+      ":enveloppe:"
+    ],
+    "emoticons": [
+      ":mail:",
+      ":email:"
+    ]
+  },
+  {
+    "emoji": "✏",
+    "aliases": [
+      ":pencil:"
+    ],
+    "emoticons": [
+      ":pen:",
+      ":crayon:"
+    ]
+  },
+  {
+    "emoji": "☢",
+    "aliases": [
+      ":radioactive:"
+    ],
+    "emoticons": [
+      ":danger:"
+    ]
+  },
+  {
+    "emoji": "⬆",
+    "aliases": [
+      ":arrow_up:"
+    ],
+    "emoticons": [
+      ":up:",
+      ":haut:"
+    ]
+  },
+  {
+    "emoji": "↗",
+    "aliases": [
+      ":arrow_upper_right:"
+    ],
+    "emoticons": [
+      ":up_right:",
+      ":haut_gauche:"
+    ]
+  },
+  {
+    "emoji": "↖",
+    "aliases": [
+      ":arrow_upper_left:"
+    ],
+    "emoticons": [
+      ":up_left:",
+      ":haut_gauche:"
+    ]
+  },
+  {
+    "emoji": "➡",
+    "aliases": [
+      ":arrow_right:"
+    ],
+    "emoticons": [
+      ":right:",
+      ":droite:"
+    ]
+  },
+  {
+    "emoji": "⬅",
+    "aliases": [
+      ":arrow_left:"
+    ],
+    "emoticons": [
+      ":left:",
+      ":gauche:"
+    ]
+  },
+  {
+    "emoji": "↘",
+    "aliases": [
+      ":arrow_lower_right:"
+    ],
+    "emoticons": [
+      ":down_right:",
+      ":bas_droite:"
+    ]
+  },
+  {
+    "emoji": "↙",
+    "aliases": [
+      ":arrow_lower_left:"
+    ],
+    "emoticons": [
+      ":down_left:",
+      ":bas_gauche:"
+    ]
+  },
+  {
+    "emoji": "⬇",
+    "aliases": [
+      ":arrow_down:"
+    ],
+    "emoticons": [
+      ":down:",
+      ":bas"
+    ]
+  },
+  {
+    "emoji": "↕",
+    "aliases": [
+      ":arrow_up_down:"
+    ],
+    "emoticons": [
+      ":up-down:",
+      ":bas_haut:"
+    ]
+  },
+  {
+    "emoji": "↔",
+    "aliases": [
+      ":left_right_arrow:"
+    ],
+    "emoticons": [
+      ":left-right:",
+      ":gauche_droite:"
+    ]
+  },
+  {
+    "emoji": "↩",
+    "aliases": [
+      ":leftwards_arrow_with_hook:",
+      ":return"
+    ],
+    "emoticons": [
+      ":leftwards:",
+      ":retour:"
+    ]
+  },
+  {
+    "emoji": "↪",
+    "aliases": [
+      ":rightwards_arrow_with_hook:",
+      ":send"
+    ],
+    "emoticons": [
+      ":rightwards:",
+      ":envoi:"
+    ]
+  },
+  {
+    "emoji": "☯",
+    "aliases": [
+      ":yinyang_symbol:"
+    ],
+    "emoticons": [
+      ":yinyang:"
+    ]
+  },
+  {
+    "emoji": "♈",
+    "aliases": [
+      ":aries_astrology:",
+      ":bélier_astrology:"
+    ],
+    "emoticons": [
+      ":aries:",
+      ":bélier:"
+    ]
+  },
+  {
+    "emoji": "♉",
+    "aliases": [
+      ":taurus_astrology:",
+      ":taureau_astrology:"
+    ],
+    "emoticons": [
+      ":taurus:",
+      ":taureau:"
+    ]
+  },
+  {
+    "emoji": "♊",
+    "aliases": [
+      ":gemini_astrology:",
+      ":gémeaux_astrology:"
+    ],
+    "emoticons": [
+      ":gemini:",
+      ":gémeaux:"
+    ]
+  },
+  {
+    "emoji": "♋",
+    "aliases": [
+      ":cancer_astrology:"
+    ],
+    "emoticons": [
+      ":cancer:"
+    ]
+  },
+  {
+    "emoji": "♌",
+    "aliases": [
+      ":leo_astrology:",
+      ":lion_astrology:"
+    ],
+    "emoticons": [
+      ":leo:",
+      ":lion:"
+    ]
+  },
+  {
+    "emoji": "♍",
+    "aliases": [
+      ":virgo_astrology:",
+      ":vierge_astrology:"
+    ],
+    "emoticons": [
+      ":virgo:",
+      ":vierge:"
+    ]
+  },
+  {
+    "emoji": "♎",
+    "aliases": [
+      ":libra_astrology:",
+      ":balance_astrology:"
+    ],
+    "emoticons": [
+      ":libra:",
+      ":balance:"
+    ]
+  },
+  {
+    "emoji": "♏",
+    "aliases": [
+      ":scorpius_astrology:",
+      ":scorpion_astrology:"
+    ],
+    "emoticons": [
+      ":scorpius:",
+      ":scorpion:"
+    ]
+  },
+  {
+    "emoji": "♐",
+    "aliases": [
+      ":sagittarius_astrology:",
+      ":sagittaire_astrology:"
+    ],
+    "emoticons": [
+      ":sagittarius:",
+      ":sagittaire:"
+    ]
+  },
+  {
+    "emoji": "♑",
+    "aliases": [
+      ":capricorn_astrology:",
+      ":capricorne_astrology:"
+    ],
+    "emoticons": [
+      ":capricorn:",
+      ":capricorne:"
+    ]
+  },
+  {
+    "emoji": "♒",
+    "aliases": [
+      ":aquarius_astrology:",
+      ":verseau_astrology:"
+    ],
+    "emoticons": [
+      ":aquarius:",
+      ":verseau:"
+    ]
+  },
+  {
+    "emoji": "♓",
+    "aliases": [
+      ":pisces_astrology:",
+      ":poisson_astrology:"
+    ],
+    "emoticons": [
+      ":pisces:",
+      ":poisson:"
+    ]
+  },
+  {
+    "emoji": "♀",
+    "aliases": [
+      ":female:",
+      ":féminin:"
+    ],
+    "emoticons": [
+      ":women:",
+      ":femme:"
+    ]
+  },
+  {
+    "emoji": "♂",
+    "aliases": [
+      ":man:",
+      ":masculin:"
+    ],
+    "emoticons": [
+      ":men:",
+      ":homme:"
+    ]
+  },
+  {
+    "emoji": "▶",
+    "aliases": [
+      ":play_button:"
+    ],
+    "emoticons": [
+      ":play:",
+      ":jouer:"
+    ]
+  },
+  {
+    "emoji": "♂",
+    "aliases": [
+      ":man:",
+      ":masculin:"
+    ],
+    "emoticons": [
+      ":men:",
+      ":homme:"
+    ]
+  },
+  {
+    "emoji": "✖",
+    "aliases": [
+      ":multiply:",
+      ":cross_symbol:"
+    ],
+    "emoticons": [
+      ":cross:",
+      ":croix:",
+      ":x:"
+    ]
+  },
+  {
+    "emoji": "☑",
+    "aliases": [
+      ":checkbox_symbol:"
+    ],
+    "emoticons": [
+      ":checkbox:",
+      ":ok_box:",
+      ":(ok):"
+    ]
+  },
+  {
+    "emoji": "✔",
+    "aliases": [
+      ":check_symbol:"
+    ],
+    "emoticons": [
+      ":check:",
+      ":ok:"
+    ]
+  },
+  {
+    "emoji": "❇",
+    "aliases": [
+      ":sparkle_symbol:",
+      ":étoile:"
+    ],
+    "emoticons": [
+      ":sparkle:",
+      ":star:"
+    ]
+  },
+  {
+    "emoji": "♬",
+    "aliases": [
+      ":music_symbol:",
+      ":note_music:"
+    ],
+    "emoticons": [
+      ":music:",
+      ":note:",
+      ":musique:"
+    ]
+  },
+  {
+    "emoji": "☚",
+    "aliases": [
+      ":index_left:"
+    ],
+    "emoticons": [
+      ":hand_left:",
+      ":gauche:"
+    ]
+  }
+]

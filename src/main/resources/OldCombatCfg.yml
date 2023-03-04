@@ -1,0 +1,457 @@
+# Liste des blocs interactifs sur lesquels un clic droit sera ignoré
+# Ceci est pour les modules tels que le blocage d'épée
+interactive: [crafting_table,enchantment_table,anvil,brewing_stand,trapped_chest,chest,bed,boat,fence_gate,dispenser,dropper,furnace,jukebox,ender_chest,stone_button,wood_button,beacon,tripwire_hook,hopper,daylight_detector,daylight_detector_inverted,item_frame,diode,diode_block_off,diode_block_on,redstone_comparator,redstone_comparator_off,redstone_comparator_on,acacia_door,birch_door,dark_oak_door,jungle_door,spruce_door,wood_door,workbench,bed_block,lever,trap_door,burning_furnace,spruce_fence_gate,birch_fence_gate,jungle_fence_gate,dark_oak_fence_gate,acacia_fence_gate,white_shulker_box,orange_shulker_box,magenta_shulker_box,light_blue_shulker_box,yellow_shulker_box,lime_shulker_box,pink_shulker_box,gray_shulker_box,silver_shulker_box,cyan_shulker_box,purple_shulker_box,blue_shulker_box,brown_shulker_box,green_shulker_box,red_shulker_box,black_shulker_box,barrel]
+
+worlds-is-blacklist: false
+# Pour utiliser la fonctionnalité par monde, vous devez spécifier une liste de mondes entre crochets [].
+# Si vide, sera activé dans tous les mondes. Sinon, agit comme une liste blanche / liste noire.
+# Quelques exemples :
+# worlds:  [world,survival,creative,SkyWars]
+# worlds:  [bestWorld]
+
+disable-attack-cooldown:
+  # C'est pour désactiver le temps de recharge de l'attaque.
+  enabled: true
+  worlds: []
+  # À quoi fixer la vitesse d'attaque. La valeur par défaut pour la version 1.9 est 4, au moins 16 est nécessaire pour ne pas avoir de cooldown.
+  generic-attack-speed: 24
+  message-enabled: "&aLe temps de recharge des attaques est activé pour %player%"
+  message-disabled: "&cLe temps de recharge des attaques est désactivé pour %player%"
+
+disable-player-collisions:
+  # Ceci est pour désactiver les collisions entre joueurs
+  # Ce module est maintenant compatible avec les plugins de tableau d'affichage et d'édition de tableaux.
+  enabled: false
+  worlds: []
+
+disable-sword-sweep:
+  # Ceci est pour désactiver l'attaque par balayage de l'épée.
+  # L'effet de particule est également supprimé
+  enabled: true
+  worlds: []
+
+disable-attack-sounds:
+  enabled: false
+  worlds: []
+  # Les sons qui seront bloqués par ce module
+  blocked-sounds:
+    - "minecraft:entity.player.attack.strong"
+    - "minecraft:entity.player.attack.sweep"
+    - "minecraft:entity.player.attack.nodamage"
+    - "minecraft:entity.player.attack.knockback"
+    - "minecraft:entity.player.attack.crit"
+    - "minecraft:entity.player.attack.weak"
+
+disable-crafting:
+  # Désactiver l'artisanat des éléments spécifiés
+  enabled: true
+  worlds: []
+  # Liste des articles refusés
+  denied: [shield]
+  # Montrer à l'utilisateur un message s'il essaie de fabriquer un objet de la liste noire.
+  showMessage: true
+  message: "&cVous ne pouvez pas fabriquer cet objet !"
+
+disable-enderpearl-cooldown:
+  # Désactive le temps de recharge de l'enderpearl
+  enabled: true
+  worlds: []
+  # Le temps de recharge, en secondes
+  cooldown: 0
+  # Afficher un message à l'utilisateur s'il essaie d'utiliser une enderpearl et que le délai de récupération n'a pas encore expiré.
+  showMessage: true
+  message: "&cVous devez attendre &7%ds&c avant d'utiliser à nouveau une perle à ender !"
+
+old-tool-damage:
+  # Ceci est pour définir les dégâts de l'outil comme dans la version pré-1.9.
+  # IMPORTANT : activez également le module 'disable-sword-sweep' ou les balayages auront la valeur de dégâts de l'arme en main.
+  # NOTE : cela modifiera les dégâts, mais l'info-bulle de l'objet indiquera toujours les dégâts de la version 1.9+.
+  enabled: true
+  worlds: []
+  # Les valeurs de dégâts indiquées dans la représentation 1.9 (dégâts réels)
+  # En 1.8, la valeur de l'info-bulle sur les dégâts était ajoutée à 1 'dégâts de base', ce qui donnait les valeurs suivantes
+  damages:
+    # Les dégâts de la hache
+    GOLD_AXE: 4
+    WOOD_AXE: 4
+    STONE_AXE: 5
+    IRON_AXE: 6
+    DIAMOND_AXE: 7
+    NETHERITE_AXE: 8
+    # Les dommages causés par les pelleteuses
+    GOLD_SPADE: 2
+    WOOD_SPADE: 2
+    STONE_SPADE: 3
+    IRON_SPADE: 4
+    DIAMOND_SPADE: 5
+    NETHERITE_SPADE: 6
+    # Dégâts de l'épée
+    GOLD_SWORD: 5
+    WOOD_SWORD: 5
+    STONE_SWORD: 6
+    IRON_SWORD: 7
+    DIAMOND_SWORD: 8
+    NETHERITE_SWORD: 9
+    # Les dégâts de la pioche
+    GOLD_PICKAXE: 3
+    WOOD_PICKAXE: 3
+    STONE_PICKAXE: 4
+    IRON_PICKAXE: 5
+    DIAMOND_PICKAXE: 6
+    NETHERITE_PICKAXE: 7
+    # Les dommages causés par le binage
+    GOLD_HOE: 1
+    WOOD_HOE: 1
+    STONE_HOE: 1
+    IRON_HOE: 1
+    DIAMOND_HOE: 1
+    NETHERITE_HOE: 1
+
+sword-blocking:
+  # Ceci est pour permettre aux joueurs de bloquer avec des épées à nouveau, en obtenant un bouclier pendant qu'ils maintiennent le clic droit avec une épée
+  enabled: true
+  worlds: []
+  # Combien de fois, en ticks, 'OCM' doit vérifier si le joueur bloque toujours avec un bouclier, et le retirer si ce n'est pas le cas.
+  # Si cette fréquence est trop rapide, le joueur verra son bouclier disparaître avant de pouvoir bloquer à nouveau, ce qui entraînera un léger retard.
+  # Si c'est trop lent, le joueur aura son bouclier en main bien après avoir cessé de bloquer.
+  # 20 ticks = 1 seconde
+  restoreDelay: 40
+  # Liste des objets que l'on peut tenir dans la main gauche en faisant un clic droit avec une épée sans bloquer, par exemple l'arc.
+  noBlockingItems: []
+  # Si la liste ci-dessus doit agir comme une liste noire (c'est-à-dire que seuls les éléments énumérés arrêtent le mécanisme de blocage).
+  blacklist: true
+  # Si les joueurs doivent avoir la permission 'oldcombatmechanics.swordblock' pour bloquer avec une épée.
+  use-permission: false
+
+shield-damage-reduction:
+  # Ce module permet de modifier le comportement de réduction des dommages des boucliers.
+  enabled: true
+  # Combien de dégâts le blocage doit-il réduire ?
+  # Ceci peut être un nombre en demi-cœur (par exemple 2) ou un pourcentage (par exemple 20%).
+  # 1.8 par défaut : (dommages - 1) * 50 % 1.9 par défaut : 33 % # Réduction des dommages = (dommages - réduction des dommagesAmage)
+  # Réduction des dommages = (dommages - damageReductionAmount) * damageReductionPercentage
+  generalDamageReductionAmount: 1
+  generalDamageReductionPercentage: 50
+  # Cette valeur fonctionne de la même manière mais est exclusivement destinée aux dommages causés par les projectiles.
+  projectileDamageReductionAmount: 1
+  projectileDamageReductionPercentage: 50
+
+old-fishing-knockback:
+  # Il s'agit de rendre le knockback des joueurs lorsqu'ils sont frappés par une canne à pêche identique à ce qu'il était dans la version pré-1.9.
+  enabled: true
+  worlds: []
+  # Ceci permet à 'OCM' de vérifier si d'autres plugins arrêtent les dommages aux tiges et de suivre leur choix.
+  # Mettre à false pour avoir toujours des dommages aux tiges
+  checkCancelled: false
+  # C'est le dommage causé par l'attaque de la canne à pêche.
+  damage: 0.0001
+  # Si "l'EntityDamageEvent" doit être utilisé à la place de "l'EntityDamageByEntityEvent".
+  # Mettre à true lorsque l'on utilise des plugins comme NCP qui vérifient la portée.
+  useEntityDamageEvent: false
+  # Ceci est pour annuler l'entraînement de l'entité attachée à la canne à pêche lors du moulinet, comme en 1.8.
+  # Options : all, players, mobs, none. 'players' permet la compatibilité avec les régions 'pvp-deny' de WorldGuard.
+  cancelDraggingIn: players
+  # Si l'on veut aussi donner du knockback aux entités vivantes non-joueurs (par exemple les mobs).
+  knockbackNonPlayerEntities: false
+  # Il s'agit du délai en millisecondes entre les dommages causés par les tiges, afin que le joueur touché ait le temps de retomber.
+  hitCooldown: 1000
+
+fishing-rod-velocity:
+  # Dans les versions 1.9+, les cannes à pêche vont sur 8 blocs au lieu de 12 blocs.
+  # Ceci est dû à la fois à la gravité et à la vitesse initiale de lancement.
+  # Mettre à true pour revenir aux anciens calculs et à la gravité.
+  enabled: true
+  worlds: []
+
+projectile-knockback:
+  # Ceci ajoute du knockback et/ou des dommages aux joueurs lorsqu'ils sont frappés par des boules de neige, des œufs et des enderpearls.
+  # C'est un bug de Bukkit depuis si longtemps que les gens pensaient qu'il s'agissait d'un bug de vanille lorsqu'il a été récemment corrigé.
+  enabled: true
+  worlds: []
+  # C'est le dommage fait par chaque projectile
+  damage:
+    snowball: 0.0001
+    egg: 0.0001
+    ender_pearl: 0.0001
+
+old-player-knockback:
+  # Ceci est pour changer le knockback que les joueurs reçoivent des attaques.  Les valeurs par défaut sont celles de la version 1.8.
+  #
+  # Les serveurs de pratique ont tendance à utiliser un knockback plus faible, par exemple :
+  # knockback-horizontal : 0.35
+  # knockback-vertical : 0.35
+  # knockback-vertical-limit : 0.4
+  # knockback-extra-horizontal : 0.425
+  # knockback-extra-vertical : 0.085
+  #
+  # Les serveurs de mini-jeux utilisent un knockback vertical plus élevé et un knockback horizontal plus faible, les valeurs exactes sont inconnues.
+  enabled: true
+  worlds: []
+  # Le knockback horizontal est réduit de 40% pour chaque attaque réussie par le joueur, sans limite.
+  # Augmenter pour rendre le clic plus important, diminuer pour le rendre moins important.
+  knockback-horizontal: 0.1
+  # Le knockback vertical n'est pas réduit par un clic plus rapide.
+  # Augmentez pour rendre le clic moins important, diminuez pour rendre le clic plus important.
+  knockback-vertical: 0.1
+  # La limite du knockback vertical est appliquée après le knockback vertical de base.
+  # Cette limite peut être dépassée par des coups de sprint ou des enchantements de knockback, à cause du knockback vertical supplémentaire.
+  knockback-vertical-limit: 0.1
+  # Un knockback horizontal supplémentaire est appliqué pour chaque niveau d'enchantement de knockback, et pour le sprint.
+  # Augmentation pour rendre la réinitialisation du sprint (w-tapping) plus importante, diminution pour la rendre moins importante.
+  # Augmentation pour rendre les clics plus importants, diminution pour les rendre moins importants.
+  knockback-extra-horizontal: 0.2
+  # Un knockback vertical supplémentaire est appliqué pour chaque niveau d'enchantement de knockback, et pour le sprint.
+  # Augmentation pour rendre la réinitialisation du sprint (w-tapping) plus importante, diminution pour la rendre moins importante.
+  # Augmentation pour rendre les clics moins importants, diminution pour les rendre plus importants.
+  knockback-extra-vertical: 0.1
+  # La résistance au knockback doit-elle être activée (par exemple, la résistance au knockback de l'armure netherite) ?
+  enable-knockback-resistance: false
+
+old-player-regen:
+  # Il s'agit de faire en sorte que la régénération des joueurs se comporte comme dans la version pré-1.9.
+  # Basé sur https://minecraft.gamepedia.com/Hunger?oldid=948685
+  enabled: true
+  worlds: []
+  # La fréquence à laquelle un joueur doit régénérer sa santé, en millisecondes (en 1.8 : 4 secondes).
+  # Le 'foodTickerTimer' peut ne pas être parfaitement précis, nous lui donnons donc une marge d'environ 10 ms.
+  interval: 3990
+  # Combien de demi-cœurs le joueur devrait guérir, toutes les secondes spécifiées ci-dessus.
+  amount: 1
+  # Combien d'épuisement le joueur devrait obtenir de la guérison. En 1.8 : 3 En 1.9 : 4 En 1.11 : 6
+  # Si, après avoir ajouté ceci, Minecraft trouve que la valeur est supérieure à 4, il soustrait 4. et réduit la saturation ou,
+  # si la saturation est de 0, réduit le niveau de nourriture de 1 (1/2 bâton).
+  exhaustion: 3
+
+old-armour-strength:
+  # C'est pour faire des calculs d'armure comme dans 1.8
+  # Basé sur ceci : https://minecraft.gamepedia.com/index.php?title=Armor&oldid=909187
+  enabled: true
+  worlds: []
+
+old-armour-durability:
+  # L'armure subit une quantité constante de dégâts de durabilité (sauf pour les explosions).
+  enabled: true
+  worlds: []
+  # De combien réduire la durabilité à chaque attaque. 1.8 par défaut = 1.
+  reduction: 1
+
+disable-projectile-randomness:
+  # Il s'agit de supprimer le caractère aléatoire des projectiles lors du tir de flèches avec un arc.
+  # Il s'agit en fait d'une fonctionnalité très ancienne qui existe dans le jeu depuis un certain temps.
+  enabled: false
+  worlds: []
+  # C'est le seuil entre les valeurs (X,Z) des projectiles avant qu'ils ne soient considérés comme identiques et redressés.
+  # Cette valeur n'est utile que pour le multishot. La valeur par défaut de 0.1 fonctionne pour tous les angles, sauf les angles extrêmement faibles,
+  # où les flèches finissent par se regrouper. Définissez à 1 si vous voulez que les multishots suivent tous le même chemin.
+  epsilon: 0.1
+
+disable-bow-boost:
+  # C'est pour empêcher les joueurs de se propulser en avant en se frappant eux-mêmes.
+  # Pendant qu'ils courent avec une flèche de punch II de leur arc.
+  # Ce module les empêche simplement de se frapper eux-mêmes avec des flèches.
+  enabled: false
+  worlds: []
+
+old-potion-effects:
+  # C'est pour restaurer les effets et la durée des potions 1.8.
+  enabled: true
+  worlds: []
+
+  ### DURÉE : (en secondes)
+  potion-durations:
+    regen: # Régénération
+      drinkable:
+        base: 45
+        II: 22
+        extended: 120
+      splash:
+        base: 33
+        II: 16
+        extended: 90
+
+    speed: # Rapidité
+      drinkable:
+        base: 180
+        II: 90
+        extended: 480
+      splash:
+        base: 135
+        II: 67
+        extended: 360
+
+    fire_resistance: # Résistance au Feu
+      drinkable:
+        base: 180
+        extended: 480
+      splash:
+        base: 135
+        extended: 360
+
+    poison: # Poison
+      drinkable:
+        base: 45
+        II: 22
+        extended: 120
+      splash:
+        base: 33
+        II: 16
+        extended: 90
+
+    night_vision: # Vision Nocturne
+      drinkable:
+        base: 180
+        extended: 480
+      splash:
+        base: 180
+        extended: 480
+
+    weakness: # Résistance au feu
+      drinkable:
+        base: 90
+        extended: 240
+      splash:
+        base: 90
+        extended: 240
+
+    strength: # Force
+      drinkable:
+        base: 180
+        II: 90
+        extended: 480
+      splash:
+        base: 135
+        II: 67
+        extended: 360
+
+    slowness: # Lenteur
+      drinkable:
+        base: 90
+        extended: 240
+      splash:
+        base: 67
+        extended: 180
+
+    jump: # Saut
+      drinkable:
+        base: 180
+        II: 90
+        extended: 480
+      splash:
+        base: 135
+        II: 67
+        extended: 360
+
+    water_breathing: # Respiration aquatique
+      drinkable:
+        base: 180
+        extended: 480
+      splash:
+        base: 135
+        extended: 360
+
+    invisibility: # Invisibilité
+      drinkable:
+        base: 180
+        extended: 480
+      splash:
+        base: 135
+        extended: 360
+
+    # Potions 1.9+.
+    # La potion Turtle Master est actuellement incompatible, elle fonctionnera comme par défaut.
+    luck: # Chance
+      drinkable:
+        base: 300
+      splash:
+        base: 300
+
+    slow_falling: # Chute Lente
+      drinkable:
+        base: 90
+        extended: 240
+      splash:
+        base: 90
+        extended: 240
+
+  # EFFETS
+  # Si 'multiplier' est vrai, la valeur est multipliée par les dégâts de base de l'outil. Si elle est fausse, elle est ajoutée.
+  # Si les deux sont justes, la valeur est d'abord augmentée de 1 puis multipliée (comme +xx%).
+  # Potion de force
+  # 1.9 : I = +3 ; II = +6 ; 1.8 : I = +130% ; II = +260%.
+  strength:
+    modifier: 1.3
+    multiplier: true
+    addend: true
+  # Potion de faiblesse
+  # valeur 1.9 : -4   valeur 1.8 : -0.5
+  weakness:
+    modifier: -0.5
+    multiplier: false
+
+chorus-fruit:
+  # Cela permet de configurer le comportement du fruit du chorus.
+  enabled: false
+  worlds: []
+  # La distance maximale à laquelle le fruit peut téléporter le joueur. C'est une valeur PAR AXE, donc cela dessine un cube avec
+  # '2 * max-teleportation-distance' comme longueur de côté.
+  # La valeur par défaut de Vanilla est 8.
+  # Une valeur de 0 désactive la téléportation des fruits chorus.
+  # Donner une valeur supérieure à 8 PEUT CAUSER DES CONFLITS avec l'anti-triche interne de bukkit et *potentiellement* tout autre anti-cheat que vous utilisez.
+  # Veuillez vous assurer que ce n'est pas un problème avant d'augmenter cette valeur.
+  max-teleportation-distance: 8
+  # Si vous voulez empêcher de manger le fruit complètement. Cela empêche également la téléportation.
+  prevent-eating: false
+  # La valeur de saturation du fruit chorus.
+  # La valeur par défaut de 'vanilla' est 2.4
+  saturation-value: 2.4
+  # La valeur de la faim du fruit du chorus.
+  # La valeur par défaut de 'vanilla' est 4 (2 barres).
+  hunger-value: 4
+
+old-burn-delay:
+  # Cela fait en sorte que les entités commencent immédiatement à brûler lorsqu'elles entrent dans le feu.
+  enabled: false
+  worlds: []
+  # Combien de temps, en tics, les entités doivent rester sur le feu après ne plus être en contact direct.
+  fire-ticks: 120
+
+attack-frequency:
+  # Permet de changer l'invulnérabilité du joueur entre les coups.
+  enabled: true
+  worlds: []
+  # Le délai de frappe à appliquer. La valeur par défaut pour les versions 1.9+ est de 20 ticks (1 seconde).
+  playerDelay: 18
+  mobDelay: 16
+
+old-critical-hits:
+  # Les coups critiques fonctionnent comme en 1.8.
+  # En 1.8, les dégâts sont augmentés de 0 à 50 %, arrondis à l'inférieur, plus un cœur.
+  # En 1.9 les coups critiques sont toujours +50%.
+  enabled: true
+  world: []
+  # Ce par quoi les dégâts, après application des effets des potions, sont multipliés.
+  multiplier: 1.5
+  # Si le multiplicateur est une décimale aléatoire entre 1 et le multiplicateur.
+  is-multiplier-random: true
+  # Ce qui est ajouté aux dégâts, après avoir appliqué les effets des potions et les avoir multipliés.
+  addend: 1
+  # Arrondir ou non les dommages à l'entier le plus proche (1.8 par défaut : true)
+  round-down: true
+  # Si l'on autorise les crits pendant le sprint. 1.8 : true, 1.9 : false
+  allow-sprinting: true
+
+
+########################################
+#### PARAMÈTRES SPÉCIAUX CI-DESSOUS ####
+########################################
+
+# Ceci permet de compléter les arguments de commande en appuyant sur la touche tabulation
+command-completer:
+  enabled: true
+
+# Ceci active les messages de débogage, à n'activer que pour le dépannage.
+debug:
+  enabled: false
+
+# Ceci active les messages de débogage, à n'activer que pour le dépannage.
+config-version: 54
