@@ -17,6 +17,7 @@ import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
@@ -205,12 +206,25 @@ public class WorldCommand implements CommandExecutor {
 
 			else if(args[0].equalsIgnoreCase("remove")) {
 
+				ConfigurationSection WorldSection = ConfigFile.getConfigurationSection(main.worldconfig, "serverworlds");
+
+							/* ------------------------------------------ */
+
+				if(WorldSection.contains(worldname)) {
+
+						ConfigFile.removeKey(main.worldconfig, "serverworlds." + worldname);
+						sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du fichier de configuation !");;
+
+				} else { sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " est introuvable dans le fichier de configuation !"); }
+
+
+							/* ------------------------------------------ */
+
 				if(Bukkit.getServer().getWorld(worldname) != null) {
 
 					if(Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_the_end")) {
 
 					  sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas supprimer un monde par défaut ! Vous pouvez supprimer ce genre de monde manuellement !");
-
 					  return true;
 					}
 
@@ -231,7 +245,7 @@ public class WorldCommand implements CommandExecutor {
 					if(file.exists()) { file.delete(); }
 					// Supprime le dossier du Monde, s'il existe //
 
-					sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer !");
+					sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du serveur !");
 
 					UtilityConfigWorld(); //Recharge le fichier de configuration des mondes du Plugin
 
