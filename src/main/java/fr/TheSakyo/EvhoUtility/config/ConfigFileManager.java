@@ -3,9 +3,11 @@ package fr.TheSakyo.EvhoUtility.config;
 import fr.TheSakyo.EvhoUtility.UtilityMain;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Set;
 
 public class ConfigFileManager {
 
@@ -351,19 +353,31 @@ public class ConfigFileManager {
             mainInstance.worldconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/world.yml", headerworld);
             ConfigFile.reloadConfig(mainInstance.worldconfig);
 
-            for(String name: ConfigFile.getConfigurationSection(mainInstance.worldconfig, "serverworlds").getKeys(false)) {
+            ConfigurationSection configSection = ConfigFile.getConfigurationSection(mainInstance.worldconfig, "serverworlds");
+            Set<String> sectionString = configSection.getKeys(false);
 
-                File file = new File(name);
+            if(sectionString != null) {
 
-                if(file.exists()) {
+                for(String name: sectionString) {
 
-                    if(Bukkit.getServer().getWorld(name) == null) {
+                    File file = new File(name);
 
-                        // Recharge le monde souhaité
-                        new WorldHandler(mainInstance, name);
+                    if(file.exists()) {
 
-                    } else { mainInstance.console.sendMessage(mainInstance.prefix + YI + name + ChatColor.RESET + " : " + ChatColor.GREEN + "OK"); }
+                        if(Bukkit.getServer().getWorld(name) == null) {
+
+                            // Recharge le monde souhaité
+                            new WorldHandler(mainInstance, name);
+
+                        } else { mainInstance.console.sendMessage(mainInstance.prefix + YI + name + ChatColor.RESET + " : " + ChatColor.GREEN + "OK"); }
+                    }
                 }
+
+            } else {
+
+                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world"+ ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
+                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world_nether" + ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
+                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world_the_end" + ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
             }
 
             mainInstance.console.sendMessage(mainInstance.prefix + ChatColor.DARK_GREEN + "Les mondes ont été recharger !");
@@ -379,13 +393,13 @@ public class ConfigFileManager {
 
                              /* ------------------------- */
 
-    /* Petite Méthode pour vider le config 'world.yml' */
+    /* Petite Méthode pour vider la config 'world.yml' */
     public static void clearKeyUtilityWorldConfig() {
 
         for(String str : ConfigFile.getKeys(mainInstance.worldconfig)) {  ConfigFile.removeKey(mainInstance.worldconfig, str); }
         ConfigFile.saveConfig(mainInstance.worldconfig);
     }
-    /* Petite Méthode pour vider le config 'world.yml' */
+    /* Petite Méthode pour vider la config 'world.yml' */
 
 	/************************************************************/
 	/* METHODE POUR CHARGER DES FICHIERS CONFIGS PERSONNALISER */
