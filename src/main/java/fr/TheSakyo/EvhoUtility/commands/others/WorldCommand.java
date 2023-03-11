@@ -1,12 +1,14 @@
 package fr.TheSakyo.EvhoUtility.commands.others;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ListIterator;
 
 import fr.TheSakyo.EvhoUtility.config.ConfigFile;
 import fr.TheSakyo.EvhoUtility.config.ConfigFileManager;
 import fr.TheSakyo.EvhoUtility.config.WorldHandler;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -242,7 +244,11 @@ public class WorldCommand implements CommandExecutor {
 
 					// Supprime le dossier du Monde, s'il existe //
 					File file = new File(Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + worldname + "/");
-					if(file.exists()) { file.delete(); }
+					if(file.exists()) {
+
+						try { FileUtils.deleteDirectory(file); }
+						catch(IOException e) { file.delete(); }
+					}
 					// Supprime le dossier du Monde, s'il existe //
 
 					sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du serveur !");
