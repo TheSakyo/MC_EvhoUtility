@@ -213,10 +213,10 @@ public class WorldCommand implements CommandExecutor {
 				if(WorldSection.contains(worldname)) {
 
 						ConfigFile.removeKey(main.worldconfig, "serverworlds." + worldname);
+						ConfigFile.saveConfig(main.worldconfig);
 						sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du fichier de configuation !");;
 
 				} else { sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " est introuvable dans le fichier de configuation !"); }
-
 
 							/* ------------------------------------------ */
 
