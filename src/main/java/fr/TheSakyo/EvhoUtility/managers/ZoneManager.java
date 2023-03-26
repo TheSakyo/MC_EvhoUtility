@@ -76,6 +76,7 @@ public class ZoneManager {
     /****************************************/
     public static void create(String zoneName) {
 
+        resetGroupsForZone(zoneName, true);
         ConfigFile.createSection(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase());
         ConfigFile.saveConfig(mainInstance.zoneconfig);
 
@@ -167,7 +168,8 @@ public class ZoneManager {
         for(Group group : groupManager.getLoadedGroups()) {
 
             if(ConfigFile.getBoolean(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName()) == true) {
-                if(mainInstance.formatgrade.isPlayerInGroup(p, group.getName())) isOK = true; break;
+
+                if(group.getName().equalsIgnoreCase("default") || mainInstance.formatgrade.isPlayerInGroup(p, group.getName())) isOK = true; break;
             }
         }
         return isOK;

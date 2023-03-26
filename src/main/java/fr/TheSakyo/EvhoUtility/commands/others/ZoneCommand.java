@@ -217,7 +217,6 @@ public class ZoneCommand  implements CommandExecutor {
                             if(!ZoneManager.isExist(args[1])) {
 
                                 ZoneManager.create(args[1]);
-                                ZoneManager.resetGroupsForZone(args[1], true);
 
                                 if(args[1].equalsIgnoreCase("default_" + WorldName)) p.sendMessage(prefixzone + GI + "La Zone Globale du monde actuel a été créer !");
                                 else p.sendMessage(prefixzone + GI + "La Zone " + ChatColor.YELLOW + args[1].toUpperCase() + GI + " a été créer !");
