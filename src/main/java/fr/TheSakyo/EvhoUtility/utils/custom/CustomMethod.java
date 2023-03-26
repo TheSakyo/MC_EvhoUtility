@@ -155,10 +155,11 @@ public class CustomMethod {
 	 *
 	 * @param location L' {@link Location Emplacement} initiale sur lequel effectuer la recherche.
 	 * @param radius Le rayon de recherche des emplacements à récupérer.
+	 * @param checkY Doit-on vérifier les localisations la coordonée 'Y'.
 	 *
 	 * @return Une liste d' {@link List<Location> emplacements}.
 	 */
-	public static List<Location> getNearbyLocations(Location location, int radius) {
+	public static List<Location> getNearbyLocations(Location location, int radius, boolean checkY) {
 
 		List<Location> locations = new ArrayList<Location>(); // Permmettra de retourner une liste de localisation
 
@@ -169,7 +170,12 @@ public class CustomMethod {
 			for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
 
 				// On boucle sur toutes les localisations dans la coordonée 'Z' et on retourne celui-ci
-				for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) { locations.add(new Location(location.getWorld(), x, y, z)); }
+				for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+
+					/* On ajoute à la liste en question, la localisation récupérée, on définit également à la localisation la coordonnée 'Y' de la boucle si on décide dela vérifier,
+					   sinon on lui donne la coordonée de la localisation inititale */
+					locations.add(new Location(location.getWorld(), x, checkY ? y : location.getY(), z));
+				}
 			}
 			// ⬆️ On boucle sur tous les blocs dans la coordonée 'Y' ⬆️ //
 		}
