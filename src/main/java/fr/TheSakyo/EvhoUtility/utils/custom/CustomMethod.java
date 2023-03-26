@@ -146,8 +146,36 @@ public class CustomMethod {
 	/* VÉRIFIE SI LE JOUEUR EST ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
+	/*****************************************************************************/
+	/* RÉCUPÈRE DES LOCALISAIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
+	/****************************************************************************/
 
-	/*******************************************************************/
+	public static List<Location> getNearbyLocations(Location location, int radius) {
+
+		List<Location> locations = new ArrayList<Location>(); // Permmettra de retourner une liste de localisation
+
+		// ⬇️ On boucle sur toutes les localisations dans la coordonée 'X' ⬇️ //
+		for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+
+			// ⬇️ On boucle sur toutes les localisations dans la coordonée 'Y' ⬇️ //
+			for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
+
+				// On boucle sur toutes les localisations dans la coordonée 'Z' et on retourne celui-ci
+				for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) { locations.add(new Location(location.getWorld(), x, y, z)); }
+			}
+			// ⬆️ On boucle sur tous les blocs dans la coordonée 'Y' ⬆️ //
+		}
+		// ⬆️ On boucle sur tous les blocs dans la coordonée 'X' ⬆️ //
+
+		return locations; // On retourne la liste en question
+	}
+
+	/*****************************************************************************/
+	/* RÉCUPÈRE DES LOCALISAIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
+	/****************************************************************************/
+
+
+	/********************************************************************/
 	/* RÉCUPÈRE UNE LOCALISATION ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
@@ -165,7 +193,7 @@ public class CustomMethod {
         return new Location(loc1.getWorld(), (Math.random() * range.getX()) + (Math.min(loc1.getX(), loc2.getX())), range.getY(), (Math.random() * range.getZ()) + (Math.min(loc1.getZ(), loc2.getZ())));
     }
 
-	/*******************************************************************/
+	/********************************************************************/
 	/* RÉCUPÈRE UNE LOCALISATION ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
