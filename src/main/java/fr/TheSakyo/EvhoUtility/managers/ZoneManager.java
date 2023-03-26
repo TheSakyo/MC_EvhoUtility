@@ -408,6 +408,8 @@ public class ZoneManager {
         World world = getWorld(zoneName);
         List<Double> firstPos = getFirstPos(zoneName);
 
+        if(firstPos == null) return null;
+
         double X = firstPos.get(0);
         double Y = firstPos.get(1);
         double Z = firstPos.get(2);
@@ -426,6 +428,8 @@ public class ZoneManager {
 
         World world = getWorld(zoneName);
         List<Double> secondPos = getSecondPos(zoneName);
+
+        if(secondPos == null) return null;
 
         double X = secondPos.get(0);
         double Y = secondPos.get(1);
