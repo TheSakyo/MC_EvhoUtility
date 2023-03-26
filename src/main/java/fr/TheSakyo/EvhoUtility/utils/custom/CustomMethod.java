@@ -155,9 +155,9 @@ public class CustomMethod {
 	 * Récupère une liste d' {@link List<Location> emplacements} étant autour d'un {@link Location emplacement} donné en spécifiant un rayon demandé
 	 *
 	 * @param location L' {@link Location Emplacement} initiale sur lequel effectuer la recherche.
-	 * @param radius Le rayon de recherche des emplacements à récupérer
+	 * @param radius Le rayon de recherche des emplacements à récupérer.
 	 *
-	 * @return Une liste d' {@link List<Location> emplacements}
+	 * @return Une liste d' {@link List<Location> emplacements}.
 	 */
 	public static List<Location> getNearbyLocations(Location location, int radius) {
 
