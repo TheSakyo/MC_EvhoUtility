@@ -127,7 +127,7 @@ public class CustomMethod {
 	/******************************************************************/
 
 	/**
-	 * Renvoie vrai si l' {@link Location emplacement} donné est dans le cuboïde défini par les deux emplacements donnés
+	 * Renvoie vrai si l' {@link Location Emplacement} donné est dans le cuboïde défini par les deux emplacements donnés
 	 *
 	 * @param origin L' {@link Location Emplacement} que vous souhaitez vérifier s'il se trouve dans la région.
 	 * @param loc1 L' {@link Location Emplacement} du premier coin du cuboïde.
@@ -146,17 +146,18 @@ public class CustomMethod {
 	/* VÉRIFIE SI LE JOUEUR EST ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
+
 	/*****************************************************************************/
 	/* RÉCUPÈRE DES LOCALISAIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
 	/****************************************************************************/
 
 	/**
-	 * Renvoie une liste d' {@link List<Location> emplacements} récupéré autour d'un {@link Location emplacement} donné ainsi que le rayon de recherche
+	 * Récupère une liste d' {@link List<Location> emplacements} étant autour d'un {@link Location emplacement} donné en spécifiant un rayon demandé
 	 *
-	 * @param location L' {@link Location Emplacement} initiale sur lequel effectué la recherche.
-	 * @param radius Le rayon de recherche.
+	 * @param location L' {@link Location Emplacement} initiale sur lequel effectuer la recherche.
+	 * @param radius Le rayon de recherche des emplacements à récupérer
 	 *
-	 * @return Une liste d' {@link List<Location> emplacements}.
+	 * @return Une liste d' {@link List<Location> emplacements}
 	 */
 	public static List<Location> getNearbyLocations(Location location, int radius) {
 
@@ -183,7 +184,7 @@ public class CustomMethod {
 	/****************************************************************************/
 
 
-	/********************************************************************/
+	/*******************************************************************/
 	/* RÉCUPÈRE UNE LOCALISATION ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
@@ -201,7 +202,7 @@ public class CustomMethod {
         return new Location(loc1.getWorld(), (Math.random() * range.getX()) + (Math.min(loc1.getX(), loc2.getX())), range.getY(), (Math.random() * range.getZ()) + (Math.min(loc1.getZ(), loc2.getZ())));
     }
 
-	/********************************************************************/
+	/*******************************************************************/
 	/* RÉCUPÈRE UNE LOCALISATION ENTRE DEUX COORDONNÉES (REGION CUBOID) */
 	/*******************************************************************/
 
