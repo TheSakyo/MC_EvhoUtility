@@ -24,7 +24,6 @@ public class SignsListener implements Listener {
 	
 	// Évenement quand le joueur écrit dans une pancarte //
 	// Traduit les codes couleurs Minecraft, s'il a la permission //
-	
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
 
