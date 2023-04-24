@@ -130,15 +130,15 @@ public class UtilityMain extends PaperPlugin {
 	public String errorArgs = ChatColor.WHITE + "Quelque chose a mal tourner, vous devez obligatoirement, préciser un argument 'args' !";
 
 
-	public String senderNull = prefix + ChatColor.DARK_RED + ChatColor.UNDERLINE.toString() + "Erreur de Code :" + ChatColor.RED + "' sender' est NULL";
-	public String errorSender = ChatColor.WHITE + "Quelque chose a mal tourner, vous devez obligatoirement, préciser la console 'sender' en cas d'éxécution avec la Console"
-			+ " ou le joueur 'sender' en cas d'éxécution en tant que Joueur !";
+			public String senderNull = prefix + ChatColor.DARK_RED + ChatColor.UNDERLINE.toString() + "Erreur de Code :" + ChatColor.RED + "' sender' est NULL";
+			public String errorSender = ChatColor.WHITE + "Quelque chose a mal tourner, vous devez obligatoirement, préciser la console 'sender' en cas d'éxécution avec la Console"
+					+ " ou le joueur 'sender' en cas d'éxécution en tant que Joueur !";
 
 
-	public String targetNull = prefix + ChatColor.DARK_RED + ChatColor.UNDERLINE.toString() + "Erreur de Code :" + ChatColor.RED + "' target' est NULL";
-	public String errorTarget = ChatColor.WHITE + "Quelque chose a mal tourner, vous devez obligatoirement, préciser le joueur 'target' en cas d'éxécution avec la Console !";
+			public String targetNull = prefix + ChatColor.DARK_RED + ChatColor.UNDERLINE.toString() + "Erreur de Code :" + ChatColor.RED + "' target' est NULL";
+			public String errorTarget = ChatColor.WHITE + "Quelque chose a mal tourner, vous devez obligatoirement, préciser le joueur 'target' en cas d'éxécution avec la Console !";
 
-	// Variable d'erreur au niveau des commandes éxécutables de la Console //
+			// Variable d'erreur au niveau des commandes éxécutables de la Console //
 
 
 	// Variable pour le nom du "tablist" du joueur avec comme suffix "[AFK]" //
