@@ -68,7 +68,7 @@ public class ZoneCommand  implements CommandExecutor {
 
                             Set<String> zones = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false); // Liste des noms de régions enregistrés
 
-                            if(zones != null && !zones.isEmpty()) {
+                            if(zones != null && !zones.isEmpty() && ZoneManager.zoneListContainsRegions(zones)) {
 
                                 String primaryColor = ChatColor.GOLD.toString(); // Récupère la couleur primaire du message pour chaque zone à envoyer au Joueur
 
@@ -457,7 +457,7 @@ public class ZoneCommand  implements CommandExecutor {
 
                                 } else { p.sendMessage(prefixType + "[<teleport>] <zoneName>"); }
 
-                            } else { p.sendMessage(prefixzone + ChatColor.RED + "La Zone " + ChatColor.YELLOW + args[1].toUpperCase() + ChatColor.RED + " n'éxiste pas !"); }
+                            } else { p.sendMessage(prefixzone + ChatColor.RED + "La Zone " + ChatColor.YELLOW + args[2].toUpperCase() + ChatColor.RED + " n'éxiste pas !"); }
 
                         } else if(args[0].equalsIgnoreCase("rename")) {
 

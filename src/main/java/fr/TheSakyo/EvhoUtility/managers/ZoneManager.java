@@ -139,6 +139,20 @@ public class ZoneManager {
     /* MÉTHODE VÉRIFIANT SI LA ZONE EXISTE BIEN */
     /********************************************/
 
+    /********************************************************************************************************************/
+    /* MÉTHODE VÉRIFIANT SI DANS LA LISTE DES ZONES RÉCUPÉRÉES EN PARAMÈTRES, ON ARRIVE A RÉCUPÉRER AU MOINS UNE RÉGION */
+    /********************************************************************************************************************/
+    public static boolean zoneListContainsRegions(Set<String> zones) {
+
+        boolean zoneExisted = false;
+
+        for(String ZONE : zones) { if(hasRegion(ZONE)) { zoneExisted = true; } }
+        return zoneExisted;
+    }
+    /********************************************************************************************************************/
+    /* MÉTHODE VÉRIFIANT SI DANS LA LISTE DES ZONES RÉCUPÉRÉES EN PARAMÈTRES, ON ARRIVE A RÉCUPÉRER AU MOINS UNE RÉGION */
+    /********************************************************************************************************************/
+
 
     /**************************************************/
     /* MÉTHODE VÉRIFIANT SI LA ZONE A BIEN UNE RÉGION */
