@@ -12,6 +12,7 @@ import fr.TheSakyo.EvhoUtility.utils.entity.entities.HologramEntity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 
 import org.bukkit.Location;
@@ -21,19 +22,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class HologramCommand implements CommandExecutor {
 	
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public HologramCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
 
 	// Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
-	String header = ChatColor.GRAY + "============== " + ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "Hologramme" + ChatColor.GRAY + " ==============";
-	String footer = ChatColor.GRAY + "=============================";
+	String header = ChatFormatting.GRAY + "============== " + ChatFormatting.AQUA.toString() + ChatFormatting.BOLD.toString() + "Hologramme" + ChatFormatting.GRAY + " ==============";
+	String footer = ChatFormatting.GRAY + "=============================";
 	//Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
 
 
@@ -47,12 +47,12 @@ public class HologramCommand implements CommandExecutor {
 	String teleport = "/hologram teleport <title>";
 	String load = "/hologram load <title>";
 
-	String errorArgs = ChatColor.RED + "Veuillez entrez des arguments ! <help/?, add, remove, modify, load, tp ou list> [<title>] [<message>]";
+	String errorArgs = ChatFormatting.RED + "Veuillez entrez des arguments ! <help/?, add, remove, modify, load, tp ou list> [<title>] [<message>]";
 	/* Variables Utiles d'Arguments */
 
 
    /********************************************************************************/
-   /* 	 PARTIE COMMANDE POUR LA CREATION/SUPPRESSION/TELEPORTAION D'HOLOGRAMMES   */ 
+   /* 	 PARTIE COMMANDE POUR LA CREATION/SUPPRESSION/TÉLÉPORTATION D'HOLOGRAMMES   */
    /* INFO : main.holo.containsKey() = Détecte si la variable map contient tel nom */
    /********************************************************************************/
 	
@@ -60,7 +60,7 @@ public class HologramCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 
 		HologramEntity hologram = null; // Permettra de récupérer l'hologramme
-		String holoname = null; // Permettra de récupérer le Nom de l'hologramme
+		String holoName; // Permettra de récupérer le Nom de l'hologramme
 
 		if(sender instanceof Player p) {
 
@@ -70,24 +70,24 @@ public class HologramCommand implements CommandExecutor {
 					
 				sender.sendMessage(header);
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "Alias:" + ChatColor.RESET + " /hg");
+				sender.sendMessage(ChatFormatting.YELLOW + "Alias:" + ChatFormatting.RESET + " /hg");
 				sender.sendMessage("");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + help + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des commandes des Hologrammes.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + help + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des commandes des Hologrammes.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + add + ChatColor.WHITE + " : " + ChatColor.GRAY + "Créer un Hologramme.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + add + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Créer un Hologramme.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + modify + ChatColor.WHITE + " : " + ChatColor.GRAY + "Modifie un Hologramme existant.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + modify + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Modifie un Hologramme existant.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + remove + ChatColor.WHITE + " : " + ChatColor.GRAY + "Supprime un Hologramme.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + remove + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Supprime un Hologramme.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + tp + ChatColor.WHITE + " : " + ChatColor.GRAY + "Se Téléporte à un Hologramme.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + tp + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Se Téléporte à un Hologramme.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + teleport + ChatColor.WHITE + " : " + ChatColor.GRAY + "Téléporte l'Hologramme vers l'emplacement où se trouve le Joueur.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + teleport + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Téléporte l'Hologramme vers l'emplacement où se trouve le Joueur.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + load + ChatColor.WHITE + " : " + ChatColor.GRAY + "Recharge un Hologramme existant.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + load + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Recharge un Hologramme existant.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + list + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des Hologrammes dans le Serveur.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + list + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des Hologrammes dans le Serveur.");
 				sender.sendMessage("");
 				sender.sendMessage("");
 				sender.sendMessage(footer);
@@ -100,150 +100,144 @@ public class HologramCommand implements CommandExecutor {
 
 						Set<String> holograms = main.HOLOGRAMS.keySet(); // Liste des noms d'hologrammes enregistrés
 
-						if(holograms.size() == 0) {
+						if(holograms.isEmpty()) {
 
-							p.sendMessage(main.prefix + ChatColor.RED + "Aucun hologramme(s) enregistré(s) !");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Aucun hologramme(s) enregistré(s) !");
 
 						} else if(holograms.size() == 1) {
 
-		    				p.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement l'hologramme " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + holograms.toArray()[0] + ChatColor.GRAY + " dans le serveur !");
+		    				p.sendMessage(main.prefix + ChatFormatting.GRAY + "Il y'a seulement l'hologramme " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + holograms.toArray()[0] + ChatFormatting.GRAY + " dans le serveur !");
 
 						} else {
 
-							p.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+							p.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 			    			p.sendMessage(" ");
 			    			p.sendMessage(" ");
 
-			    			p.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Liste des hologramme(s) dans le serveur :");
+			    			p.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Liste des hologramme(s) dans le serveur :");
 
 			    			for(String HOLOGRAM : holograms) {
 
 			    				p.sendMessage(" ");
 
-								Component hologramName = CustomMethod.StringToComponent(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + HOLOGRAM);
+								Component hologramName = CustomMethod.StringToComponent(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + HOLOGRAM);
 
 								hologramName = hologramName.clickEvent(ClickEvent.runCommand("/hologram tp " + HOLOGRAM));
 								hologramName = hologramName.hoverEvent(HoverEvent.showText(CustomMethod.StringToComponent("Cliquez pour vous y téléporter")));
 
 
-								Component message = CustomMethod.StringToComponent(ChatColor.WHITE + "- ").append(hologramName);
+								Component message = CustomMethod.StringToComponent(ChatFormatting.WHITE + "- ").append(hologramName);
 								p.sendMessage(message);
 			    			}
 
 			    			p.sendMessage(" ");
 			    			p.sendMessage(" ");
-			    			p.sendMessage(ChatColor.GRAY + "===========================");
+			    			p.sendMessage(ChatFormatting.GRAY + "===========================");
 						}
 
-					} else if(args[0].equalsIgnoreCase("remove")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + remove + " !"); }
-					else if(args[0].equalsIgnoreCase("load")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + load + " !"); }
-					else if(args[0].equalsIgnoreCase("tp")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + tp + " !"); }
-					else if(args[0].equalsIgnoreCase("teleport")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + teleport + " !"); }
-					else if(args[0].equalsIgnoreCase("modify")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + modify + " !"); }
-					else if(args[0].equalsIgnoreCase("add")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + add + " !"); }
+					} else if(args[0].equalsIgnoreCase("remove")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + remove + " !"); }
+					else if(args[0].equalsIgnoreCase("load")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + load + " !"); }
+					else if(args[0].equalsIgnoreCase("tp")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + tp + " !"); }
+					else if(args[0].equalsIgnoreCase("teleport")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + teleport + " !"); }
+					else if(args[0].equalsIgnoreCase("modify")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + modify + " !"); }
+					else if(args[0].equalsIgnoreCase("add")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + add + " !"); }
 					else { p.sendMessage(main.prefix + errorArgs); }
 
 				} else if(args.length == 2) {
 
-					holoname = args[1].toUpperCase();
+					holoName = args[1].toUpperCase();
 
-					if(main.HOLOGRAMS.containsKey(holoname)) { hologram = main.HOLOGRAMS.get(holoname).get(0); }
-					else { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); return true; }
+					if(main.HOLOGRAMS.containsKey(holoName)) { hologram = main.HOLOGRAMS.get(holoName).get(0); }
+					else { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); return true; }
 
 
 					 if(args[0].equalsIgnoreCase("remove")) {
 
-						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); return true; }
+						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); return true; }
 						else {
 
-							HologramManager.unloadHologram(null, holoname, true); // On Supprime toutes les instances de l'hologramme en question
+							HologramManager.unloadHologram(null, holoName, true); // On Supprime toutes les instances de l'hologramme en question
 
-							p.sendMessage(main.prefix + ChatColor.GREEN + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.GREEN + " a été Détruit !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.GREEN + " a été Détruit !");
 						}
 
 					} else if(args[0].equalsIgnoreCase("tp")) {
 
-						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); return true; }
+						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); return true; }
 
 						else {
 
 							p.teleport(hologram.getLocation());
-							p.sendMessage(main.prefix + ChatColor.GREEN + "Vous avez été téléporter vers l'hologramme " + ChatColor.GOLD + holoname + ChatColor.GREEN + " !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN + "Vous avez été téléporter vers l'hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.GREEN + " !");
 
 						}
 
 					} else if(args[0].equalsIgnoreCase("teleport")) {
 
-						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); return true; }
+						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); return true; }
 						else {
 
 							final Location location = p.getLocation(); // Récupère la localisation actuelle du Joueur
 							final String message = hologram.getText(); // Récupère la localisation de l'hologramme a modifié
 
-							HologramManager.unloadHologram(null, holoname, true); // On Supprime toutes les instances de l'hologramme en question
+							HologramManager.unloadHologram(null, holoName, true); // On Supprime toutes les instances de l'hologramme en question
 
 							final HologramEntity hologramEntity = hologram; // Récupère l'hologramme en question
 
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
-							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-								@Override
-								public void run() {
+							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, () -> {
 
-									String holoname = args[1].toUpperCase();
+                                String holoName1 = args[1].toUpperCase();
 
-												/* -------------------------------------------- */
+                                            /* -------------------------------------------- */
 
-									Integer ID = Integer.valueOf(hologramEntity.getEntity().getId());
+                                Integer ID = hologramEntity.getEntity().getId();
 
-									// Créer l'hologramme en question
-									HologramEntity hologram = new HologramEntity(main, null, ID, holoname, ColorUtils.format(message), location, true, true);
-									main.HOLOGRAMS.putIfAbsent(holoname, hologram.getLine()); // On ajoute toutes les instances d'hologrammes construits
-									if(main.HOLOGRAMS.containsKey(holoname)) main.HOLOGRAMS.replace(holoname, hologram.getLine()); // Remplace l'enregistrement de l'hologramme
+                                // Créer l'hologramme en question
+                                HologramEntity hologram1 = new HologramEntity(main, null, ID, holoName1, ColorUtils.format(message), location, true, true);
+                                main.HOLOGRAMS.putIfAbsent(holoName1, hologram1.getLine()); // On ajoute toutes les instances d'hologrammes construits
+                                if(main.HOLOGRAMS.containsKey(holoName1)) main.HOLOGRAMS.replace(holoName1, hologram1.getLine()); // Remplace l'enregistrement de l'hologramme
 
-									p.sendMessage(main.prefix + ChatColor.GREEN + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.GREEN + " a été téléporter vers vous !");
+                                p.sendMessage(main.prefix + ChatFormatting.GREEN + "L'Hologramme " + ChatFormatting.GOLD + holoName1 + ChatFormatting.GREEN + " a été téléporter vers vous !");
 
-												/* -------------------------------------------- */
-								}
-							}, 20);
+                                            /* -------------------------------------------- */
+                            }, 20);
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
 						}
 
 					} else if(args[0].equalsIgnoreCase("load")) {
 
-						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); return true; }
+						if(hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); return true; }
 
 						else {
 
-							HologramManager.unloadHologram(null, holoname, false); // On Supprime toutes les instances de l'hologramme en question
+							HologramManager.unloadHologram(null, holoName, false); // On Supprime toutes les instances de l'hologramme en question
 
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
-							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-								@Override
-								public void run() {
+							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, () -> {
 
-									String holoname = args[1].toUpperCase();
+                                String holoName12 = args[1].toUpperCase();
 
-												/* -------------------------------------------- */
+                                            /* -------------------------------------------- */
 
-									HologramManager.loadHologram(null, holoname, true); // On recharge l'hologramme en question
-									p.sendMessage(main.prefix + ChatColor.GREEN + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.GREEN + " a été rechargé !");
+                                HologramManager.loadHologram(null, holoName12, true); // On recharge l'hologramme en question
+                                p.sendMessage(main.prefix + ChatFormatting.GREEN + "L'Hologramme " + ChatFormatting.GOLD + holoName12 + ChatFormatting.GREEN + " a été rechargé !");
 
-												/* -------------------------------------------- */
-								}
-							}, 20);
+                                            /* -------------------------------------------- */
+                            }, 20);
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
 						}
 
-					} else if(args[0].equalsIgnoreCase("modify")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + modify + " !"); }
-					 else if(args[0].equalsIgnoreCase("add")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + add + " !"); }
-					 else if(args[0].equalsIgnoreCase("list")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + list + " !"); }
-					 else if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + help + " !"); }
-					 else { p.sendMessage(main.prefix + errorArgs); }
+					} else if(args[0].equalsIgnoreCase("modify")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + modify + " !");
+					 else if(args[0].equalsIgnoreCase("add")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + add + " !");
+					 else if(args[0].equalsIgnoreCase("list")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + list + " !");
+					 else if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + help + " !");
+					 else p.sendMessage(main.prefix + errorArgs);
 
-				} else if(args.length >= 3) {
+				} else {
 
-					holoname = args[1].toUpperCase();
-					if(main.HOLOGRAMS.containsKey(holoname)) { hologram = main.HOLOGRAMS.get(holoname).get(0); }
+					holoName = args[1].toUpperCase();
+					if(main.HOLOGRAMS.containsKey(holoName)) { hologram = main.HOLOGRAMS.get(holoName).get(0); }
 
 
 					// Transforme tous les arguments en un "string" //
@@ -258,9 +252,9 @@ public class HologramCommand implements CommandExecutor {
 
 						if(hologram == null || hologram.isDestroyed() == Boolean.TRUE || hologram.isDestroyed() == null) {
 
-							if(holoname.contains("&")) {
+							if(holoName.contains("&")) {
 
-								p.sendMessage(main.prefix +  ChatColor.RED + "''" + ChatColor.YELLOW + "&" + ChatColor.RED + "'' n'est pas un caractère valide comme titre !");
+								p.sendMessage(main.prefix +  ChatFormatting.RED + "''" + ChatFormatting.YELLOW + "&" + ChatFormatting.RED + "'' n'est pas un caractère valide comme titre !");
 								return true;
 							}
 
@@ -268,75 +262,72 @@ public class HologramCommand implements CommandExecutor {
 							String messageConverted = p.hasPermission("evhoutility.emojify") ? EmojiUtils.emojify(message.toString()) : message.toString();
 
 							// Créer l'hologramme en question
-							hologram = new HologramEntity(main, null, null, holoname, ColorUtils.format(messageConverted), p.getLocation(), true, true);
-							main.HOLOGRAMS.putIfAbsent(holoname, hologram.getLine()); // On ajoute toutes les instances d'hologrammes construits
-							if(main.HOLOGRAMS.containsKey(holoname)) main.HOLOGRAMS.replace(holoname, hologram.getLine()); // Remplace l'enregistrement de l'hologramme
+							hologram = new HologramEntity(main, null, null, holoName, ColorUtils.format(messageConverted), p.getLocation(), true, true);
+							main.HOLOGRAMS.putIfAbsent(holoName, hologram.getLine()); // On ajoute toutes les instances d'hologrammes construits
+							if(main.HOLOGRAMS.containsKey(holoName)) main.HOLOGRAMS.replace(holoName, hologram.getLine()); // Remplace l'enregistrement de l'hologramme
 
-							// Détecte si le messae de succés est null ou pas pour l'afficher ensuite (ou pas) //
+							// Détecte si le message de succès est null ou pas pour l'afficher ensuite (ou pas) //
 							if(main.SuccessHolograms != null) {
 
 								p.sendMessage(main.SuccessHolograms);
 								main.SuccessHolograms = null;
 
-							} else if(main.SuccessHolograms == null) { p.sendMessage(main.prefix + ChatColor.RED + "La création de l'hologramme a échoué !"); }
-							// Détecte si le messae de succés est null ou pas pour l'afficher ensuite (ou pas) //
+							} else p.sendMessage(main.prefix + ChatFormatting.RED + "La création de l'hologramme a échoué !");
+							// Détecte si le message de succès est null ou pas pour l'afficher ensuite (ou pas) //
 
-							//Détecte si le messae de ligne d'erreur est null ou pas pour l'afficher ensuite
+							//Détecte si le message de ligne d'erreur est null ou pas pour l'afficher ensuite
 							//(S'Exécute si le nombre de lignes est trop élevé)
 							if(main.ErrorLineHolograms != null) { p.sendMessage(main.ErrorLineHolograms); main.ErrorLineHolograms = null; }
 
-						} else p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme éxiste déja !");
+						} else p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme éxiste déja !");
 
 					} else if(args[0].equalsIgnoreCase("modify")) {
 
-						if(hologram == null || hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatColor.RED + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.RED + " n'éxiste pas !"); }
+						if(hologram == null || hologram.isDestroyed() == Boolean.TRUE) { p.sendMessage(main.prefix + ChatFormatting.RED + "L'Hologramme " + ChatFormatting.GOLD + holoName + ChatFormatting.RED + " n'éxiste pas !"); }
 						else {
 
 							final Location location = hologram.getLocation(); // Récupère la localisation de l'hologramme a modifié
 
-							HologramManager.unloadHologram(null, holoname, true); // On Supprime toutes les instances de l'hologramme en question
+							HologramManager.unloadHologram(null, holoName, true); // On Supprime toutes les instances de l'hologramme en question
 
 							final HologramEntity hologramEntity = hologram; // Récupère l'hologramme en question
 
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
-							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-								@Override
-								public void run() {
+							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, () -> {
 
-									String holoname = args[1].toUpperCase();
+                                String holoName13 = args[1].toUpperCase();
 
-												/* -------------------------------------------- */
+                                            /* -------------------------------------------- */
 
 
-									Integer ID = Integer.valueOf(hologramEntity.getEntity().getId());
+                                Integer ID = hologramEntity.getEntity().getId();
 
-									// Convertie le message en question
-									String messageConverted = p.hasPermission("evhoutility.emojify") ? EmojiUtils.emojify(message.toString()) : message.toString();
+                                // Convertie le message en question
+                                String messageConverted = p.hasPermission("evhoutility.emojify") ? EmojiUtils.emojify(message.toString()) : message.toString();
 
-									// Créer l'hologramme en question
-									HologramEntity hologram = new HologramEntity(main, null, ID, holoname, ColorUtils.format(messageConverted), location, true, true);
-									main.HOLOGRAMS.putIfAbsent(holoname, hologram.getLine()); // On ajoute toutes les instances d'hologrammes construits
-									if(main.HOLOGRAMS.containsKey(holoname)) main.HOLOGRAMS.replace(holoname, hologram.getLine()); // Remplace l'enregistrement de l'hologramme
+                                // Créer l'hologramme en question
+                                HologramEntity hologram12 = new HologramEntity(main, null, ID, holoName13, ColorUtils.format(messageConverted), location, true, true);
+                                main.HOLOGRAMS.putIfAbsent(holoName13, hologram12.getLine()); // On ajoute toutes les instances d'hologrammes construits
+                                if(main.HOLOGRAMS.containsKey(holoName13)) main.HOLOGRAMS.replace(holoName13, hologram12.getLine()); // Remplace l'enregistrement de l'hologramme
 
-									p.sendMessage(main.prefix + ChatColor.GREEN + "L'Hologramme " + ChatColor.GOLD + holoname + ChatColor.GREEN + " a été modifié !");
+                                p.sendMessage(main.prefix + ChatFormatting.GREEN + "L'Hologramme " + ChatFormatting.GOLD + holoName13 + ChatFormatting.GREEN + " a été modifié !");
 
-												/* -------------------------------------------- */
-								}
-							}, 20);
+                                            /* -------------------------------------------- */
+                            }, 20);
 							// Aprés une seconde, on recharge les 'NPCs' pour le Joueur //
 
 						}
 
-					} else if(args[0].equalsIgnoreCase("remove")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + remove + " !"); }
-					else if(args[0].equalsIgnoreCase("tp")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + tp + " !"); }
-					else if(args[0].equalsIgnoreCase("teleport")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + teleport + " !"); }
-					else if(args[0].equalsIgnoreCase("load")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + load + " !"); }
-					else if(args[0].equalsIgnoreCase("list")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + list + " !"); }
-					else if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + help + " !"); }
-					else { p.sendMessage(main.prefix + errorArgs); }
+					} else if(args[0].equalsIgnoreCase("remove")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + remove + " !");
+					else if(args[0].equalsIgnoreCase("tp")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + tp + " !");
+					else if(args[0].equalsIgnoreCase("teleport")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + teleport + " !");
+					else if(args[0].equalsIgnoreCase("load")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + load + " !");
+					else if(args[0].equalsIgnoreCase("list")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + list + " !");
+					else if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + help + " !");
+					else p.sendMessage(main.prefix + errorArgs);
 				} 
 				
-			} else { p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !"); }
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 		
 		} else {
 			
@@ -344,12 +335,12 @@ public class HologramCommand implements CommandExecutor {
 
 				sender.sendMessage(header);
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "Alias:" + ChatColor.RESET + " /hg");
+				sender.sendMessage(ChatFormatting.YELLOW + "Alias:" + ChatFormatting.RESET + " /hg");
 				sender.sendMessage("");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + help + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des commandes des Hologrammes.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + help + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des commandes des Hologrammes.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.GOLD + "- " + ChatColor.GREEN + list + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des Hologrammes dans le Serveur.");
+				sender.sendMessage(ChatFormatting.GOLD + "- " + ChatFormatting.GREEN + list + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des Hologrammes dans le Serveur.");
 				sender.sendMessage("");
 				sender.sendMessage("");
 				sender.sendMessage(footer);
@@ -360,45 +351,45 @@ public class HologramCommand implements CommandExecutor {
 				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) { Bukkit.getServer().dispatchCommand(sender, "hologram"); }
 				else if(args[0].equalsIgnoreCase("list")) {
 						
-					Set<String> Setkey = ConfigFile.getConfigurationSection(main.holoconfig, "Holograms").getKeys(false);
+					Set<String> setKey = ConfigFile.getConfigurationSection(main.holoConfig, "Holograms").getKeys(false);
 
-					List<String> keyList = Setkey.stream().toList();
+					List<String> keyList = setKey.stream().toList();
 					
-					if(keyList.size() == 0) {
+					if(keyList.isEmpty()) {
 	    				
-						sender.sendMessage(main.prefix + ChatColor.RED + "Aucun hologramme(s) enregistré(s) !");
+						sender.sendMessage(main.prefix + ChatFormatting.RED + "Aucun hologramme(s) enregistré(s) !");
 	    			
 					} else if(keyList.size() == 1) {
 	    				
-						sender.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement l'hologramme " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + keyList.get(0) + ChatColor.GRAY + " dans le serveur !");
+						sender.sendMessage(main.prefix + ChatFormatting.GRAY + "Il y'a seulement l'hologramme " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + keyList.get(0) + ChatFormatting.GRAY + " dans le serveur !");
 	    			
 					} else {
 					
-						sender.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+						sender.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 						sender.sendMessage(" ");
 		    			sender.sendMessage(" ");
 		    			
-		    			sender.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Liste des hologramme(s) dans le serveur :");
+		    			sender.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Liste des hologramme(s) dans le serveur :");
 		    			
 		    			for(String key : keyList) {
 		    				
 		    				sender.sendMessage(" ");
-		    				sender.sendMessage(ChatColor.WHITE + "- " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + key);
+		    				sender.sendMessage(ChatFormatting.WHITE + "- " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + key);
 		    			}
 		    			
 		    			sender.sendMessage(" ");
 		    			sender.sendMessage(" ");
-		    			sender.sendMessage(ChatColor.GRAY + "===========================");
+		    			sender.sendMessage(ChatFormatting.GRAY + "===========================");
 					
 					}
 
-				} else { sender.sendMessage(main.prefix + ChatColor.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !"); }
+				} else { sender.sendMessage(main.prefix + ChatFormatting.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !"); }
 
 			} else {
 
-				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))  { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez " + help + " !"); }
-				else if(args[0].equalsIgnoreCase("list")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez " + list + " !"); }
-				else sender.sendMessage(main.prefix + ChatColor.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !");
+				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))  sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + help + " !");
+				else if(args[0].equalsIgnoreCase("list")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + list + " !");
+				else sender.sendMessage(main.prefix + ChatFormatting.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !");
 			}
 		}
 		
@@ -406,7 +397,7 @@ public class HologramCommand implements CommandExecutor {
 	}
 	
 	/********************************************************************************/
-	/* 	 PARTIE COMMANDE POUR LA CREATION/SUPPRESSION/TELEPORTAION D'HOLOGRAMMES   */
+	/* 	 PARTIE COMMANDE POUR LA CREATION/SUPPRESSION/TÉLÉPORTATION D'HOLOGRAMMES   */
 	/* INFO : main.holo.containsKey() = Détecte si la variable map contient tel nom */
 	/********************************************************************************/
 

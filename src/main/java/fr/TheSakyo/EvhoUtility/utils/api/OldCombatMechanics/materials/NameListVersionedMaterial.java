@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class NameListVersionedMaterial implements VersionedMaterial {
 
-    private Material finalMaterial;
+    private final Material finalMaterial;
 
     private NameListVersionedMaterial(Material finalMaterial) { this.finalMaterial = finalMaterial; }
 
@@ -32,13 +32,12 @@ public class NameListVersionedMaterial implements VersionedMaterial {
         for(String name : names) {
 
             Material material = Material.matchMaterial(name);
-
             if(material != null) { return new NameListVersionedMaterial(material); }
 
             material = Material.matchMaterial(name, true);
             if(material != null) { return new NameListVersionedMaterial(material); }
         }
 
-        throw new IllegalArgumentException("N'ayant pas trouvé de matériel de travail, Essait : " + String.join(",", names) + ".");
+        throw new IllegalArgumentException("N'ayant pas trouvé de matériel de travail, Essaie : " + String.join(",", names) + ".");
     }
 }

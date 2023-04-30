@@ -119,7 +119,7 @@ public class ModuleShieldDamageReduction extends Module {
     @Deprecated
     private boolean shieldBlockedDamage(EntityDamageByEntityEvent e) {
 
-         // Ne réduisent les dommages que s'ils ont été frappés de plein fouet, c'est-à-dire que le bouclier a bloqué une partie des dommages.
+         // Ne réduisent les dommages que s'ils ont frappés de plein fouet, c'est-à-dire que le bouclier a bloqué une partie des dommages.
         return e.getDamage() > 0 && e.getDamage(DamageModifier.BLOCKING) < 0;
     }
 }

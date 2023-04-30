@@ -18,7 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -36,31 +36,28 @@ public final class AdvancementsManager {
 	
 	// Variables Utiles //
 	
-	private static HashMap<String, AdvancementsManager> accessible = new HashMap<>();
+	private static final HashMap<String, AdvancementsManager> accessible = new HashMap<>();
 	
 	private boolean hiddenBoolean = false;
-	private String criterionPrefix = "criterion.";
-	private String criterionNamespace = "minecraft";
-	private String criterionKey = "impossible";
+    private final String criterionNamespace = "minecraft";
+	private final String criterionKey = "impossible";
 	
-	private static HashMap<NameKey, Float> smallestY = new HashMap<NameKey, Float>();
-	private static HashMap<NameKey, Float> smallestX = new HashMap<NameKey, Float>();
+	private static final HashMap<NameKey, Float> smallestY = new HashMap<>();
+	private static final HashMap<NameKey, Float> smallestX = new HashMap<>();
 	
-	private ArrayList<UUID> playersUUID;
-	private ArrayList<Advancement> advancements = new ArrayList<Advancement>();
+	private final ArrayList<UUID> playersUUID;
+	private final ArrayList<Advancement> advancements = new ArrayList<>();
 	
 	private static Gson gson;
 	private static Type progressListType;
 	
-	private static HashMap<String, NameKey> openedTabs = new HashMap<String, NameKey>();
+	private static final Map<String, NameKey> openedTabs = new HashMap<>();
 	
 	public static UUID CHAT_MESSAGE_UUID = new UUID(0, 0);
 	
 	
 	// Variables Utiles //
-	
-	
-	
+
 	
 	/**
 	 * 
@@ -68,23 +65,21 @@ public final class AdvancementsManager {
 	 */
 	public AdvancementsManager(Player... players) {
 		
-		this.playersUUID = new ArrayList<UUID>();
+		this.playersUUID = new ArrayList<>();
 		
 		if(players == null) { return; }
 		for(Player player : players) { this.addPlayer(player); }
 	}
-	
-	
-	
-	
+
+
   /***************************************************************/
-  /* PARITE AJOUT/SUPPRESSION ACHIEVEMENTS 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE AJOUT/SUPPRESSION ACHIEVEMENTS 'ACHIEVEMENT MANAGER' */
   /***************************************************************/	
 
 	/**
 	 * Ajoute des achievements ou met à jour un achievement
 	 * 
-	 * @param player Joueur auquel on doit lui ajouter l'achievement
+	 * @param player Joueur auquel on doit lui ajouter un achievement
 	 * @param advancementsAdded Tableau de tous les achievements qui devraient être ajoutés
 	 * Si vous voulez mettre à jour l'affichage d'un achievement, le tableau doit avoir une longueur de 1.
 	 */
@@ -126,89 +121,57 @@ public final class AdvancementsManager {
 			if(advancements.contains(advancement)) { remove.add(advancement.getName().getResourceLocation()); }
 			
 			else { advancements.add(advancement); }
-			
-			AdvancementDisplay display = advancement.getDisplay();
-			
-			AdvancementRewards advRewards = new AdvancementRewards(0, new ResourceLocation[0], new ResourceLocation[0], null);
-			
-			ItemStack icon = CraftItemStack.asNMSCopy(display.getIcon());
-			
-			ResourceLocation backgroundTexture = null;
-			boolean hasBackgroundTexture = display.getBackgroundTexture() != null;
-			
-			if(hasBackgroundTexture) { backgroundTexture = new ResourceLocation(display.getBackgroundTexture()); }
-			
-			Map<String, Criterion> advCriteria = new HashMap<>();
-			String[][] advRequirements = new String[][] {};
-			
-			if(advancement.getSavedCriteria() == null) {
-				
-				for(int i = 0; i < advancement.getCriteria(); i++) {
-					
-					advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-						
-						@Override
-						public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-						
-						@Override
-						public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-						
-					}));
-				}
-				
-				advancement.saveCriteria(advCriteria);
-				
-			} else { advCriteria = advancement.getSavedCriteria(); }
-			
-			
-			if(advancement.getSavedCriteriaRequirements() == null) {
-				
-				ArrayList<String[]> fixedRequirements = new ArrayList<>();
-				
-				for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-				
-				advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-				advancement.saveCriteriaRequirements(advRequirements);
-				
-			} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
-			
-			
-			DisplayInfo saveDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), display.isToastShown(), display.isAnnouncedToChat(), true);
-			saveDisplay.setLocation(display.generateX() - getSmallestY(advancement.getTab()), display.generateY() - getSmallestX(advancement.getTab()));
 
-			net.minecraft.advancements.Advancement saveAdv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), saveDisplay, advRewards, advCriteria, advRequirements);
-			
+			/************************************************/
+
+			AdvancementDetails advancementDetails = prepareAdvancementsDetail(advancement);
+
+			/***************************************/
+
+			DisplayInfo saveDisplay = new DisplayInfo(advancementDetails.icon, advancementDetails.display.getTitle().getBaseComponent(), advancementDetails.display.getDescription().getBaseComponent(), advancementDetails.backgroundTexture,
+					advancementDetails.display.getFrame().getNMS(), advancementDetails.display.isToastShown(), advancementDetails.display.isAnnouncedToChat(), true);
+			saveDisplay.setLocation(advancementDetails.display.generateX() - getSmallestY(advancement.getTab()), advancementDetails.display.generateY() - getSmallestX(advancement.getTab()));
+
+			/***************************************/
+
+			net.minecraft.advancements.Advancement saveAdv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), saveDisplay,
+					advancementDetails.advRewards, advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements, false);
 			advancement.saveAdvancement(saveAdv);
-			
-				
-			Map<ResourceLocation, AdvancementProgress> prgs = progressList.containsKey(player) ? progressList.get(player) : new HashMap<>();
+
+			Map<ResourceLocation, AdvancementProgress> prgs = progressList.containsKey(player.getUniqueId()) ? progressList.get(player.getUniqueId()) : new HashMap<>();
 			checkAwarded(player, advancement);
+
+			/************************************************/
+
+			boolean showToast = advancementDetails.display.isToastShown() && getCriteriaProgress(player, advancement) < advancement.getSavedCriteria().size();
 			
-			boolean showToast = display.isToastShown() && getCriteriaProgress(player, advancement) < advancement.getSavedCriteria().size();
+			Collection<net.minecraft.advancements.Advancement> advs = advancementsList.containsKey(player.getUniqueId()) ? advancementsList.get(player.getUniqueId()) : new ArrayList<>();
 			
-			Collection<net.minecraft.advancements.Advancement> advs = advancementsList.containsKey(player) ? advancementsList.get(player) : new ArrayList<>();
-			
-			boolean hidden = !display.isVisible(player, advancement);
+			boolean hidden = !advancementDetails.display.isVisible(player, advancement);
 			advancement.saveHiddenStatus(player, hidden);
 			
 			if(!hidden || hiddenBoolean) {
 				
-				DisplayInfo advDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), showToast, display.isAnnouncedToChat(), hidden ? hiddenBoolean : false);
-				advDisplay.setLocation(display.generateX() - getSmallestX(advancement.getTab()), display.generateY() - getSmallestY(advancement.getTab()));
+				DisplayInfo advDisplay = new DisplayInfo(advancementDetails.icon, advancementDetails.display.getTitle().getBaseComponent(), advancementDetails.display.getDescription().getBaseComponent(), advancementDetails.backgroundTexture,
+						advancementDetails.display.getFrame().getNMS(), showToast, advancementDetails.display.isAnnouncedToChat(), hidden && hiddenBoolean);
+				advDisplay.setLocation(advancementDetails.display.generateX() - getSmallestX(advancement.getTab()), advancementDetails.display.generateY() - getSmallestY(advancement.getTab()));
 
-				net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards, advCriteria, advRequirements);
-				
+				/***************************************/
+
+				net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay,
+						advancementDetails.advRewards, advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements, false);
 				advs.add(adv);
-				
 				advancementsList.put(player.getUniqueId(), advs);
-				
+
+				/************************************************/
+
 				AdvancementProgress advPrg = advancement.getProgress(player);
-				advPrg.update(advCriteria, advRequirements);
+				advPrg.update(advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements);
 				
 				for(String criterion : advancement.getAwardedCriteria().get(player.getUniqueId().toString())) {
 					
-				  CriterionProgress critPrg = advPrg.getCriterion(criterion);
-				  critPrg.grant();
+				  CriterionProgress criteriaPrg = advPrg.getCriterion(criterion);
+				  if(criteriaPrg != null) criteriaPrg.grant();
 				}
 				
 				advancement.setProgress(player, advPrg);
@@ -220,7 +183,7 @@ public final class AdvancementsManager {
 		}
 			
 		//Packet
-		ClientboundUpdateAdvancementsPacket packet = new ClientboundUpdateAdvancementsPacket(false, advancementsList.get(player), remove, progressList.get(player));
+		ClientboundUpdateAdvancementsPacket packet = new ClientboundUpdateAdvancementsPacket(false, advancementsList.get(player.getUniqueId()), remove, progressList.get(player.getUniqueId()));
 		PlayerEntity.sendPacket(packet, player);
 	}
 	
@@ -229,7 +192,7 @@ public final class AdvancementsManager {
 	/**
 	 * Supprime un achievement du gestionnaire
 	 * 
-	 * @param player Joueur auquel on doit lui retirer l'achievement
+	 * @param player Joueur auquel on doit lui retirer un achievement
 	 * @param advancementsRemoved Tableau des achievements qui devraient être supprimés
 	 */
 	public void removeAdvancement(Player player, Advancement... advancementsRemoved) {
@@ -249,26 +212,25 @@ public final class AdvancementsManager {
 			}
 		}
 		
-			
 		//Packet
 		ClientboundUpdateAdvancementsPacket packet = new ClientboundUpdateAdvancementsPacket(false, advs, remove, prgs);
 		PlayerEntity.sendPacket(packet, player);
 	}
 	
   /***************************************************************/
-  /* PARITE AJOUT/SUPPRESSION ACHIEVEMENTS 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE AJOUT/SUPPRESSION ACHIEVEMENTS 'ACHIEVEMENT MANAGER' */ 
   /***************************************************************/	
 
 	
 	
   /**********************************************************/
-  /* PARITE AJOUT/SUPPRESSION JOUEURS 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE AJOUT/SUPPRESSION JOUEURS 'ACHIEVEMENT MANAGER' */ 
   /**********************************************************/
 
   	/**
 	 * Vérifie si le joueur est dans le gestionnaire
 	 *
-	 * @param player Joueur a vérifié
+	 * @param player Joueur qu'il faut vérifier
 	 *
 	 * @return Une Valeur Booléenne
 	 */
@@ -288,7 +250,6 @@ public final class AdvancementsManager {
 	  Validate.notNull(player);
 	  addPlayer(player, null);
 	}
-	
 	
 	
 	private void addPlayer(Player player, NameKey tab) {
@@ -326,55 +287,26 @@ public final class AdvancementsManager {
 				
 				if(!hidden || hiddenBoolean) {
 					
-					DisplayInfo advDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), showToast, display.isAnnouncedToChat(), hidden ? hiddenBoolean : false);
+					DisplayInfo advDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), showToast, display.isAnnouncedToChat(), hidden && hiddenBoolean);
 					advDisplay.setLocation(display.generateX() - getSmallestX(advancement.getTab()), display.generateY() - getSmallestY(advancement.getTab()));
 					
 					AdvancementRewards advRewards = new AdvancementRewards(0, new ResourceLocation[0], new ResourceLocation[0], null);
-					
-					Map<String, Criterion> advCriteria = new HashMap<>();
-					String[][] advRequirements = new String[][] {};
-					
-					if(advancement.getSavedCriteria() == null) {
-						
-						for(int i = 0; i < advancement.getCriteria(); i++) {
-							
-							advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-								
-								@Override
-								public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-								
-								@Override
-								public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-								
-							}));
-						}
-						
-						advancement.saveCriteria(advCriteria);
-						
-					} else { advCriteria = advancement.getSavedCriteria(); }
-					
-					if(advancement.getSavedCriteriaRequirements() == null) {
-						
-						ArrayList<String[]> fixedRequirements = new ArrayList<>();
-						
-						for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-						
-						advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-						advancement.saveCriteriaRequirements(advRequirements);
-						
-					} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
+					AdvancementData advancementData = handleAdvancement(advancement);
 
-					net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards, advCriteria, advRequirements);
-					
+					/************************************************/
+
+					net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards, advancementData.advCriteria, advancementData.advRequirements, false);
 					advs.add(adv);
 					
 					AdvancementProgress advPrg = advancement.getProgress(player);
 					advPrg.update(advancement.getSavedCriteria(), advancement.getSavedCriteriaRequirements());
 					
+					/************************************************/
+
 					for(String criterion : advancement.getAwardedCriteria().get(player.getUniqueId().toString())) {
 						
-					  CriterionProgress critPrg = advPrg.getCriterion(criterion);
-					  critPrg.grant();
+					  CriterionProgress criteriaPrg = advPrg.getCriterion(criterion);
+					  if(criteriaPrg != null) criteriaPrg.grant();
 					}
 					
 					advancement.setProgress(player, advPrg);
@@ -398,8 +330,8 @@ public final class AdvancementsManager {
 	 * @param player Joueur à supprimer
 	 */
 	public void removePlayer(Player player) {
-		
-		if(playersUUID.contains(player.getUniqueId())) { playersUUID.remove(player.getUniqueId()); }
+
+        playersUUID.remove(player.getUniqueId());
 		
 		Collection<net.minecraft.advancements.Advancement> advs = new ArrayList<>();
 		
@@ -414,14 +346,14 @@ public final class AdvancementsManager {
 	}
 
   /**********************************************************/
-  /* PARITE AJOUT/SUPPRESSION JOUEURS 'ACHIEVEMENT MANAGER' */
+  /* PARTIE AJOUT/SUPPRESSION JOUEURS 'ACHIEVEMENT MANAGER' */
   /**********************************************************/
 
 	
 	
 	
   /*********************************************/
-  /* PARITE ONGLET ACTIF 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE ONGLET ACTIF 'ACHIEVEMENT MANAGER' */ 
   /*********************************************/
 	
 	/**
@@ -450,7 +382,6 @@ public final class AdvancementsManager {
 		
 		if(update) {
 
-
 			ClientboundSelectAdvancementsTabPacket packet = new ClientboundSelectAdvancementsTabPacket(rootAdvancement == null ? null : rootAdvancement.getResourceLocation());
 			PlayerEntity.sendPacket(packet, player);
 		}
@@ -469,14 +400,14 @@ public final class AdvancementsManager {
 	public static void setActiveTab(Player player, String rootAdvancement) { setActiveTab(player, new NameKey(rootAdvancement), true); }
 
   /*********************************************/
-  /* PARITE ONGLET ACTIF 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE ONGLET ACTIF 'ACHIEVEMENT MANAGER' */
   /*********************************************/
 	
 	
 	
 	
   /********************************************/
-  /* PARITE MISE A JOUR 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE MISE A JOUR 'ACHIEVEMENT MANAGER' */ 
   /********************************************/	
 	
 	
@@ -492,21 +423,16 @@ public final class AdvancementsManager {
 			
 			NameKey rootAdvancement = getActiveTab(player);
 			clearActiveTab(player);
-			
 			addPlayer(player, tab);
+
+			/*****************************************************/
 			
-			Bukkit.getScheduler().runTaskLater(UtilityMain.getInstance(), new Runnable() {
-				
-				@Override
-				public void run() { setActiveTab(player, rootAdvancement, true); }
-				
-			}, 5);
+			Bukkit.getScheduler().runTaskLater(UtilityMain.getInstance(), () -> setActiveTab(player, rootAdvancement, true), 5);
 		}
 	}
+
 	
-	
-	
-	// Méthode rapide pour mettre à jour une progression de l'achievement //
+	// Méthode rapide pour mettre à jour une progression d'un achievement //
 	private void updateProgress(Player player, boolean alreadyGranted, boolean fireEvent, Advancement... advancementsUpdated) {
 		
 		if(playersUUID.contains(player.getUniqueId())) {
@@ -531,17 +457,13 @@ public final class AdvancementsManager {
 					HashSet<String> awarded = advancement.getAwardedCriteria(player);
 					
 					for(String criterion : advancement.getSavedCriteria().keySet()) {
-						
-						if(awarded.contains(criterion)) {
-							
-						   CriterionProgress critPrg = advPrg.getCriterion(criterion);
-						   critPrg.grant();
-							
-						} else {
-							
-						   CriterionProgress critPrg = advPrg.getCriterion(criterion);
-						   critPrg.revoke();
-						}
+
+                        CriterionProgress criteriaPrg = advPrg.getCriterion(criterion);
+
+						/*******************************/
+
+						if(awarded.contains(criterion) && criteriaPrg != null) criteriaPrg.grant();
+						else if(criteriaPrg != null) criteriaPrg.revoke();
 					}
 					
 					advancement.setProgress(player, advPrg);
@@ -549,58 +471,20 @@ public final class AdvancementsManager {
 					
 					if(hidden && advPrg.isDone()) {
 						
-						AdvancementDisplay display = advancement.getDisplay();
-						
-						AdvancementRewards advRewards = new AdvancementRewards(0, new ResourceLocation[0], new ResourceLocation[0], null);
-						
-						ItemStack icon = CraftItemStack.asNMSCopy(display.getIcon());
-						
-						ResourceLocation backgroundTexture = null;
-						boolean hasBackgroundTexture = display.getBackgroundTexture() != null;
-						
-						if(hasBackgroundTexture) { backgroundTexture = new ResourceLocation(display.getBackgroundTexture()); }
-						
-						Map<String, Criterion> advCriteria = new HashMap<>();
-						String[][] advRequirements = new String[][] {};
-						
-						if(advancement.getSavedCriteria() == null) {
-							
-							for(int i = 0; i < advancement.getCriteria(); i++) {
-								
-								advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-									
-									@Override
-									public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-									
-									@Override
-									public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-									
-								}));
-							}
-							
-							advancement.saveCriteria(advCriteria);
-							
-						} else { advCriteria = advancement.getSavedCriteria(); }
-						
-						if(advancement.getSavedCriteriaRequirements() == null) {
-							
-							ArrayList<String[]> fixedRequirements = new ArrayList<>();
-							
-							for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-							
-							advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-							advancement.saveCriteriaRequirements(advRequirements);
-							
-						} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
-						
-						DisplayInfo advDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), display.isToastShown(), display.isAnnouncedToChat(), hidden ? hiddenBoolean : false);
-						advDisplay.setLocation(display.generateX() - getSmallestX(advancement.getTab()), display.generateY() - getSmallestY(advancement.getTab()));
+						AdvancementDetails advancementDetails = prepareAdvancementsDetail(advancement);
 
-						net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards, advCriteria, advRequirements);
-						
+						/************************************************/
+
+						DisplayInfo advDisplay = new DisplayInfo(advancementDetails.icon, advancementDetails.display.getTitle().getBaseComponent(), advancementDetails.display.getDescription().getBaseComponent(),  advancementDetails.backgroundTexture,
+								advancementDetails.display.getFrame().getNMS(), advancementDetails.display.isToastShown(), advancementDetails.display.isAnnouncedToChat(), hiddenBoolean);
+						advDisplay.setLocation(advancementDetails.display.generateX() - getSmallestX(advancement.getTab()), advancementDetails.display.generateY() - getSmallestY(advancement.getTab()));
+
+						/************************************************/
+
+						net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay,
+								advancementDetails.advRewards, advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements, false);
 						advs.add(adv);
 					}
-					
 					
 					if(!alreadyGranted) {
 						
@@ -613,18 +497,16 @@ public final class AdvancementsManager {
 			PlayerEntity.sendPacket(packet, player);
 		}
 	}
-	// Méthode rapide pour mettre à jour une progression de l'achievement //
+	// Méthode rapide pour mettre à jour une progression d'un achievement //
 	
-	
-	
+
 	/**
-	 * Met à jour la progression de l'achievement d'un joueur
+	 * Met à jour la progression d'un achievement d'un joueur
 	 * 
 	 * @param player Joueur à mettre à jour
-	 * @param advancementsUpdated Tableau d'achievements à mettre à jour.
+	 * @param advancementsUpdated Tableau d'un achievement à mettre à jour.
 	 */
 	public void updateProgress(Player player, Advancement... advancementsUpdated) { updateProgress(player, false, true, advancementsUpdated); }
-	
 
 	
 	
@@ -674,67 +556,44 @@ public final class AdvancementsManager {
 					remove.add(advancement.getName().getResourceLocation());
 					
 					AdvancementRewards advRewards = new AdvancementRewards(0, new ResourceLocation[0], new ResourceLocation[0], null);
-					
+
 					ItemStack icon = CraftItemStack.asNMSCopy(display.getIcon());
-					
+
 					ResourceLocation backgroundTexture = null;
 					boolean hasBackgroundTexture = display.getBackgroundTexture() != null;
-					
 					if(hasBackgroundTexture) { backgroundTexture = new ResourceLocation(display.getBackgroundTexture()); }
-					
-					Map<String, Criterion> advCriteria = new HashMap<>();
-					String[][] advRequirements = new String[][] {};
-					
-					if(advancement.getSavedCriteria() == null) {
-						
-						for(int i = 0; i < advancement.getCriteria(); i++) {
-							
-							advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-								
-								@Override
-								public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-								
-								@Override
-								public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-							}));
-						}
-						
-						advancement.saveCriteria(advCriteria);
-						
-					} else { advCriteria = advancement.getSavedCriteria(); }
-					
-					if(advancement.getSavedCriteriaRequirements() == null) {
-						
-						ArrayList<String[]> fixedRequirements = new ArrayList<>();
-						
-						for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-						
-						advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-						advancement.saveCriteriaRequirements(advRequirements);
-						
-					} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
-					
-					
+
+					/************************************************/
+
+					AdvancementDetails advancementDetails = prepareAdvancementsDetail(advancement);
+
+					/************************************************/
+
 					boolean showToast = display.isToastShown();
-					
-					DisplayInfo advDisplay = new DisplayInfo(icon, display.getTitle().getBaseComponent(), display.getDescription().getBaseComponent(), backgroundTexture, display.getFrame().getNMS(), showToast, display.isAnnouncedToChat(), hidden ? hiddenBoolean : false);
-					advDisplay.setLocation(display.generateX() - getSmallestX(advancement.getTab()), display.generateY() - getSmallestY(advancement.getTab()));
-					
-					net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards, advCriteria, advRequirements);
-					
+
+					DisplayInfo advDisplay = new DisplayInfo(advancementDetails.icon, advancementDetails.display.getTitle().getBaseComponent(), advancementDetails.display.getDescription().getBaseComponent(), backgroundTexture,
+							advancementDetails.display.getFrame().getNMS(), showToast, advancementDetails.display.isAnnouncedToChat(), hidden && hiddenBoolean);
+					advDisplay.setLocation(advancementDetails.display.generateX() - getSmallestX(advancement.getTab()), advancementDetails.display.generateY() - getSmallestY(advancement.getTab()));
+
+
+					/************************************/
+
+					net.minecraft.advancements.Advancement adv = new net.minecraft.advancements.Advancement(advancement.getName().getResourceLocation(), advancement.getParent() == null ? null : advancement.getParent().getSavedAdvancement(), advDisplay, advRewards,
+							advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements, false);
 					advs.add(adv);
 					
 					AdvancementProgress advPrg = advancement.getProgress(player);
-					advPrg.update(advCriteria, advRequirements);
-					
+					advPrg.update(advancementDetails.advancementData.advCriteria, advancementDetails.advancementData.advRequirements);
+
+					/************************************************/
+
 					for(String criterion : advancement.getAwardedCriteria().get(player.getUniqueId().toString())) {
 						
-					  CriterionProgress critPrg = advPrg.getCriterion(criterion);
-					  critPrg.grant();
+					  CriterionProgress criteriaPrg = advPrg.getCriterion(criterion);
+					  if(criteriaPrg != null) criteriaPrg.grant();
 					}
 					
 					advancement.setProgress(player, advPrg);
-					
 					prgs.put(advancement.getName().getResourceLocation(), advPrg);
 				}
 			}
@@ -744,16 +603,16 @@ public final class AdvancementsManager {
 			PlayerEntity.sendPacket(packet, player);
 		}
 	}
-	
+
   /********************************************/
-  /* PARITE MISE A JOUR 'ACHIEVEMENT MANAGER' */ 
+  /* PARTIE MISE A JOUR 'ACHIEVEMENT MANAGER' */
   /********************************************/		
 	
 	
 	
 	
   /*******************************************************/
-  /* PARITE RÉCUPERATION/CRÉATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE RÉCUPERATION/CRÉATION 'ACHIEVEMENT MANAGER' */
   /******************************************************/
 	
 	/**
@@ -775,7 +634,7 @@ public final class AdvancementsManager {
 	
 	
 	/**
-	 * Obtient la cordonnée Y la plus petite de l'achiviements
+	 * Obtient la cordonnée Y la plus petite d'un achievement
 	 * 
 	 * @return La cordonnée Y la plus petite
 	 */
@@ -784,7 +643,7 @@ public final class AdvancementsManager {
 	
 	
 	/**
-	 * Obtient la cordonnée X la plus petite de l'achiviements
+	 * Obtient la cordonnée X la plus petite d'un achievement
 	 * 
 	 * @return La cordonnée X la plus petite
 	 */
@@ -793,9 +652,9 @@ public final class AdvancementsManager {
 	
 	
 	/**
-	 * Définit le booléen qui est transmis via le paquet d'achievement lorsqu'un achievement est caché Défaut : false
+	 * Définit le booléen qui est transmis via le paquet d'un achievement lorsqu'un achievement est caché Défaut : false
 	 * Lorsqu'il est défini à true, les achievements cachés qui n'ont pas encore été accordés, auront une ligne dessinée vers eux même s'ils ne sont pas encore affichés, alors qu'ils devraient être visibles (selon leur {@link AdvancementVisibility})
-	 * Peut être utilisé pour créer un onglet d'achievement vide où il n'y a aucun achievement visible et aucune ligne visible, lorsque l'onglet a seulement un achievement caché comme racine
+	 * Peut être utilisé pour créer un onglet d'un achievement vide où il n'y a aucun achievement visible et aucune ligne visible, quand l'onglet a seulement un achievement caché comme racine
 	 * 
 	 * @param hiddenBoolean Le nouveau 'hiddenBoolean'
 	 */
@@ -804,9 +663,9 @@ public final class AdvancementsManager {
 	
 	
 	/**
-	 * Obtient le booléen qui est passé via le paquet d'achievement lorsqu'un achievement est caché Default : false
+	 * Obtient le booléen qui est passé via le paquet d'un achievement lorsqu'un achievement est caché Default : false
 	 * 
-	 * @return l'achievement caché (vrai ou faux)
+	 * @return un achievement caché (vrai ou faux)
 	 */
 	public boolean getHiddenBoolean() { return hiddenBoolean; }
 
@@ -816,10 +675,10 @@ public final class AdvancementsManager {
 	 * 
 	 * @return Une liste de tous les achievements réalisés par le gestionnaire
 	 */
-	public ArrayList<Advancement> getAdvancements() { return (ArrayList<Advancement>) advancements.clone(); }
+	@SuppressWarnings("unchecked")
+	public ArrayList<Advancement> getAdvancements() { return (ArrayList<Advancement>)advancements.clone(); }
 	
-	
-	
+
 	/**
 	 * 
 	 * @param namespace Espace de nom à vérifier
@@ -827,19 +686,12 @@ public final class AdvancementsManager {
 	 */
 	public ArrayList<Advancement> getAdvancements(String namespace) {
 		
-		ArrayList<Advancement> advs = getAdvancements();
-		Iterator<Advancement> it = advs.iterator();
-		
-		while(it.hasNext()) {
-			
-			Advancement adv = it.next();
-			
-			if(!adv.getName().getNamespace().equalsIgnoreCase(namespace)) { it.remove(); }
-		}
-		return advs;
+		ArrayList<Advancement> advancements = getAdvancements();
+
+		advancements.removeIf(adv -> !adv.getName().getNamespace().equalsIgnoreCase(namespace));
+		return advancements;
 	}
-	
-	
+
 	
 	/**
 	 * 
@@ -872,8 +724,6 @@ public final class AdvancementsManager {
 	
 
 	
-	
-	
 	private String getSavePath(Player player, String namespace) {
 	
 	  return getSaveDirectory(namespace) + (UtilityMain.useUUID ? player.getUniqueId() : player.getName()) + ".json";
@@ -892,14 +742,13 @@ public final class AdvancementsManager {
 		
 	  File file = new File(getSaveDirectory(namespace));
 	  file.mkdirs();
+
 	  return new File(getSavePath(player, namespace));
 	}
 	
-	
 
 	private String getSavePath(UUID uuid, String namespace) { return getSaveDirectory(namespace) + uuid + ".json"; }
-	
-	
+
 	
 	private HashMap<String, List<String>> getProgress(Player player, String namespace) {
 		
@@ -910,28 +759,28 @@ public final class AdvancementsManager {
 			FileReader os = new FileReader(saveFile);
 			JsonElement element = JsonParser.parseReader(os);
 			os.close();
-			
+
+			/****************************/
+
 			check();
+            return gson.fromJson(element, progressListType);
 			
-			HashMap<String, List<String>> progressList = gson.fromJson(element, progressListType);
-			
-			return progressList;
-			
-		} catch (Exception ex) { ex.printStackTrace(); return new HashMap<>(); }
+		} catch(Exception ex) {
+
+			ex.printStackTrace(System.err);
+			return new HashMap<>();
+		}
 	}
-	
-	
-	
-	
-	@SuppressWarnings("unused")
+
+
 	private File getSaveFile(UUID uuid, String namespace) {
 		
 		File file = new File(getSaveDirectory(namespace));
 		file.mkdirs();
+
 		return new File(getSavePath(uuid, namespace));
 	}
-	
-	
+
 	
 	
 	// SAUVEGARDE/CHARGEMENT EN-LIGNE //
@@ -943,36 +792,16 @@ public final class AdvancementsManager {
 	 */
 	public String getProgressJSON(Player player) {
 		
-		HashMap<String, List<String>> prg = new HashMap<>();
-		
-		for(Advancement advancement : getAdvancements()) {
-			
-			String nameKey = advancement.getName().toString();
-			SaveMethod saveMethod = advancement.getSaveMethod();
-			
-			if(saveMethod == SaveMethod.NUMBER) {
-				
-				int criteriaProgress = getCriteriaProgress(player, advancement);
-				
-				ArrayList<String> progress = new ArrayList<>();
-				
-				progress.add("NUM"); //Indicateur de la méthode d'enregistrement des numéros
-				
-				progress.add("" + criteriaProgress);
-				
-				prg.put(nameKey, progress);
-				
-			} else {
-				
-				ArrayList<String> progress = new ArrayList<>(advancement.getAwardedCriteria(player));
-				prg.put(nameKey, progress);
-			}
-		}
-		
+		Map<String, List<String>> prg = new HashMap<>();
+
+		/****************************************/
+
+		for(Advancement advancement : getAdvancements()) { handleAdvancementSaveMethod(advancement, player, prg); }
+
+		/****************************************/
+
 		check();
-		String json = gson.toJson(prg);
-		
-		return json;
+        return gson.toJson(prg);
 	}
 	
 	
@@ -986,38 +815,19 @@ public final class AdvancementsManager {
 	public String getProgressJSON(Player player, String namespace) {
 		
 		HashMap<String, List<String>> prg = new HashMap<>();
-		
+
+		/****************************************/
+
 		for(Advancement advancement : getAdvancements()) {
 			
 			String anotherNamespace = advancement.getName().getNamespace();
-			
-			if(namespace.equalsIgnoreCase(anotherNamespace)) {
-				String nameKey = advancement.getName().toString();
-				SaveMethod saveMethod = advancement.getSaveMethod();
-				
-				if(saveMethod == SaveMethod.NUMBER) {
-					int criteriaProgress = getCriteriaProgress(player, advancement);
-					
-					ArrayList<String> progress = new ArrayList<>();
-					
-					progress.add("NUM"); //Indicateur de la méthode d'enregistrement des numéros
-					
-					progress.add("" + criteriaProgress);
-					
-					prg.put(nameKey, progress);
-					
-				} else {
-					
-				   ArrayList<String> progress = new ArrayList<>(advancement.getAwardedCriteria(player));
-				   prg.put(nameKey, progress);
-				}
-			}
+			if(namespace.equalsIgnoreCase(anotherNamespace)) { handleAdvancementSaveMethod(advancement, player, prg); }
 		}
-		
+
+		/****************************************/
+
 		check();
-		String json = gson.toJson(prg);
-		
-		return json;
+        return gson.toJson(prg);
 	}
 	
 	// SAUVEGARDE/CHARGEMENT EN-LIGNE //
@@ -1035,14 +845,13 @@ public final class AdvancementsManager {
 	}
 	
   /*******************************************************/
-  /* PARITE RÉCUPERATION/CRÉATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE RÉCUPERATION/CRÉATION 'ACHIEVEMENT MANAGER' */
   /******************************************************/
-	
-	
+
 	
 	
   /*******************************************************/
-  /* PARITE ACCORDATION/RÉVOCATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE AFFECTATION/RÉVOCATION 'ACHIEVEMENT MANAGER' */
   /*******************************************************/
 	
 	
@@ -1052,12 +861,14 @@ public final class AdvancementsManager {
 		Map<String, HashSet<String>> awardedCriteria = advancement.getAwardedCriteria();
 		
 		HashSet<String> awarded = advancement.getAwardedCriteria(player);
-		
-		for(String criterion : advancement.getSavedCriteria().keySet()) { awarded.add(criterion); }
-		
+        awarded.addAll(advancement.getSavedCriteria().keySet());
+
+		/**********************************/
+
 		awardedCriteria.put(player.getUniqueId().toString(), awarded);
 		advancement.setAwardedCriteria(awardedCriteria);
-		
+
+		/**********************************/
 		
 		if(updateProgress) {
 			
@@ -1065,7 +876,6 @@ public final class AdvancementsManager {
 		  updateAllPossiblyAffectedVisibilities(player, advancement);
 		}
 	}
-	
 	
 	
 	/**
@@ -1145,14 +955,14 @@ public final class AdvancementsManager {
 	}
 	
   /*******************************************************/
-  /* PARITE ACCORDATION/RÉVOCATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE AFFECTATION/RÉVOCATION 'ACHIEVEMENT MANAGER' */
   /*******************************************************/	
 	
 	
 	
 	
   /********************************************************/
-  /* PARITE CHARGEMENT/DÉCHARGEMENT 'ACHIEVEMENT MANAGER' */
+  /* PARTIE CHARGEMENT/DÉCHARGEMENT 'ACHIEVEMENT MANAGER' */
   /********************************************************/
 	
 	// SAUVEGARDE/CHARGEMENT EN-LIGNE //
@@ -1179,13 +989,13 @@ public final class AdvancementsManager {
 			w.write(json);
 			w.close();
 			
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(System.err); }
 	}
 	
 	
 	
 	/**
-	 * Charge les progréssion
+	 * Charge tous les progréssion
 	 * 
 	 * @param player Joueur à vérifier
 	 * @param namespace Espace de nom à vérifier
@@ -1197,21 +1007,25 @@ public final class AdvancementsManager {
 		if(saveFile.exists() && saveFile.isFile()) {
 			
 			HashMap<String, List<String>> prg = getProgress(player, namespace);
-			
-			
+
+			/******************************************/
+
 			for(Advancement advancement : advancements) {
 				
 				if(advancement.getName().getNamespace().equalsIgnoreCase(namespace)) {
 					
 					checkAwarded(player, advancement);
-					
 					String nameKey = advancement.getName().toString();
-					
+
+					/****************************/
+
 					if(prg.containsKey(nameKey)) {
 						
 						List<String> loaded = prg.get(nameKey);
 						SaveMethod saveMethod = advancement.getSaveMethod();
-						
+
+						/****************************/
+
 						if(saveMethod == SaveMethod.NUMBER) {
 							
 							if(loaded.size() == 2) {
@@ -1222,103 +1036,44 @@ public final class AdvancementsManager {
 										
 										int progress = Integer.parseInt(loaded.get(1));
 										setCriteriaProgress(player, advancement, progress);
-										
-									} catch (NumberFormatException e) {
-										
-										//Utilise la méthode de chargement par défaut
-										saveMethod = SaveMethod.DEFAULT;
-									}
-									
-								} else {
-									
+
 									//Utilise la méthode de chargement par défaut
-									saveMethod = SaveMethod.DEFAULT;
-								}
-								
-							} else {
-								
+									} catch(NumberFormatException e) { saveMethod = SaveMethod.DEFAULT; }
+
 								//Utilise la méthode de chargement par défaut
-								saveMethod = SaveMethod.DEFAULT;
-							}
+								} else saveMethod = SaveMethod.DEFAULT;
+
+							//Utilise la méthode de chargement par défaut
+							} else saveMethod = SaveMethod.DEFAULT;
 						}
-						
-						if(saveMethod == SaveMethod.DEFAULT) { grantCriteria(player, advancement, loaded.toArray(new String[loaded.size()])); }
+
+						/****************************/
+
+						if(saveMethod == SaveMethod.DEFAULT) { grantCriteria(player, advancement, loaded.toArray(new String[0])); }
 					}
 				}
 			}
 		}
 	}
 	
-	
-	
+
 	/**
-	 * Charge les progréssions
+	 * Charge tous les progréssions
 	 * 
 	 * @param player Joueur à vérifier
-	 * @param advancementsLoaded Tableau d'achievements à vérifier, tous les achievements qui ne sont pas dans le même espace de nom que le premier seront ignorés
+	 * @param advancementsLoaded Tableau d'un achievement à vérifier, tous les achievements qui ne sont pas dans le même espace de nom que le premier seront ignorés
 	 */
 	public void loadProgress(Player player, Advancement... advancementsLoaded) {
 		
 		if(advancementsLoaded.length == 0) return;
 		List<Advancement> advancements = Arrays.asList(advancementsLoaded);
-		
+
+		/*********************************/
+
 		String namespace = advancements.get(0).getName().getNamespace();
-		
-		File saveFile = getSaveFile(player, namespace);
-		
-		if(saveFile.exists() && saveFile.isFile()) {
-			HashMap<String, List<String>> prg = getProgress(player, namespace);
-			
-			for(Advancement advancement : advancements) {
-				
-				if(advancement.getName().getNamespace().equalsIgnoreCase(namespace)) {
-					checkAwarded(player, advancement);
-					
-					String nameKey = advancement.getName().toString();
-					
-					if(prg.containsKey(nameKey)) {
-						
-						List<String> loaded = prg.get(nameKey);
-						SaveMethod saveMethod = advancement.getSaveMethod();
-						
-						if(saveMethod == SaveMethod.NUMBER) {
-							
-							if(loaded.size() == 2) {
-								
-								if(loaded.get(0).equals("NUM")) {
-									
-									try {
-										
-										int progress = Integer.parseInt(loaded.get(1));
-										setCriteriaProgress(player, advancement, progress);
-										
-									} catch (NumberFormatException e) {
-										
-										//Utilise la méthode de chargement par défaut
-										saveMethod = SaveMethod.DEFAULT;
-									}
-									
-								} else {
-									
-									//Utilise la méthode de chargement par défaut
-									saveMethod = SaveMethod.DEFAULT;
-								}
-								
-							} else {
-								
-								//Utilise la méthode de chargement par défaut
-								saveMethod = SaveMethod.DEFAULT;
-							}
-						}
-						
-						if(saveMethod == SaveMethod.DEFAULT) { grantCriteria(player, advancement, loaded.toArray(new String[loaded.size()])); }
-					}
-				}
-			}
-		}
+		loadProgress(player, namespace);
 	}
 
-	
 	// SAUVEGARDE/CHARGEMENT EN-LIGNE //
 
 	
@@ -1352,7 +1107,7 @@ public final class AdvancementsManager {
 	 * Ne fonctionne pas pour les joueurs en ligne !
 	 * 
 	 * @param uuid UUID du joueur affecté
-	 * @param namespace Espace de nom spècifique
+	 * @param namespace Espace de nom spécifique
 	 */
 	public void unloadProgress(UUID uuid, String namespace) {
 		
@@ -1393,107 +1148,33 @@ public final class AdvancementsManager {
 	// DÉCHARGEMENT DE LA PROGRESSION //
 	
   /********************************************************/
-  /* PARITE CHARGEMENT/DÉCHARGEMENT 'ACHIEVEMENT MANAGER' */
+  /* PARTIE CHARGEMENT/DÉCHARGEMENT 'ACHIEVEMENT MANAGER' */
   /********************************************************/
 
 	
 
 	
   /*********************************************/
-  /* PARITE VÉRIFICATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE VÉRIFICATION 'ACHIEVEMENT MANAGER' */
   /*********************************************/
 	
 	// Vérifie les achievements attribués à un joueur //
-	protected void checkAwarded(Player player, Advancement advancement) {
-		
-		Map<String, Criterion> advCriteria = new HashMap<>();
-		String[][] advRequirements = new String[][] {};
-		
-		if(advancement.getSavedCriteria() == null) {
-			
-			for(int i = 0; i < advancement.getCriteria(); i++) {
-				
-				advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-					
-					@Override
-					public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-					
-					@Override
-					public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-					
-				}));
-			}
-			
-			advancement.saveCriteria(advCriteria);
-			
-		} else { advCriteria = advancement.getSavedCriteria(); }
-		
-		if(advancement.getSavedCriteriaRequirements() == null) {
-			
-			ArrayList<String[]> fixedRequirements = new ArrayList<>();
-			
-			for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-			
-			advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-			advancement.saveCriteriaRequirements(advRequirements);
-			
-		} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
-		
-		Map<String, HashSet<String>> awardedCriteria = advancement.getAwardedCriteria();
-		
-		if(!awardedCriteria.containsKey(player.getUniqueId().toString())) {
-		
-		  awardedCriteria.put(player.getUniqueId().toString(), new HashSet<>());
-    	}
-	}
+	private void checkAwarded(Player player, Advancement advancement) { this.checkAwarded(player.getUniqueId(), advancement); }
 	// Vérifie les achievements attribués à un joueur //
-	
-	
-	
+
 	// Vérifie les achievements attribués à un joueur (avec paramètre uuid) //
-	protected void checkAwarded(UUID uuid, Advancement advancement) {
-		
-		Map<String, Criterion> advCriteria = new HashMap<>();
-		String[][] advRequirements = new String[][] {};
-		
-		if(advancement.getSavedCriteria() == null) {
-			
-			for(int i = 0; i < advancement.getCriteria(); i++) {
-				
-				advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
-					
-					@Override
-					public JsonObject serializeToJson(SerializationContext arg0) { return null; }
-					
-					@Override
-					public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
-					
-				}));
-			}
-			
-			advancement.saveCriteria(advCriteria);
-			
-		} else { advCriteria = advancement.getSavedCriteria(); }
-		
-		if(advancement.getSavedCriteriaRequirements() == null) {
-			
-			ArrayList<String[]> fixedRequirements = new ArrayList<>();
-			
-			for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
-			
-			advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
-			advancement.saveCriteriaRequirements(advRequirements);
-			
-		} else { advRequirements = advancement.getSavedCriteriaRequirements(); }
+	private void checkAwarded(UUID uuid, Advancement advancement) {
+
+		Map<Advancement, Map<Map<String, Criterion>, String[][]>> initializedAdvancementCriteria = initAdvancementCriteria(advancement);
+		if(!initializedAdvancementCriteria.keySet().isEmpty()) advancement = initializedAdvancementCriteria.keySet().iterator().next();
+
+		/*******************************************/
 		
 		Map<String, HashSet<String>> awardedCriteria = advancement.getAwardedCriteria();
-		
 		if(!awardedCriteria.containsKey(uuid.toString())) { awardedCriteria.put(uuid.toString(), new HashSet<>()); }
 	}
 	// Vérifie les achievements attribués à un joueur (avec paramètre uuid) //
-	
-	
-	
+
 	// Méthode rapide de vérification (pour les class "getProgressJSON") //
 	private static void check() {
 		
@@ -1520,7 +1201,147 @@ public final class AdvancementsManager {
 	// Vérifie si le joueur est en ligne avec son uuid //
 
   /*********************************************/
-  /* PARITE VÉRIFICATION 'ACHIEVEMENT MANAGER' */
+  /* PARTIE VÉRIFICATION 'ACHIEVEMENT MANAGER' */
   /*********************************************/
-	
+
+  /********************/
+  /* MÉTHODES UTILES */
+  /******************/
+  
+  private Map<Advancement, Map<Map<String, Criterion>, String[][]>> initAdvancementCriteria(Advancement advancement) {
+
+	  String[][] advRequirements;
+	  Map<String, Criterion> advCriteria = new HashMap<>();
+
+	  /***********************/
+
+	  if(advancement.getSavedCriteria() == null) {
+
+		  for(int i = 0; i < advancement.getCriteria(); i++) {
+
+              String criterionPrefix = "criterion.";
+              advCriteria.put(criterionPrefix + i, new Criterion(new CriterionTriggerInstance() {
+
+				  @Override
+				  public JsonObject serializeToJson(SerializationContext arg0) { return null; }
+
+				  @Override
+				  public ResourceLocation getCriterion() { return new ResourceLocation(criterionNamespace, criterionKey); }
+
+			  }));
+		  }
+
+		  advancement.saveCriteria(advCriteria);
+
+	  } else { advCriteria = advancement.getSavedCriteria(); }
+
+	  /***********************************************/
+
+	  if(advancement.getSavedCriteriaRequirements() == null) {
+
+		  ArrayList<String[]> fixedRequirements = new ArrayList<>();
+
+		  for(String name : advCriteria.keySet()) { fixedRequirements.add(new String[] {name}); }
+
+		  advRequirements = Arrays.stream(fixedRequirements.toArray()).toArray(String[][]::new);
+		  advancement.saveCriteriaRequirements(advRequirements);
+
+	  } else { advRequirements = advancement.getSavedCriteriaRequirements(); }
+
+	  /***********************/
+
+	  Map<Advancement, Map<Map<String, Criterion>, String[][]>> advancementMap = new HashMap<>();
+	  Map<Map<String, Criterion>, String[][]> advancementCriteriaMap = new HashMap<>();
+
+	  advancementCriteriaMap.putIfAbsent(advCriteria, advRequirements);
+	  advancementMap.putIfAbsent(advancement, advancementCriteriaMap);
+
+	  /***********************/
+
+	  return advancementMap;
+  }
+
+  private void handleAdvancementSaveMethod(Advancement advancement, Player player, Map<String, List<String>> prg) {
+
+	  String nameKey = advancement.getName().toString();
+	  SaveMethod saveMethod = advancement.getSaveMethod();
+
+	  /************************************************/
+
+	  if(saveMethod == SaveMethod.NUMBER) {
+
+		  int criteriaProgress = getCriteriaProgress(player, advancement);
+		  ArrayList<String> progress = new ArrayList<>();
+
+		  progress.add("NUM"); //Indicateur de la méthode d'enregistrement des numéros
+		  progress.add("" + criteriaProgress);
+		  prg.put(nameKey, progress);
+
+	  } else {
+
+		  ArrayList<String> progress = new ArrayList<>(advancement.getAwardedCriteria(player));
+		  prg.put(nameKey, progress);
+	  }
+  }
+
+  /********************************************************************/
+  /********************************************************************/
+  /********************************************************************/
+
+  private AdvancementData handleAdvancement(Advancement advancement) {
+
+	  String[][] advRequirements = new String[0][];
+	  Map<String, Criterion> advCriteria = new HashMap<>();
+
+	  /**********************************************************/
+
+	  Map<Advancement, Map<Map<String, Criterion>, String[][]>> initializedAdvancementCriteria = initAdvancementCriteria(advancement);
+
+	  /**********************************************************/
+
+	  if (!initializedAdvancementCriteria.keySet().isEmpty()) {
+		  advancement = initializedAdvancementCriteria.keySet().iterator().next();
+
+		  if(initializedAdvancementCriteria.get(advancement) != null && initializedAdvancementCriteria.get(advancement).isEmpty()) {
+
+			  Map<Map<String, Criterion>, String[][]> advCriteriaRequirements = initializedAdvancementCriteria.get(advancement);
+
+			  if(!advCriteriaRequirements.keySet().isEmpty()) {
+				  advCriteria = advCriteriaRequirements.keySet().iterator().next();
+				  if (advCriteriaRequirements.get(advCriteria) != null)
+					  advRequirements = advCriteriaRequirements.get(advCriteria);
+			  }
+		  }
+	  }
+
+	  /**********************************************************/
+
+	  return new AdvancementData(advCriteria, advRequirements);
+  }
+
+  private AdvancementDetails prepareAdvancementsDetail(Advancement advancement) {
+
+	  AdvancementDisplay display = advancement.getDisplay();
+	  AdvancementRewards advRewards = new AdvancementRewards(0, new ResourceLocation[0], new ResourceLocation[0], null);
+	  ItemStack icon = CraftItemStack.asNMSCopy(display.getIcon());
+
+	  /************************************************/
+
+	  ResourceLocation backgroundTexture = null;
+	  boolean hasBackgroundTexture = display.getBackgroundTexture() != null;
+
+	  if(hasBackgroundTexture) { backgroundTexture = new ResourceLocation(display.getBackgroundTexture()); }
+
+	  /************************************************/
+
+	  AdvancementData advancementData = handleAdvancement(advancement);
+	  return new AdvancementDetails(display, advRewards, icon, backgroundTexture, advancementData);
+  }
+  /********************/
+  /* MÉTHODES UTILES */
+  /******************/
+
+  private record AdvancementDetails(AdvancementDisplay display, AdvancementRewards advRewards, ItemStack icon, ResourceLocation backgroundTexture, AdvancementData advancementData) {}
+  private record AdvancementData(Map<String, Criterion> advCriteria, String[][] advRequirements) {}
 }
+

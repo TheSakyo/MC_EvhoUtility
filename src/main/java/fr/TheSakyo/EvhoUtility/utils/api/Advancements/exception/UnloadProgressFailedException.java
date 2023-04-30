@@ -10,7 +10,7 @@ public class UnloadProgressFailedException extends RuntimeException {
 	@Serial
 	private static final long serialVersionUID = 5052062325162108824L;
 	
-	private UUID uuid;
+	private final UUID uuid;
 	private String message = "Impossible de d�charger la progression des joueurs en ligne !";
 	
 	// Variables Utiles //
@@ -38,7 +38,7 @@ public class UnloadProgressFailedException extends RuntimeException {
 	@Override
 	public String getMessage() {
 	
-	  return "Impossible de décharger la progression de l'achievement du joueur avec l'UUID. " + uuid + ": " + message;
+	  return "Impossible de décharger la progression d'un achievement du joueur avec l'UUID. " + uuid + ": " + message;
 	}
 	
 	// Récupère le message d'erreur //

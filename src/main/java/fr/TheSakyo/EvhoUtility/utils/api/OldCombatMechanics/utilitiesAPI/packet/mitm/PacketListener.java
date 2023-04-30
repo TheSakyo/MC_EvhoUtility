@@ -1,7 +1,7 @@
 package fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.packet.mitm;
 
 /**
- * Ecoute un paquet
+ * Écoute un paquet
  */
 public interface PacketListener {
 

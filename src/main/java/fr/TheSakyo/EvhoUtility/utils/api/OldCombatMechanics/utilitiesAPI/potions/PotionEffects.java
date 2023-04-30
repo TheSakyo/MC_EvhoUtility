@@ -37,9 +37,9 @@ public class PotionEffects {
      * @param type le type à rechercher
      * @return {@link PotionEffect} ou {@code null} si non présent
      */
-    public static PotionEffect getOrNull(LivingEntity entity, PotionEffectType type){
+    public static PotionEffect getOrNull(LivingEntity entity, PotionEffectType type) {
 
-        if(canUseGetPotionEffectsMethod){ return entity.getPotionEffect(type); }
+        if(canUseGetPotionEffectsMethod) { return entity.getPotionEffect(type); }
         return entity.getActivePotionEffects().stream().filter(potionEffect -> potionEffect.getType().equals(type)).findAny().orElse(null);
     }
 }

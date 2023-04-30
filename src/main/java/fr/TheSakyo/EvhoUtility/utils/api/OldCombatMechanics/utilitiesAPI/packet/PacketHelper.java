@@ -19,8 +19,8 @@ public class PacketHelper {
      */
     public static boolean isNmsPacket(Object object) {
 
-        if(object == null) return false;
-        return Reflector.inheritsFrom(object.getClass(), NMS_PACKET_CLASS);
+        if(object == null) return true;
+        return !Reflector.inheritsFrom(object.getClass(), NMS_PACKET_CLASS);
     }
 
     /**
@@ -32,15 +32,15 @@ public class PacketHelper {
     public static ImmutablePacket wrap(Object nmsPacket) { return () -> nmsPacket; }
 
     /**
-     * The type of a packet (in / out).
+     * Le type de paquet (in / out).
      */
     public enum PacketType {
 
         PlayOut("PlayOut"), PlayIn("PlayIn");
 
-        public String prefix;
+        public final String prefix;
 
-        PacketType(String prefix){
+        PacketType(String prefix) {
             this.prefix = prefix;
         }
     }

@@ -66,7 +66,7 @@ public class ModulePlayerCollisions extends Module {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerChangeWorld(PlayerChangedWorldEvent e){
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent e) {
         createOrUpdateTeam(e.getPlayer());
     }
 
@@ -128,7 +128,7 @@ public class ModulePlayerCollisions extends Module {
         private final Class<?> targetClass = PacketHelper.getPacketClass(PacketHelper.PacketType.PlayOut, "ScoreboardTeam");
 
         @Override
-        public void onPacketSend(PacketEvent packetEvent){
+        public void onPacketSend(PacketEvent packetEvent) {
             if(packetEvent.getPacket().getPacketClass() != targetClass) { return; }
 
             synchronized(playerTeamMap) { handlePacket(packetEvent); }
@@ -148,21 +148,21 @@ public class ModulePlayerCollisions extends Module {
             if(!isEnabled(packetEvent.getPlayer().getWorld())) { return; }
 
             Messenger.debug("[%s-%s] La règle de collision est fixée à %s pour l'action %s dans le monde. %s.", incomingTeamPacket.getName(),
-                    Optional.ofNullable(playerTeamMap.get(packetEvent.getPlayer())).map(TeamPacket::getName), collisionRule, incomingTeamPacket.getAction(),
+                    Optional.ofNullable(playerTeamMap.get(packetEvent.getPlayer().getUniqueId())).map(TeamPacket::getName), collisionRule, incomingTeamPacket.getAction(),
                     packetEvent.getPlayer().getWorld().getName());
 
             incomingTeamPacket = incomingTeamPacket.withCollisionRule(collisionRule);
             packetEvent.setPacket(PacketHelper.wrap(incomingTeamPacket.getNmsPacket()));
 
             // Réinstaurer s'il a été dissous pour avoir la règle correcte
-            if(!playerTeamMap.containsKey(packetEvent.getPlayer())) { createAndSendNewTeam(packetEvent.getPlayer(), collisionRule); }
+            if(!playerTeamMap.containsKey(packetEvent.getPlayer().getUniqueId())) { createAndSendNewTeam(packetEvent.getPlayer(), collisionRule); }
         }
 
         private boolean interestingForPlayer(TeamPacket packet, Player player) {
 
             if(TeamUtils.targetsPlayer(packet, player)) { return true; }
 
-            TeamPacket storedTeam = playerTeamMap.get(player);
+            TeamPacket storedTeam = playerTeamMap.get(player.getUniqueId());
             return storedTeam != null && storedTeam.getName().equals(packet.getName());
         }
 
@@ -173,7 +173,7 @@ public class ModulePlayerCollisions extends Module {
 
             Optional<TeamPacket> current = Optional.ofNullable(playerTeamMap.get(player.getUniqueId()));
 
-             // Seulement nous dissolvons ces équipes et nous n'avons pas besoin de créer une nouvelle équipe en réponse.
+             // Seulement, nous dissolvons ces équipes et nous n'avons pas besoin de créer une nouvelle équipe en réponse.
             // Donc ignore simplement ces paquets de dissolution. La carte des équipes de joueurs a déjà été mise à jour lorsque le paquet de dissolution a été envoyé
             if(incomingPacket.getAction() == TeamAction.DISBAND && TeamUtils.isOcmTeam(incomingPacket)) return;
 

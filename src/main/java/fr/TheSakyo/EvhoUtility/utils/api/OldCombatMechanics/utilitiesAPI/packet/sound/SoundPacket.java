@@ -29,7 +29,7 @@ public class SoundPacket implements ImmutablePacket {
      */
     public static Optional<SoundPacket> from(ImmutablePacket packet) {
 
-        if(packet.getPacketClass() == PACKET_CLASS){ return Optional.of(new SoundPacket(packet)); }
+        if(packet.getPacketClass() == PACKET_CLASS) { return Optional.of(new SoundPacket(packet)); }
         return Optional.empty();
     }
 

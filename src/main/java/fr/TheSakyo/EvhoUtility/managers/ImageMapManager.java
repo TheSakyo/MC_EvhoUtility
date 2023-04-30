@@ -15,10 +15,10 @@ import fr.TheSakyo.EvhoUtility.utils.api.ImageMaps.ImageMap;
 
 public class ImageMapManager {
 	
-	private Map<String, ImageMap> imageMaps; //Variable "Map" qui contient des 'imagemaps'
+	private final Map<String, ImageMap> imageMaps; //Variable "Map" qui contient des 'imagemaps'
 	
 	
-	public ImageMapManager() { this.imageMaps = new HashMap<String, ImageMap>(); } //Constructeur de la class "ImageMapManager"
+	public ImageMapManager() { this.imageMaps = new HashMap<>(); } //Constructeur de la class "ImageMapManager"
 		
 
 	public void addImageMap(String name, ImageMap imagemap) { this.imageMaps.put(name, imagemap); } //Ajoute une "imagemap"
@@ -30,13 +30,13 @@ public class ImageMapManager {
 	public Map<String, ImageMap> getImageMaps() { return imageMaps; } //Récupère tous les "imagemaps"
 	
 	
-	public ImageMap getImageMap(String name) { return getImageMaps().get(name); } //Récupère une "imagemap" spécfique
+	public ImageMap getImageMap(String name) { return getImageMaps().get(name); } //Récupère une "imagemap" spécifique
 	
 	
 	// Petite méthode pour supprimer "imagemap" entièrement //
 	public void DeleteImageMap(Player p, String name, File file) { 
 		
-		ItemStack item = getImageMap(name).getitem();
+		ItemStack item = getImageMap(name).getItem();
 		
 		if(p != null) {
 			

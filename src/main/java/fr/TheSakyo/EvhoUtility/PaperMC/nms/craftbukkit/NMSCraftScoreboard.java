@@ -35,7 +35,7 @@ public class NMSCraftScoreboard {
 
     try { return (Scoreboard)getHandle.invoke(craftScoreBoardClass.cast(player.getScoreboard()), new Object[0]); }
     catch (Exception e) {
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
   }

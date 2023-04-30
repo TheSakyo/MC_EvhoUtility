@@ -14,8 +14,8 @@ import java.util.Map;
 public class NPCEntity {
 
 
-    private static Map<NPCGlobal, RunAnimationNPC> animationRunnable = new HashMap<NPCGlobal, RunAnimationNPC>(); // Variable récupérant une tâche répétant les animations d'un NPC associé
-    private Map<NPCGlobal, Map<NPC.Animation, Integer>> animations = new HashMap<NPCGlobal, Map<NPC.Animation, Integer>>(); //Liste des animations d'un NPC associé avec leurs états (boolean)
+    private static final Map<NPCGlobal, RunAnimationNPC> animationRunnable = new HashMap<>(); // Variable récupérant une tâche répétant les animations d'un NPC associé
+    private final Map<NPCGlobal, Map<NPC.Animation, Integer>> animations = new HashMap<>(); //Liste des animations d'un NPC associé avec leurs états (boolean)
 
                         				/* --------------------------------------------------------- */
                                         /* --------------------------------------------------------- */
@@ -29,13 +29,13 @@ public class NPCEntity {
 	 */
 	public Map<NPC.Animation, Integer> getAnimationsStatus(NPCGlobal npc) {
 
-		Map<NPC.Animation, Integer> animationsStatus = new HashMap<NPC.Animation, Integer>();
+		Map<NPC.Animation, Integer> animationsStatus = new HashMap<>();
 
-		animationsStatus.putIfAbsent(NPC.Animation.SWING_MAIN_ARM, Integer.valueOf(0));
-		animationsStatus.putIfAbsent(NPC.Animation.TAKE_DAMAGE, Integer.valueOf(0));
-		animationsStatus.putIfAbsent(NPC.Animation.SWING_OFF_HAND, Integer.valueOf(0));
-		animationsStatus.putIfAbsent(NPC.Animation.CRITICAL_EFFECT, Integer.valueOf(0));
-		animationsStatus.putIfAbsent(NPC.Animation.MAGICAL_CRITICAL_EFFECT, Integer.valueOf(0));
+		animationsStatus.putIfAbsent(NPC.Animation.SWING_MAIN_ARM, 0);
+		animationsStatus.putIfAbsent(NPC.Animation.TAKE_DAMAGE, 0);
+		animationsStatus.putIfAbsent(NPC.Animation.SWING_OFF_HAND, 0);
+		animationsStatus.putIfAbsent(NPC.Animation.CRITICAL_EFFECT, 0);
+		animationsStatus.putIfAbsent(NPC.Animation.MAGICAL_CRITICAL_EFFECT, 0);
 
 									/* ----------------------------------- */
 
@@ -56,9 +56,8 @@ public class NPCEntity {
 	 * @param npc       Le {@link NPCGlobal NPC Global} en question
 	 * @param animation L'{@link NPC.Animation Animation} en question
 	 * @param status    L'État en question (0 = stop ; 1 = en boucle)
-	 * @return
 	 */
-	public Map<NPC.Animation, Integer> setAnimationStatus(NPCGlobal npc, NPC.Animation animation, Integer status) {
+	public void setAnimationStatus(NPCGlobal npc, NPC.Animation animation, Integer status) {
 
 		if(animations.containsKey(npc)) {
 
@@ -70,7 +69,9 @@ public class NPCEntity {
 			animations.replace(npc, animationsStatus);
 		}
 
-		return getAnimationsStatus(npc);
+		/****************************/
+
+		getAnimationsStatus(npc);
 	}
 
                                         /* --------------------------------------------------------- */
@@ -87,10 +88,10 @@ public class NPCEntity {
 
 		RunAnimationNPC animationTask = null; // Variable permettant de récupérer la Boucle des Animations du NPC Global
 
-		// ⬇️ Vérification de l'éxistance de la boucle en fonction du NPC Global récupéré ⬇️ //
+		// ⬇️ Vérification de l'existence de la boucle en fonction du NPC Global récupéré ⬇️ //
 		animationRunnable.putIfAbsent(npc, new RunAnimationNPC(npc, new NPCEntity()));
 		if(animationRunnable.containsKey(npc)) animationTask = animationRunnable.get(npc);
-		// ⬆️ Vérification de l'éxistance de la boucle en fonction du NPC Global récupéré ⬆️ //
+		// ⬆️ Vérification de l'existence de la boucle en fonction du NPC Global récupéré ⬆️ //
 
 												/* --------------------------- */
 
@@ -111,13 +112,17 @@ public class NPCEntity {
 
 		boolean isCreated = true; // Variable permettant de vérifier plus tard si le NPC en question est déjà créé ou pas
 
+		/*********************************/
+
 		// ⬇️ Pour tous les joueurs en ligne, on vérifie si leur NPC Personnel sont déjà créés, si c'est le cas sur un seul NPC, on retourne donc vrai ⬇️ //
 		for(Player players : Bukkit.getServer().getOnlinePlayers()) {
 
-			if(!npc.getPersonal(players).isCreated()) { isCreated = false; }
-			else isCreated = true; break;
+            isCreated = npc.getPersonal(players).isCreated();
+            break;
 		}
 		// ⬆️ Pour tous les joueurs en ligne, on vérifie si leur NPC Personnel sont déjà créés, si c'est le cas sur un seul NPC, on retourne donc vrai ⬆️ //
+
+		/*********************************/
 
 		return isCreated; // Retourne le booléen vérifiant si le NPC en question est déjà créé ou pas
 	}
@@ -125,7 +130,7 @@ public class NPCEntity {
 												/* --------------------------------------------------------- */
 
 	/**
-	 * Recharge la création du {@link NPCGlobal NPC Global} pour chaques joueurs
+	 * Recharge la création du {@link NPCGlobal NPC Global} pour chaque joueur
 	 *
 	 * @param npc Le {@link NPCGlobal NPC Global} en question
 	 *
@@ -146,7 +151,7 @@ public class NPCEntity {
 													/* --------------------------------------------------------- */
 
 	/**
-	 * Recharge la déstruction du {@link NPCGlobal NPC Global} pour chaques joueurs
+	 * Recharge la déstruction du {@link NPCGlobal NPC Global} pour chaque joueur
 	 *
 	 * @param npc Le {@link NPCGlobal NPC Global} en question
 	 *

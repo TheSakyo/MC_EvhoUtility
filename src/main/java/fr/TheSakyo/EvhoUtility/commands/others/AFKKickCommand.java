@@ -1,17 +1,17 @@
 package fr.TheSakyo.EvhoUtility.commands.others;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class AFKKickCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public AFKKickCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
@@ -31,15 +31,25 @@ public class AFKKickCommand implements CommandExecutor {
 				if(args.length == 0) {
 
 					if(main.time.containsKey(p.getUniqueId())) {
-						if(main.time.get(p.getUniqueId()) >= 900) { main.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); return true; } //Annule le joueur étaht 'AFK'
+
+						// Annule le joueur étant 'AFK' //
+						if(main.time.get(p.getUniqueId()) >= 900) {
+
+							main.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0);
+							return true;
+						}
+						// Annule le joueur étant 'AFK' //
 					}
+
+					/**************************************/
+
 					main.afk.runAFK(p.getUniqueId(), Boolean.TRUE, 900); //Définit le joueur comme 'AFK'
 
-				} else if(args.length != 0) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /AFK sans arguments"); }
-				
-			} else { p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !"); }
+				} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /AFK sans arguments");
+
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 		
-		} else { sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux !"); }
+		} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux !");
 
 		return false;
 	}

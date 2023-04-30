@@ -25,7 +25,7 @@ public class TranslatorUtils {
 	    //Affiche le texte
 	 	resulting = result.text();
 	 	
-	} catch (IOException e) { e.printStackTrace(); } 
+	} catch (IOException e) { e.printStackTrace(System.err); } 
 	
 	return resulting;
 

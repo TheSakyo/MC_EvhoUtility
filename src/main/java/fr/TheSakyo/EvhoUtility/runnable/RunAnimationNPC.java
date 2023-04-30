@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 public class RunAnimationNPC {
 
-    private UtilityMain mainInstance = UtilityMain.getInstance(); //Récupère la class "main" (UtilityMain)
+    private final UtilityMain mainInstance = UtilityMain.getInstance(); //Récupère la class "main" (UtilityMain)
 
-    private NPCGlobal npc; //Le NPC sur lequel on effectue l'action
-    private NPCEntity EntityNPC; // Une Instance de la 'class' NPCEntity pour récupérer les états des animations
+    private final NPCGlobal npc; //Le NPC sur lequel on effectue l'action
+    private final NPCEntity EntityNPC; // Une Instance de la 'class' NPCEntity pour récupérer les états des animations
 
 	private BukkitTask task; // Permet de récupérer la boucle actuelle
 
@@ -39,9 +39,9 @@ public class RunAnimationNPC {
                                         /* --------------------------------------------------------- */
 
 	/**
-	 * Récupère la {@link BukkitRunnable boucle} en cours.
+	 * Récupère la {@link BukkitRunnable boucle} qui est en cours.
 	 *
-	 * @return La {@link BukkitRunnable boucle} en cours
+	 * @return La {@link BukkitRunnable boucle} qui est en cours
 	 */
 	public BukkitTask getTask() { return task; }
 
@@ -57,7 +57,7 @@ public class RunAnimationNPC {
 	 */
 	public Map<NPC.Animation, Integer> getAnimationsStatus(boolean loadFromConfig) {
 
-		String animations = ConfigFile.getString(UtilityMain.getInstance().NPCconfig, "NPC." + this.npc.getSimpleCode() + ".Animation");
+		String animations = ConfigFile.getString(UtilityMain.getInstance().NPCConfig, "NPC." + this.npc.getSimpleCode() + ".Animation");
 		if(loadFromConfig && animations != null) {
 
 			Map<String, String> animationsMap = Splitter.on(";").withKeyValueSeparator(":").split(animations);
@@ -74,20 +74,14 @@ public class RunAnimationNPC {
 	 *
 	 * @param animation L'{@link NPC.Animation Animation} en question
 	 * @param status    L'État en question (0 = stop ; 1 = en boucle)
-	 *
-	 *
-	 * @return Les États des animations du {@link NPCGlobal NPC Global} définit
 	 */
-	public Map<NPC.Animation, Integer> setAnimationStatus(NPC.Animation animation, Integer status) {
-
-        return this.EntityNPC.setAnimationStatus(this.npc, animation, status);
-	}
+	public void setAnimationStatus(NPC.Animation animation, Integer status) { this.EntityNPC.setAnimationStatus(this.npc, animation, status); }
 
                                         /* --------------------------------------------------------- */
                                         /* --------------------------------------------------------- */
 
 	/**
-	 * Met à jour le fichier de configuration pour les animations et leurs états actuel pour le NPC
+	 * Met à jour le fichier de configuration pour les animations et leurs états actuels pour le NPC
 	 *
 	 * @param reloadConfig Doit-on recharger les animations du fichier de configuration ?
 	 *
@@ -95,18 +89,18 @@ public class RunAnimationNPC {
 	public void updateConfig(boolean reloadConfig) {
 
 		// Récupère la liste des animations avec leurs états (boolean) en une seule phrase séparée par des <<;>>
-		String animationConfig = getAnimationsStatus(reloadConfig).entrySet().stream().map(e -> e.getKey().name() + ":" + String.valueOf(e.getValue().intValue())).collect(Collectors.joining(";"));
+		String animationConfig = getAnimationsStatus(reloadConfig).entrySet().stream().map(e -> e.getKey().name() + ":" + e.getValue()).collect(Collectors.joining(";"));
 
 												/* -------------------------------------------------- */
 
 		// ⬇️ Partie Modification du fichier de configuration pour les animations du NPC ⬇️ //
 
-		if(ConfigFile.getString(UtilityMain.getInstance().NPCconfig, "NPC." + this.npc.getSimpleCode() + ".Animation") != null) {
-			ConfigFile.removeKey(UtilityMain.getInstance().NPCconfig,"NPC." + this.npc.getSimpleCode() + ".Animation");
+		if(ConfigFile.getString(UtilityMain.getInstance().NPCConfig, "NPC." + this.npc.getSimpleCode() + ".Animation") != null) {
+			ConfigFile.removeKey(UtilityMain.getInstance().NPCConfig,"NPC." + this.npc.getSimpleCode() + ".Animation");
 		}
-		ConfigFile.set(UtilityMain.getInstance().NPCconfig, "NPC." + this.npc.getSimpleCode() + ".Animation", animationConfig.toUpperCase());
+		ConfigFile.set(UtilityMain.getInstance().NPCConfig, "NPC." + this.npc.getSimpleCode() + ".Animation", animationConfig.toUpperCase());
 
-		ConfigFile.saveConfig(UtilityMain.getInstance().NPCconfig);
+		ConfigFile.saveConfig(UtilityMain.getInstance().NPCConfig);
 
 		// ⬆️ Partie Modification du fichier de configuration pour les animations du NPC ⬆️ //
 	}
@@ -124,7 +118,7 @@ public class RunAnimationNPC {
 			@Override
 			public void run() {
 
-				boolean animationisEmpty = false; // Varioble permettant de vérifier s'il y a toujours des animations en cours
+				boolean animationIsEmpty = false; // Variable permettant de vérifier s'il y a toujours des animations en cours
 
 				if(npc == null) this.cancel(); // Si le NPC est null, on quitte la boucle
 
@@ -136,10 +130,9 @@ public class RunAnimationNPC {
 				for(NPC.Animation animation : animationsStatus.keySet()) {
 
 					// ** Aprés une seconde, on joue l'animation ** //
-					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mainInstance, new Runnable() {
+					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mainInstance, () -> {
 
-						@Override
-						public void run() { if(animationsStatus.get(animation).equals(Integer.valueOf(1))) { npc.playAnimation(animation); } }
+						if(animationsStatus.get(animation).equals(1)) npc.playAnimation(animation);
 
 					}, 20);
 					// ** Aprés une seconde, on joue l'animation ** //
@@ -153,13 +146,13 @@ public class RunAnimationNPC {
 				   on annule la boucle en s'aidant de la variable 'animationIsEmpty' définit plus haut ⬇️ */
 				for(Integer status : animationsStatus.values()) {
 
-					if(status.equals(Integer.valueOf(1))) { animationisEmpty = false; break; }
-					else { animationisEmpty = true; }
+					if(status.equals(1)) { animationIsEmpty = false; break; }
+					else { animationIsEmpty = true; }
 				}
 				/* ⬆️ Vérifie s'il y a toujours des animations en cours (1) ou non (2), dans le cas s'il n'y a aucune animation en cours,
 				   on annule la boucle en s'aidant de la variable 'animationIsEmpty' définit plus haut ⬆️ */
 
-				if(animationisEmpty) this.cancel(); // Si la variable 'animationIsEmpty définit plus haut montre qu'il n'y a aucune animation en cours, on annule la boucle
+				if(animationIsEmpty) this.cancel(); // Si la variable 'animationIsEmpty définit plus haut montre qu'il n'y a aucune animation en cours, on annule la boucle
 			}
 		}.runTaskTimerAsynchronously(mainInstance, 0L, 20L);
 	}

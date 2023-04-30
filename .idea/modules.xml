@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EvhoUtility.main.iml" filepath="$PROJECT_DIR$/.idea/modules/EvhoUtility.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EvhoUtility.test.iml" filepath="$PROJECT_DIR$/.idea/modules/EvhoUtility.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fr.TheSakyo.EvhoUtility.EvhoUtility.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fr.TheSakyo.EvhoUtility.EvhoUtility.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fr.TheSakyo.EvhoUtility.EvhoUtility.test.iml" filepath="$PROJECT_DIR$/.idea/modules/fr.TheSakyo.EvhoUtility.EvhoUtility.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-workspace.EvhoUtility.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java-workspace.EvhoUtility.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java-workspace.EvhoUtility.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java-workspace.EvhoUtility.test.iml" />
+    </modules>
+  </component>
+</project>

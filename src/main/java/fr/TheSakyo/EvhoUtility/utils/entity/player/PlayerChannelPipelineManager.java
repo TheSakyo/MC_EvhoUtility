@@ -4,11 +4,11 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**
- * Cet class gère la {@link ChannelPipeline} du joueur pour enregister des packets ou évènement customisé.
+ * Cet class gère la {@link ChannelPipeline} du joueur pour enregistrer des packets ou évènement customisé.
  */
 public final class PlayerChannelPipelineManager {
 
@@ -25,10 +25,10 @@ public final class PlayerChannelPipelineManager {
         ChannelPipeline pipeline = channel.pipeline();
 
         //Le pipeline de paquets du joueur possède-t-il déjà 'channel_name' ? Si c'est le cas, retour.
-        if(pipeline.get(CHANNEL_NAME) != null) { return; }
+        if(pipeline.get(CHANNEL_NAME) != null) return;
 
-        //Le contexte du gestionnaire de paquets existe-t-il ? Si non, retour.
-        if(pipeline.context("packet_handler") == null) { return; }
+        //Le contexte du gestionnaire de paquets existe-t-il ? Sinon, retour.
+        if(pipeline.context("packet_handler") == null) return;
 
         // Vérifie, si le canal n'éxiste pas
         if(!pipeline.names().contains(CHANNEL_NAME)) {
@@ -46,10 +46,10 @@ public final class PlayerChannelPipelineManager {
         ChannelPipeline pipeline = channel.pipeline();
 
         //Le pipeline de paquets du joueur ne possède pas 'channel_name' ? Si c'est le cas, retour.
-        if(pipeline.get(CHANNEL_NAME) == null) { return; }
+        if(pipeline.get(CHANNEL_NAME) == null) return;
 
-        //Le contexte du gestionnaire de paquets existe-t-il ? Si non, retour.
-        if(pipeline.context("packet_handler") == null) { return; }
+        //Le contexte du gestionnaire de paquets existe-t-il ? Sinon, retour.
+        if(pipeline.context("packet_handler") == null) return;
 
         //Tout est clair, On supprime le canal 'channel_name', si le canal éxiste
         if(pipeline.names().contains(CHANNEL_NAME)) { pipeline.remove(CHANNEL_NAME); }

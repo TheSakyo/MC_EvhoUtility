@@ -23,18 +23,18 @@ package fr.TheSakyo.EvhoUtility.utils.entity.player.utilities;
 
 import fr.TheSakyo.EvhoUtility.utils.entity.player.PlayerEntity;
 import fr.TheSakyo.EvhoUtility.utils.reflections.ReflectionUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -49,16 +49,13 @@ import java.util.Objects;
 public final class InventoryUpdate {
 	
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public InventoryUpdate(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
 
-    private static ReflectionUtils reflection = new ReflectionUtils(); // Class 'ReflectionUtils'
+    private static final ReflectionUtils reflection = new ReflectionUtils(); // Class 'ReflectionUtils'
 
-    //Variables CLASS
-    private static Class<?> ENTITY_PLAYER_CLASS;
-    private static Class<?> CONTAINER_CLASS;
     private final static Class<?> CONTAINERS_CLASS;
 
     //Variables METHOD
@@ -75,10 +72,10 @@ public final class InventoryUpdate {
         //Vérifie si on utilise des conteneurs, sinon on le définit étant 'null' (Cela évite d'entraîner des erreurs sur les anciennes versions)
         CONTAINERS_CLASS = useContainers() ? reflection.getNMSClass("world.inventory.Containers") : null;
 
-        // ⬇️ On essaie de remapper quelque class du 'NMS' en fonction de la version du Serveur ⬇️ //
+        // ⬇️ On essaie de 'remapper' quelque class du 'NMS' en fonction de la version du Serveur ⬇️ //
         try { init(reflection.noException().getNMSClass(reflection.getVersion() + ".EntityPlayer"), reflection.noException().getNMSClass(reflection.getVersion() + ".Container")); }
         catch(Exception ignored) { init(reflection.getNMSClass("server.level.EntityPlayer"), reflection.getNMSClass("world.inventory.Container")); }
-        // ⬆️ On essaie de remapper quelque class du 'NMS' en fonction de la version du Serveur ⬆️ //
+        // ⬆️ On essaie de 'remapper' quelque class du 'NMS' en fonction de la version du Serveur ⬆️ //
     }
 
                  /* ---------------------------------------------------------------------------------------------- */
@@ -91,28 +88,27 @@ public final class InventoryUpdate {
      */
     private static void init(final Class<?> entity_player_class, final Class<?> container_class) {
 
-        ENTITY_PLAYER_CLASS = entity_player_class; // Définit la class entité du Joueur
-        CONTAINER_CLASS = container_class; // Définit la class du Conteneur
+        //Variables CLASS
 
-                             /* ---------------------------------------------------- */
+        /* ---------------------------------------------------- */
 
-        // ⬇️ On essaie de remapper quelque méthodes et attribue du 'NMS' en fonction de la version du Serveur ⬇️ //
+        // ⬇️ On essaie de 'remapper' quelque méthodes et attribue du 'NMS' en fonction de la version du Serveur ⬇️ //
         try {
 
         	//Initialisation de la méthode de vue
-            getBukkitView = CONTAINER_CLASS.getMethod("getBukkitView");
+            getBukkitView = container_class.getMethod("getBukkitView");
 
             // ⬇️ Initialisation du champ qui récupère le conteneur ⬇️ //
-            try { activeContainerField = ENTITY_PLAYER_CLASS.getField("activateContainer"); }
+            try { activeContainerField = entity_player_class.getField("activateContainer"); }
             catch(NoSuchFieldException e1) {
 
-                try { activeContainerField = ENTITY_PLAYER_CLASS.getField("bU"); }
-                catch(NoSuchFieldException e2) { activeContainerField = ENTITY_PLAYER_CLASS.getField("bT"); }
+                try { activeContainerField = entity_player_class.getField("bU"); }
+                catch(NoSuchFieldException e2) { activeContainerField = entity_player_class.getField("bT"); }
             }
             // ⬆️ Initialisation du champ qui récupère le conteneur ⬆️ //
 
-        } catch(NoSuchMethodException | NoSuchFieldException e) { e.printStackTrace(); }
-        // ⬆️ On essaie de remapper quelque méthodes et attribue du 'NMS' en fonction de la version du Serveur ⬆️ //
+        } catch(NoSuchMethodException | NoSuchFieldException e) { e.printStackTrace(System.err); }
+        // ⬆️ On essaie de 'remapper' quelque méthodes et attribue du 'NMS' en fonction de la version du Serveur ⬆️ //
     }
 
   /* ------------------------------------------------------------------------------------------------------------------------ */
@@ -125,8 +121,8 @@ public final class InventoryUpdate {
      */
     public void updateInventory(@NotNull Player player, String newTitle) {
 
-        // Envoit un message d'erreur si le joueur est null
-        Objects.requireNonNull(player, main.prefix + ChatColor.RED + "Impossible de mettre à jour l'inventaire pour un joueur nul");
+        // Envoi un message d'erreur si le joueur est null
+        Objects.requireNonNull(player, main.prefix + ChatFormatting.RED + "Impossible de mettre à jour l'inventaire pour un joueur nul");
 
         try {
 
@@ -154,7 +150,7 @@ public final class InventoryUpdate {
             //Si le conteneur a été ajouté dans une version plus récente que la version actuelle, renvoyer
             if(container.getContainerVersion() > getVersion() && useContainers()) {
                
-               Bukkit.getLogger().warning(main.prefix + ChatColor.RED + "Ce conteneur ne fonctionne pas sur votre version actuelle.");
+               Bukkit.getLogger().warning(main.prefix + ChatFormatting.RED + "Ce conteneur ne fonctionne pas sur votre version actuelle.");
                return;
             }
 
@@ -162,7 +158,7 @@ public final class InventoryUpdate {
             PlayerEntity.sendPacket(packet, player);
             serverPlayer.inventoryMenu.sendAllDataToRemote();
 
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch(Exception e) { e.printStackTrace(System.err); }
     }
 
        
@@ -182,7 +178,7 @@ public final class InventoryUpdate {
      *
      * @return La version du serveur.
      */
-    private static int getVersion() { return Integer.parseInt(reflection.getpackageNameVersion().split("_")[1]); }
+    private static int getVersion() { return Integer.parseInt(reflection.getPackageNameVersion().split("_")[1]); }
 
     
     
@@ -276,7 +272,7 @@ public final class InventoryUpdate {
                 return field.get(null);
 
             } catch(NoSuchFieldException e) { return null; }
-            catch(IllegalAccessException e) { e.printStackTrace(); return null; }
+            catch(IllegalAccessException e) { e.printStackTrace(System.err); return null; }
         }
         
         

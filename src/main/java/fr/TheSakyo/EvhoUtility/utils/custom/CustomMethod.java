@@ -7,8 +7,7 @@ import fr.TheSakyo.EvhoUtility.config.ConfigFile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.model.user.UserManager;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.util.StringUtil;
 
 import org.apache.commons.lang.math.IntRange;
@@ -16,7 +15,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 
 import net.luckperms.api.model.user.User;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -147,7 +146,7 @@ public class CustomMethod {
 
 
 	/*****************************************************************************/
-	/* RÉCUPÈRE DES LOCALISAIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
+	/* RÉCUPÈRE DES LOCALISATIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
 	/****************************************************************************/
 
 	/**
@@ -155,37 +154,37 @@ public class CustomMethod {
 	 *
 	 * @param location L' {@link Location Emplacement} initiale sur lequel effectuer la recherche.
 	 * @param radius Le rayon de recherche des emplacements à récupérer.
-	 * @param checkY Doit-on vérifier les localisations la coordonée 'Y'.
+	 * @param checkY Doit-on vérifier les localisations la coordonnée 'Y'.
 	 *
 	 * @return Une liste d' {@link List<Location> emplacements}.
 	 */
 	public static List<Location> getNearbyLocations(Location location, int radius, boolean checkY) {
 
-		List<Location> locations = new ArrayList<Location>(); // Permmettra de retourner une liste de localisation
+		List<Location> locations = new ArrayList<>(); // Permettra de retourner une liste de localisation
 
-		// ⬇️ On boucle sur toutes les localisations dans la coordonée 'X' ⬇️ //
+		// ⬇️ On boucle sur toutes les localisations dans la coordonnée 'X' ⬇️ //
 		for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
 
-			// ⬇️ On boucle sur toutes les localisations dans la coordonée 'Y' ⬇️ //
+			// ⬇️ On boucle sur toutes les localisations dans la coordonnée 'Y' ⬇️ //
 			for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
 
-				// On boucle sur toutes les localisations dans la coordonée 'Z' et on retourne celui-ci
+				// On boucle sur toutes les localisations dans la coordonnée 'Z' et on retourne celui-ci
 				for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
 
 					/* On ajoute à la liste en question, la localisation récupérée, on définit également à la localisation la coordonnée 'Y' de la boucle si on décide dela vérifier,
-					   sinon on lui donne la coordonée de la localisation inititale */
+					   sinon on lui donne la coordonnée de la localisation initiale */
 					locations.add(new Location(location.getWorld(), x, checkY ? y : location.getY(), z));
 				}
 			}
-			// ⬆️ On boucle sur tous les blocs dans la coordonée 'Y' ⬆️ //
+			// ⬆️ On boucle sur tous les blocs dans la coordonnée 'Y' ⬆️ //
 		}
-		// ⬆️ On boucle sur tous les blocs dans la coordonée 'X' ⬆️ //
+		// ⬆️ On boucle sur tous les blocs dans la coordonnée 'X' ⬆️ //
 
 		return locations; // On retourne la liste en question
 	}
 
 	/*****************************************************************************/
-	/* RÉCUPÈRE DES LOCALISAIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
+	/* RÉCUPÈRE DES LOCALISATIONS AUTOUR D'UNE LOCALISATION EN PRÉCISANT UN RAYON */
 	/****************************************************************************/
 
 
@@ -213,23 +212,24 @@ public class CustomMethod {
 
 
 	/******************************************************************************************/
-	/* TOUTE PETITE MÉTHODE POUR VÉRIFIER SI LES COORDONNÉES PEUT ETRE VISIBLE PAR LE JOUEUR */
+	/* TOUTE PETITE MÉTHODE POUR VÉRIFIER SI LES COORDONNÉES PEUT ÊTRE VISIBLE PAR LE JOUEUR */
 	/*****************************************************************************************/
-    /*public static boolean locationCanBeViewByPlayer(Location loc, Player p) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+    /* public static boolean locationCanBeViewByPlayer(Location loc, Player p) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
 		LivingEntity playerEntity = ((CraftLivingEntity)((CraftPlayer)p).getHandle().getBukkitLivingEntity()).getHandle();
         if(playerEntity.getLevel() != ((CraftWorld)loc.getWorld()).getHandle()) return false;
 
 		Class playerEntityClass = playerEntity.getClass().getSuperclass().getSuperclass().getSuperclass(); // Récupère la class 'Entity' du joueur
 
-		// ⬇️ Essait de remapper les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur ⬇️ //
+		// ⬇️ Essai de 'remapper' les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur ⬇️ //
 		Class<?> remappedEntityPlayer = RemapReflection.remapClassName(playerEntityClass);
 		String entityx = RemapReflection.remapMethodName(playerEntityClass, "dg");
 		String entityEyeY = RemapReflection.remapMethodName(playerEntityClass, "dk");
 		String entityz = RemapReflection.remapMethodName(playerEntityClass, "dm");
-		// ⬆️ Essait de remapper les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur ⬆️ //
+		// ⬆️ Essai de 'remapper' les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur ⬆️ //
 
-		// ⬇️ Essait de récupérer les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur du remmapage éffectué  ⬇️ //
+		// ⬇️ Essai de récupérer les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur du remmapage éffectué  ⬇️ //
 		Method playerX = remappedEntityPlayer.getDeclaredMethod(entityx);
 		Method playerEyeY = remappedEntityPlayer.getDeclaredMethod(entityEyeY);
 		Method playerZ = remappedEntityPlayer.getDeclaredMethod(entityz);
@@ -237,17 +237,17 @@ public class CustomMethod {
 		playerX.setAccessible(true);
 		playerEyeY.setAccessible(true);
 		playerZ.setAccessible(true);
-		// ⬆️ Essait de récupérer les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur du remmapage éffectué  ⬆️ //
+		// ⬆️ Essai de récupérer les méthodes 'getX()', 'getEyeY()' et 'getZ()' de la class 'LivingEntity' du Joueur du remmapage éffectué  ⬆️ //
 
         Vec3 vec3d = new Vec3((double)playerX.invoke(playerEntity), (double)playerEyeY.invoke(playerEntity), (double)playerZ.invoke(playerEntity));
         Vec3 vec3d1 = new Vec3(loc.getX(), loc.getY(), loc.getZ());
         if(vec3d1.distanceToSqr(vec3d) > 128D * 128D) return false; //Retour anticipé si la distance est supérieure à 128 blocs
 
 		return playerEntity.level.rayTraceDirect(vec3d, vec3d1, net.minecraft.world.phys.shapes.CollisionContext.of(playerEntity)) == net.minecraft.world.phys.BlockHitResult.Type.MISS;
+	} */
 
-	}*/
 	/******************************************************************************************/
-	/* TOUTE PETITE MÉTHODE POUR VÉRIFIER SI LES COORDONNÉES PEUT ETRE VISIBLE PAR LE JOUEUR */
+	/* TOUTE PETITE MÉTHODE POUR VÉRIFIER SI LES COORDONNÉES PEUT ÊTRE VISIBLE PAR LE JOUEUR */
 	/*****************************************************************************************/
 
 
@@ -264,15 +264,16 @@ public class CustomMethod {
 	 */
 	public static void setTypeBlocks(Block start, int radius, Material material) {
 		
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks;
 		
-	    if(radius < 0) { blocks =  new ArrayList<Block>(0); }
-	    
+	    if(radius < 0) { blocks = new ArrayList<>(0); }
 	    else { 
 	     
 	      int iterations = (radius * 2) + 1;
-	      blocks = new ArrayList<Block>(iterations * iterations * iterations); 
+	      blocks = new ArrayList<>(iterations * iterations * iterations);
 	    }
+
+		/************************************************/
 
 	    for(int x = -radius; x <= radius; x++) {
 	    	
@@ -281,8 +282,10 @@ public class CustomMethod {
 	            for(int z = -radius; z <= radius; z++) { blocks.add(start.getRelative(x, y - 3, z)); }
 	        }
 	    }
-	    
-	   for(Block block : blocks) block.setType(material);;
+
+		/************************************************/
+
+		for(Block block : blocks) block.setType(material);
 	}
 
     /****************************************************/
@@ -297,14 +300,14 @@ public class CustomMethod {
 	/**
 	 * Retourne vrai ou faux si la chaîne de caractère commence par une liste de préfix.
 	 *
-     * @param str Message
-     * @param prefixlist Liste de Préfix
+     * @param str Message.
+     * @param prefixList Liste de Préfix.
 	 *
-	 * @return vrai si {@code str} commence par {@code prefixlist}, sans tenir compte de la sensibilité à la casse.
+	 * @return vrai si {@code str} commence par {@code prefixList}, sans tenir compte de la sensibilité à la casse.
      */
-    public static boolean startsWithIgnoreCase(String str, List<String> prefixlist) { 
+    public static boolean startsWithIgnoreCase(String str, List<String> prefixList) {
     
-     for(String prefix : prefixlist) if(str.startsWith(prefix)) return str.regionMatches(true, 0, prefix, 0, prefix.length());
+     for(String prefix : prefixList) if(str.startsWith(prefix)) return str.regionMatches(true, 0, prefix, 0, prefix.length());
 	 return false;
     }
     
@@ -312,14 +315,14 @@ public class CustomMethod {
 	/**
 	 * Retourne vrai ou faux si la chaîne de caractère se termine par une liste de suffix.
 	 *
-     * @param str Message
-     * @param suffixlist Liste de Suffix
+     * @param str Message.
+     * @param suffixList Liste de Suffix.
 	 *
-     * @return vrai si {@code str} fini par {@code suffixlist}, sans tenir compte de la sensibilité à la casse.
+     * @return vrai si {@code str} fini par {@code suffixList}, sans tenir compte de la sensibilité à la casse.
      */
-    public static boolean endsWithIgnoreCase(String str, List<String> suffixlist) { 
+    public static boolean endsWithIgnoreCase(String str, List<String> suffixList) {
 
-		for(String suffix : suffixlist) {
+		for(String suffix : suffixList) {
 
 			int suffixLength = suffix.length();
 			if(str.endsWith(suffix)) str.regionMatches(true, str.length() - suffixLength, suffix, 0, suffixLength);
@@ -340,8 +343,8 @@ public class CustomMethod {
 	/**
 	 * Retourne vrai ou faux si la chaîne de caractère contient la chaîne de caractère demandée.
 	 *
-	 * @param str Message
-	 * @param searchStr La chaîne de caractère a cherché
+	 * @param str Message.
+	 * @param searchStr La chaîne de caractère a cherché.
 	 *
 	 * @return vrai si {@code str} contient {@code searchStr}, sans tenir compte de la sensibilité à la casse.
 	 */
@@ -357,10 +360,10 @@ public class CustomMethod {
 	}
 
 	/**
-	 * Retourne vrai ou faux si plusieurs chaînes de caractères contiennnent la chaîne de caractère demandée.
+	 * Retourne vrai ou faux si plusieurs chaînes de caractères contiennent la chaîne de caractère demandée.
 	 *
-	 * @param strings Message
-	 * @param searchStr La chaîne de caractère a cherché
+	 * @param strings Message.
+	 * @param searchStr La chaîne de caractère a cherché.
 	 *
 	 * @return vrai si {@code strings} contiennent {@code searchStr}, sans tenir compte de la sensibilité à la casse.
 	 */
@@ -382,7 +385,7 @@ public class CustomMethod {
 	/**
 	 * Supprime toutes les chaînes nulles ou vides d'une liste.
 	 *
-	 * @param array La liste cible à verrifier.
+	 * @param array La liste cible à verifier.
 	 */
 	public static void RemoveNullList(List<String> array) {
 	   
@@ -403,7 +406,7 @@ public class CustomMethod {
 	 * Vérifie si un joueur regarde un emplacement spécifique
 	 *
 	 * @param player Le joueur qui regarde l'emplacement en question.
-	 * @param location L'Emplacement a vérifié
+	 * @param location L'Emplacement qu'il faut vérifier.
 	 *
 	 * @return Une valeur booléenne.
 	 */
@@ -427,16 +430,29 @@ public class CustomMethod {
 	/**
 	 * Vérifie si un joueur a une permission de l'api {@link net.luckperms.api.LuckPerms}
 	 *
-	 * @param p Le joueur a vérifié l'autorisation.
-	 * @param permission L'Autorisation à vérifier.
+	 * @param player Le joueur qu'il faut vérifier l'autorisation.
+	 * @param permission L'Autorisation qu'il faut vérifier.
 	 *
 	 * @return Une valeur booléenne.
 	 */
-	public static boolean hasLuckPermission(Player p, String permission) {
+	public static boolean hasLuckPermission(Player player, String permission) {
 
-	  User user = CustomMethod.getLuckPermUserOffline(p.getUniqueId());
+	  return hasLuckPermission(player.getUniqueId(), permission);
+	}
 
-	  if(user != null) if(user.getCachedData().getPermissionData().getPermissionMap().containsKey(permission)) { return true; }
+	/**
+	 * Vérifie si un joueur à partir de son identifiant unique à une permission de l'api {@link net.luckperms.api.LuckPerms}
+	 *
+	 * @param uuid L'Identifiant unique du joueur qu'il faut vérifier l'autorisation.
+	 * @param permission L'Autorisation qu'il faut vérifier.
+	 *
+	 * @return Une valeur booléenne.
+	 */
+	public static boolean hasLuckPermission(UUID uuid, String permission) {
+
+	  User user = CustomMethod.getLuckPermUserOffline(uuid);
+
+	  if(user != null) return user.getCachedData().getPermissionData().getPermissionMap().containsKey(permission);
 	  return false;
 	}
 	  
@@ -463,13 +479,9 @@ public class CustomMethod {
 		UtilityMain main = UtilityMain.getInstance();
 		
 		//Si le joueur est un admin, le co-fondateur ou la fondatrice
-		if(main.formatgrade.isPlayerInGroup(p, "fondateur") || main.formatgrade.isPlayerInGroup(p, "fondatrice") || main.formatgrade.isPlayerInGroup(p, "admin")) {
-
-		    return true;
-		    
-		} else { return false; }
-		//Vérifie si le nom du serveur actuel est le nom d'un des serveurs hub (ou pas) //
-
+        return main.formatGrade.isPlayerInGroup(p, "fondateur") ||
+			   main.formatGrade.isPlayerInGroup(p, "fondatrice") ||
+			   main.formatGrade.isPlayerInGroup(p, "admin");
 	}
 	
 	/*****************************************************************/
@@ -484,15 +496,11 @@ public class CustomMethod {
 	/**
 	 * Vérifie si un joueur à la permission de contournement (permission administrateur)
 	 *
-	 * @param p Le Joueur a vérifié la permission
+	 * @param p Le Joueur qu'il faut vérifier la permission
 	 *
 	 * @return Une valeur booléenne.
 	 */
-	public static boolean hasByPassPerm(Player p) {
-
-		if(p.hasPermission("utility.bypass")) { return true; }
-		return false;
-	}
+	public static boolean hasByPassPerm(Player p) { return p.hasPermission("utility.bypass"); }
 
 	/*********************************************************************************************/
 	/* PETITE MÉTHODE VÉRIFIANT SI LE JOUEUR A LA PERMISSION DE CONTOURNEMENT (PERMISSION ADMIN) */
@@ -512,12 +520,8 @@ public class CustomMethod {
 	 */
 	public static boolean isServerHub(String hub) {
 			
-		//Vérifie si le nom du serveur actuel est le nom d'un des serveurs hub (ou pas) //
-		if(ConfigFile.getString(UtilityMain.getInstance().servernameconfig, "server_name").equalsIgnoreCase(hub)) { return true; }
-		
-		else { return false; }
-		//Vérifie si le nom du serveur actuel est le nom d'un des serveurs hub (ou pas) //
-
+		//Vérifie si le nom du serveur actuel est le nom d'un des serveurs hub (ou pas)
+        return ConfigFile.getString(UtilityMain.getInstance().serverNameConfig, "server_name").equalsIgnoreCase(hub);
 	}
 
 	/******************************************************************************/
@@ -531,10 +535,9 @@ public class CustomMethod {
 	  public static void sendActionBar(Player player, String message) {
 
         net.minecraft.network.chat.Component chat = net.minecraft.network.chat.Component.Serializer.fromJson("{\"text\": \"" + message + "\"}");
-        ClientboundChatPacket chatPacket = new ClientboundChatPacket(chat, ChatType.GAME_INFO, null);
-
+		ClientboundSetActionBarTextPacket actionBarTextPacket = new ClientboundSetActionBarTextPacket(chat);
         CraftPlayer craftPlayer = (CraftPlayer)player;
-        craftPlayer.getHandle().connection.send(chatPacket);
+        craftPlayer.getHandle().connection.send(actionBarTextPacket);
     }
 	/*********************************************************************************************/
 	/* PETITE MÉTHODE EN PAQUET POUR ENVOYER UN MESSAGE A UN JOUEUR AU NIVEAU DE LA BAR D'ACTION */
@@ -549,7 +552,7 @@ public class CustomMethod {
 	/**
 	 * Obtient l'utilisateur LuckPerm d'un joueur (hors ligne ou non).
 	 *
-	 * @param uniqueId L'UUID du joueur à obtenir.
+	 * @param uniqueId UUID du joueur à obtenir.
 	 *
 	 * @return Un Utilisateur LuckPerm
 	 */
@@ -557,21 +560,15 @@ public class CustomMethod {
 
 		// *** \\ ⬇️ // *** RÉCUPÉRATION DU JOUEUR AVEC LE PLUGIN LUCKPERMS tant que l'Utilisateur LuckPerms est 'NULL' *** \\ ⬇️ // *** //
 
-			UserManager userManager = UtilityMain.getInstance().luckapi.getUserManager(); // Gestionnaire Utilisateur LuckPerms
-			boolean checkContinue = true; // Variable booléenne ('Vrai' par défaut)
+			UserManager userManager = UtilityMain.getInstance().luckApi.getUserManager(); // Gestionnaire Utilisateur LuckPerms
+
+			/***************************************************/
 
 			@NotNull OfflinePlayer offlinePlayer = Bukkit.getServer().getOfflinePlayer(uniqueId); // Récupère le Joueur Hors-Ligne
 			User user = null; // Permettra de récupérer l'Utilisateur LuckPerms
 
-			// ⬇️ - Tant que l'Utilisateur LuckPerms est 'NULL', on essaie de le récupérer - ⬇️ //
-			while(user == null) {
-
-				// Si la varibale 'checkContinue' est vrai, on peut définir l'utilisateur LuckPerms sinon on renvoie 'null' //
-				if(checkContinue) { user = userManager.getUser(uniqueId); }
-				else { return null; }
-				// Si la varibale 'checkContinue' est vrai, on peut définir l'utilisateur LuckPerms sinon on renvoie 'null' //
-			}
-			// ⬆️ - Tant que l'Utilisateur LuckPerms est 'NULL', on essaie de le récupérer - ⬆️ //
+			// Tant que l'Utilisateur LuckPerms est 'NULL', on essaie de le récupérer
+			while(user == null) { user = userManager.getUser(uniqueId); }
 
 		// *** \\ ⬆️ // *** RÉCUPÉRATION DU JOUEUR AVEC LE PLUGIN LUCKPERMS tant que l'Utilisateur LuckPerms est 'NULL' *** \\ ⬆️ // *** //
 

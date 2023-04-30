@@ -5,10 +5,12 @@ import fr.TheSakyo.EvhoUtility.config.ConfigFile;
 import fr.TheSakyo.EvhoUtility.managers.ZoneManager;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import net.kyori.adventure.title.Title;
+import net.minecraft.ChatFormatting;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,7 +24,7 @@ import java.util.*;
 public class ZoneListener implements Listener {
 
     /* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public ZoneListener(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
@@ -32,7 +34,7 @@ public class ZoneListener implements Listener {
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR BOUGE DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
     /******************************************************************************/
     @EventHandler
-    public void onMoveinZone(PlayerMoveEvent e) {
+    public void onMoveInZone(PlayerMoveEvent e) {
 
         Player p = e.getPlayer();
         Location from = e.getFrom();
@@ -47,9 +49,9 @@ public class ZoneListener implements Listener {
 
                              /* ------------------------------------------------------------------------------------- */
 
-        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false);
+        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneConfig, "ZONE").getKeys(false);
 
-        if(keysZoneSectionCfg != null && !keysZoneSectionCfg.isEmpty()) {
+        if(!keysZoneSectionCfg.isEmpty()) {
 
             for(String key : keysZoneSectionCfg) {
 
@@ -84,56 +86,53 @@ public class ZoneListener implements Listener {
                                                      /* ------------------------------------------------------- */
 
                     // Vérifie la région sur laquelle effectuer l'évènement //
-                    List<Boolean> checkRegionAndPerm = null;
+                    List<Boolean> checkRegionAndPerm;
                     if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) checkRegionAndPerm = inNotRegionZone_playerHasPerm(p, from, to, key);
                     else checkRegionAndPerm = inRegionZone_playerHasPerm(p, from, to, key);
                     // Vérifie la région sur laquelle effectuer l'évènement //
 
                     if(checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) {
 
-                        if(checkRegionAndPerm.size() == 2 && checkRegionAndPerm.get(0) == true && checkRegionAndPerm.get(1) == false) {
+                        if(checkRegionAndPerm.size() == 2 && checkRegionAndPerm.get(0) && !checkRegionAndPerm.get(1)) {
 
                             if(CustomMethod.hasByPassPerm(p)) { return; }
 
                             e.setCancelled(true); // Annule l'évènement
 
-                            // Aprés un tick, on décale le Joueur pour l'empécher de rejoindre la Zone //
-                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-                                @Override
-                                public void run() {
+                            // Aprés un tick, on décale le Joueur pour l'empêcher de rejoindre la Zone //
+                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, () -> {
 
-                                    e.setCancelled(false); // Réactive l'évènement
+                                e.setCancelled(false); // Réactive l'évènement
 
-                                    /* Si le Joueur essait de Sortir d'une Zone Globale ou Entrer dans une zone auquel il n'a pas accès par le bas,
-                                       on pousse donc le joueur en récupérant le vecteur de la localisation précédente avec une multiplication -1 */
-                                    if(from.getBlockY() < to.getBlockY()) p.setVelocity(from.toVector().multiply(-1));
+                                /* Si le Joueur essaie de Sortir d'une Zone Globale ou Entrer dans une zone auquel il n'a pas accès par le bas,
+                                   on pousse donc le joueur en récupérant le vecteur de la localisation précédente avec une multiplication -1 */
+                                if(from.getBlockY() < to.getBlockY()) p.setVelocity(from.toVector().multiply(-1));
 
-                                    /* Sinon, Si le Joueur essait de Sortir d'une Zone Globale ou Entrer dans une zone auquel il n'a pas accès par le haut,
-                                       on pousse donc le joueur en récupérant le vecteur de la localisation précédente,
-                                       ou on le téléporte si la nouvelle localisation contient de l'air */
-                                    else if(from.getBlockY() > to.getBlockY()) {
+                                /* Sinon, Si le Joueur essaie de Sortir d'une Zone Globale ou Entrer dans une zone auquel il n'a pas accès par le haut,
+                                   on pousse donc le joueur en récupérant le vecteur de la localisation précédente,
+                                   ou on le téléporte si la nouvelle localisation contient de l'air */
+                                else if(from.getBlockY() > to.getBlockY()) {
 
-                                        // Si la nouvelle localisation contient de l'air, on téléporte le joueur à la localisation précédente
-                                        if(toBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) p.teleport(ZoneManager.previousLocation.get(p.getUniqueId()));
+                                    // Si la nouvelle localisation contient de l'air, on téléporte le joueur à la localisation précédente
+                                    if(toBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) p.teleport(ZoneManager.previousLocation.get(p.getUniqueId()));
 
-                                        // Sinon, on le pousse en récupérant le vecteur de la localisation précédente.
-                                        else p.setVelocity(from.toVector());
-                                    }
-
-                                    // Sinon, on le pousse à la localisation précédente à partir de la nouvelle avec une normalisation et une multiplication -2
-                                    else p.setVelocity(to.toVector().subtract(ZoneManager.previousLocation.get(p.getUniqueId()).toVector()).normalize().multiply(-2));
-
-                                    p.playSound(playerLoc, Sound.ENTITY_GHAST_SHOOT, 1f, 1f);
-                                    p.spawnParticle(Particle.CLOUD, playerLoc, 16);
-
-                                    Title title = null;
-                                    if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatColor.RED + "TU NE SORTIRA PAS !"));
-                                    else title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatColor.RED + "Vous n'avez pas la permission pour entré dans cette région !"));
-
-                                    p.showTitle(title);
+                                    // Sinon, on le pousse en récupérant le vecteur de la localisation précédente.
+                                    else p.setVelocity(from.toVector());
                                 }
+
+                                // Sinon, on le pousse à la localisation précédente à partir de la nouvelle avec une normalisation et une multiplication -2
+                                else p.setVelocity(to.toVector().subtract(ZoneManager.previousLocation.get(p.getUniqueId()).toVector()).normalize().multiply(-2));
+
+                                p.playSound(playerLoc, Sound.ENTITY_GHAST_SHOOT, 1f, 1f);
+                                p.spawnParticle(Particle.CLOUD, playerLoc, 16);
+
+                                Title title;
+                                if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatFormatting.RED + "TU NE SORTIRA PAS !"));
+                                else title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatFormatting.RED + "Vous n'avez pas la permission pour entré dans cette région !"));
+
+                                p.showTitle(title);
                             }, 1);
-                            // Aprés un tick, on décale le Joueur pour l'empécher de rejoindre la Zone //
+                            // Aprés un tick, on décale le Joueur pour l'empêcher de rejoindre la Zone //
                         }
                     }
                 }
@@ -149,37 +148,12 @@ public class ZoneListener implements Listener {
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR JETTE UN ITEM DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
     /***************************************************************************************/
 	@EventHandler
-	public void onDropinZone(PlayerDropItemEvent e) {
+	public void onDropInZone(PlayerDropItemEvent e) {
 
 		Player p = e.getPlayer();
         Location getItemDropLocation = e.getItemDrop().getLocation();
 
-        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false);
-
-        if(keysZoneSectionCfg != null && !keysZoneSectionCfg.isEmpty()) {
-
-            for(String key : keysZoneSectionCfg) {
-
-                if(ZoneManager.hasRegion(key)) {
-
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-                    List<Boolean> checkRegionAndPerm = null;
-                    if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) checkRegionAndPerm = inNotRegionZone_playerHasPerm(p, null, getItemDropLocation, key);
-                    else checkRegionAndPerm = inRegionZone_playerHasPerm(p, null, getItemDropLocation, key);
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-
-                    if((checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) && checkRegionAndPerm.size() == 2) {
-
-                        if(checkRegionAndPerm.get(0) == true && checkRegionAndPerm.get(1) == false) {
-
-                           if(CustomMethod.hasByPassPerm(p)) { e.setCancelled(false); return; }
-                            e.setCancelled(true);
-
-                        } else { e.setCancelled(false); }
-                    }
-                }
-            }
-        }
+        checkZonePermission(e, p, getItemDropLocation);
 	}
     /***************************************************************************************/
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR JETTE UN ITEM DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
@@ -190,39 +164,10 @@ public class ZoneListener implements Listener {
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR RÉCUPÈRE UN ITEM DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
     /******************************************************************************************/
 	@EventHandler
-	public void onPickUpinZone(EntityPickupItemEvent e) {
+	public void onPickUpInZone(EntityPickupItemEvent e) {
 
         Location getItemLocation = e.getItem().getLocation();
-
-        if(e.getEntity() instanceof Player p) {
-
-            Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false);
-
-            if(keysZoneSectionCfg != null && !keysZoneSectionCfg.isEmpty()) {
-
-                for(String key : keysZoneSectionCfg) {
-
-                    if(ZoneManager.hasRegion(key)) {
-
-                        // Vérifie la région sur laquelle effectuer l'évènement //
-                        List<Boolean> checkRegionAndPerm = null;
-                        if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) checkRegionAndPerm = inNotRegionZone_playerHasPerm(p, null, getItemLocation, key);
-                        else checkRegionAndPerm = inRegionZone_playerHasPerm(p, null, getItemLocation, key);
-                        // Vérifie la région sur laquelle effectuer l'évènement //
-
-                        if((checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) && checkRegionAndPerm.size() == 2) {
-
-                            if(checkRegionAndPerm.get(0) == true && checkRegionAndPerm.get(1) == false) {
-
-                                if(CustomMethod.hasByPassPerm(p)) { e.setCancelled(false); return; }
-                                e.setCancelled(true);
-
-                            } else { e.setCancelled(false); }
-                        }
-                    }
-                }
-            }
-        }
+        if(e.getEntity() instanceof Player p) checkZonePermission(e, p, getItemLocation);
 	}
     /******************************************************************************************/
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR RÉCUPÈRE UN ITEM DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
@@ -234,37 +179,12 @@ public class ZoneListener implements Listener {
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR CASSE UN BLOC DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
     /**************************************************************************************/
 	@EventHandler
-	public void onBreakinZone(BlockBreakEvent e) {
+	public void onBreakInZone(BlockBreakEvent e) {
 
 		Player p = e.getPlayer();
         Location getBlockLocation = e.getBlock().getLocation();
 
-        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false);
-
-		if(keysZoneSectionCfg != null && !keysZoneSectionCfg.isEmpty()) {
-
-            for(String key : keysZoneSectionCfg) {
-
-                if(ZoneManager.hasRegion(key)) {
-
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-                    List<Boolean> checkRegionAndPerm = null;
-                    if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) checkRegionAndPerm = inNotRegionZone_playerHasPerm(p, null, getBlockLocation, key);
-                    else checkRegionAndPerm = inRegionZone_playerHasPerm(p, null, getBlockLocation, key);
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-
-                    if((checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) && checkRegionAndPerm.size() == 2) {
-
-                        if(checkRegionAndPerm.get(0) == true && checkRegionAndPerm.get(1) == false) {
-
-                            if(CustomMethod.hasByPassPerm(p)) { e.setCancelled(false); return; }
-                            e.setCancelled(true);
-
-                        } else { e.setCancelled(false); }
-                    }
-                }
-            }
-        }
+        checkZonePermission(e, p, getBlockLocation);
 	}
     /***************************************************************************************/
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR CASSE UN BLOC DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
@@ -275,37 +195,12 @@ public class ZoneListener implements Listener {
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR PLACE UN BLOC DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
     /**************************************************************************************/
 	@EventHandler
-	public void onPlaceinZone(BlockPlaceEvent e) {
+	public void onPlaceInZone(BlockPlaceEvent e) {
 
 		Player p = e.getPlayer();
         Location getBlockPlacedLocation = e.getBlockPlaced().getLocation();
 
-        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneconfig, "ZONE").getKeys(false);
-
-        if(keysZoneSectionCfg != null && !keysZoneSectionCfg.isEmpty()) {
-
-            for(String key : keysZoneSectionCfg) {
-
-                if(ZoneManager.hasRegion(key)) {
-
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-                    List<Boolean> checkRegionAndPerm = null;
-                    if(key.equalsIgnoreCase("default_" + p.getWorld().getName())) checkRegionAndPerm = inNotRegionZone_playerHasPerm(p, null, getBlockPlacedLocation, key);
-                    else checkRegionAndPerm = inRegionZone_playerHasPerm(p, null, getBlockPlacedLocation, key);
-                    // Vérifie la région sur laquelle effectuer l'évènement //
-
-                    if((checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) && checkRegionAndPerm.size() == 2) {
-
-                        if(checkRegionAndPerm.get(0) == true && checkRegionAndPerm.get(1) == false) {
-
-                            if(CustomMethod.hasByPassPerm(p)) { e.setCancelled(false); return; }
-                            e.setCancelled(true);
-
-                        } else { e.setCancelled(false); }
-                    }
-                }
-            }
-        }
+        checkZonePermission(e, p, getBlockPlacedLocation);
 	}
     /***************************************************************************************/
     /* ~~~ ÉVÈNEMENT QUAND LE JOUEUR PLACE UN BLOC DANS UNE ZONE DU SERVEUR (EVHOZONE) ~~~ */
@@ -313,14 +208,14 @@ public class ZoneListener implements Listener {
 
 
 
-    /*****************************************************************************************************/
-    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINIT EST DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /* ~~~ ET VERIFIE ÉGALEMENT SI LE JOUEUR A LA PERMISSION D'ENTRÉ DANS LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /****************************************************************************************************/
+    /*******************************************************************************************************/
+    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINITE EST DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /* ~~~ ET VERIFIES ÉGALEMENT SI LE JOUEUR A LA PERMISSION D'ENTRÉ DANS LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /******************************************************************************************************/
     private List<Boolean> inRegionZone_playerHasPerm(Player p, Location locFrom, Location locTo, String keyName) {
 
         Location locFromToCheck = null;
-        List<Boolean> returnedList = new ArrayList<Boolean>();
+        List<Boolean> returnedList = new ArrayList<>();
 
         Location firstPosition = ZoneManager.getFirstLocationPos(keyName);
         Location secondPosition = ZoneManager.getSecondLocationPos(keyName);
@@ -335,12 +230,12 @@ public class ZoneListener implements Listener {
 
                 if(CustomMethod.inRegionCuboid(locFrom, firstPosition, secondPosition)) {
 
-                    if((CustomMethod.hasByPassPerm(p) == false) && (ZoneManager.hasPerm(keyName, p)) == false) {
+                    if((!CustomMethod.hasByPassPerm(p)) && !(ZoneManager.hasPerm(keyName, p))) {
 
                         if(((locFrom.getBlockY() != locTo.getBlockY()) && (locFrom.getBlockY() < locTo.getBlockY())) ||
                             (locFrom.getBlockX() != locTo.getBlockX()) || (locFrom.getBlockZ() != locTo.getBlockZ())) {
 
-                                Title title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatColor.RED + "Vous ne pouvez pas être dans cette région !"));
+                                Title title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatFormatting.RED + "Vous ne pouvez pas être dans cette région !"));
                                 p.showTitle(title);
 
                                 p.teleport(p.getWorld().getSpawnLocation());
@@ -374,22 +269,22 @@ public class ZoneListener implements Listener {
 
         return returnedList;
     }
-    /*****************************************************************************************************/
-    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINIT EST DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /* ~~~ ET VERIFIE ÉGALEMENT SI LE JOUEUR A LA PERMISSION D'ENTRÉ DANS LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /****************************************************************************************************/
+    /*******************************************************************************************************/
+    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINITE EST DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /* ~~~ ET VERIFIES ÉGALEMENT SI LE JOUEUR A LA PERMISSION D'ENTRÉ DANS LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /******************************************************************************************************/
 
   /* ---------------------------------------------------------------------------------------------------------------------------------*/
   /* ---------------------------------------------------------------------------------------------------------------------------------*/
 
-    /***********************************************************************************************************/
-    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINIT N'EST pas DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /* ~~~  ET VERIFIE ÉGALEMENT SI LE JOUEUR A LA PERMISSION DE SORTIR DANS LA ZONE DU SERVEUR DÉFINIT    ~~~ */
-    /**********************************************************************************************************/
+    /*************************************************************************************************************/
+    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINITE N'EST pas DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /* ~~~  ET VERIFIES ÉGALEMENT SI LE JOUEUR A LA PERMISSION DE SORTIR DANS LA ZONE DU SERVEUR DÉFINIT    ~~~ */
+    /************************************************************************************************************/
     private List<Boolean> inNotRegionZone_playerHasPerm(Player p, Location locFrom, Location locTo, String keyName) {
 
         Location locFromToCheck = null;
-        List<Boolean> returnedList = new ArrayList<Boolean>();
+        List<Boolean> returnedList = new ArrayList<>();
 
         Location firstPosition = ZoneManager.getFirstLocationPos(keyName);
         Location secondPosition = ZoneManager.getSecondLocationPos(keyName);
@@ -404,12 +299,12 @@ public class ZoneListener implements Listener {
 
                 if(!CustomMethod.inRegionCuboid(locFrom, firstPosition, secondPosition)) {
 
-                    if((CustomMethod.hasByPassPerm(p) == false) && (ZoneManager.hasPerm(keyName, p)) == false) {
+                    if((!CustomMethod.hasByPassPerm(p)) && !(ZoneManager.hasPerm(keyName, p))) {
 
                         if(((locFrom.getBlockY() != locTo.getBlockY()) && (locFrom.getBlockY() < locTo.getBlockY())) ||
                             (locFrom.getBlockX() != locTo.getBlockX()) || (locFrom.getBlockZ() != locTo.getBlockZ())) {
 
-                                Title title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatColor.RED + "Vous ne pouvez pas sortir de la région !"));
+                                Title title = Title.title(CustomMethod.StringToComponent(" "), CustomMethod.StringToComponent(ChatFormatting.RED + "Vous ne pouvez pas sortir de la région !"));
                                 p.showTitle(title);
 
                                 p.teleport(p.getWorld().getSpawnLocation());
@@ -443,8 +338,46 @@ public class ZoneListener implements Listener {
 
         return returnedList;
     }
-    /***********************************************************************************************************/
-    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINIT N'EST pas DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
-    /* ~~~  ET VERIFIE ÉGALEMENT SI LE JOUEUR A LA PERMISSION DE SORTIR DANS LA ZONE DU SERVEUR DÉFINIT    ~~~ */
-    /**********************************************************************************************************/
+    /*************************************************************************************************************/
+    /* ~~~ MÉTHODE VÉRIFIANT SI LA LOCATION DEFINITE N'EST pas DANS LA REGION DE LA ZONE DU SERVEUR DÉFINIT ~~~ */
+    /* ~~~  ET VERIFIES ÉGALEMENT SI LE JOUEUR A LA PERMISSION DE SORTIR DANS LA ZONE DU SERVEUR DÉFINIT    ~~~ */
+    /************************************************************************************************************/
+
+
+    /******************************************************************************************************/
+    /* ~~~  MÉTHODE UTILE POUR LES ÉVÈNEMENTS (VÉRIFICATION DES PERMISSIONS POUR ACCÉDER À UNE ZONE)  ~~~ */
+    /*****************************************************************************************************/
+    private void checkZonePermission(Cancellable cancellableEvent, Player player, Location location) {
+
+        Set<String> keysZoneSectionCfg = ConfigFile.getConfigurationSection(main.zoneConfig, "ZONE").getKeys(false);
+
+        if(!keysZoneSectionCfg.isEmpty()) {
+
+            for(String key : keysZoneSectionCfg) {
+
+                if(ZoneManager.hasRegion(key)) {
+
+                    // Vérifie la région sur laquelle effectuer l'évènement //
+                    List<Boolean> checkRegionAndPerm;
+                    if(key.equalsIgnoreCase("default_" + player.getWorld().getName())) checkRegionAndPerm =
+                            inNotRegionZone_playerHasPerm(player, null, location, key);
+                    else checkRegionAndPerm = inRegionZone_playerHasPerm(player, null, location, key);
+                    // Vérifie la région sur laquelle effectuer l'évènement //
+
+                    if((checkRegionAndPerm != null && !checkRegionAndPerm.isEmpty()) && checkRegionAndPerm.size() == 2) {
+
+                        if(checkRegionAndPerm.get(0) && !checkRegionAndPerm.get(1)) {
+
+                            if(CustomMethod.hasByPassPerm(player)) { cancellableEvent.setCancelled(false); return; }
+                            cancellableEvent.setCancelled(true);
+
+                        } else cancellableEvent.setCancelled(false);
+                    }
+                }
+            }
+        }
+    }
+    /******************************************************************************************************/
+    /* ~~~  MÉTHODE UTILE POUR LES ÉVÈNEMENTS (VÉRIFICATION DES PERMISSIONS POUR ACCÉDER À UNE ZONE)  ~~~ */
+    /*****************************************************************************************************/
 }

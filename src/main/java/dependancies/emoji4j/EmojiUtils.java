@@ -54,7 +54,7 @@ public class EmojiUtils extends AbstractEmoji {
 	 *
 	 * @return Une valeur booléenne
 	 */
-	public static boolean isEmoji(String code) { return getEmoji(code) == null ? false : true; }
+	public static boolean isEmoji(String code) { return getEmoji(code) != null; }
 
 	/**
 	 * Convertit les courts codes des emojis ou les entités html en chaîne avec des emojis.

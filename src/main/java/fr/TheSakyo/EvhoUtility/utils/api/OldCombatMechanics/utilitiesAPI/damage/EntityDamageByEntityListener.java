@@ -37,15 +37,15 @@ public class EntityDamageByEntityListener extends Module {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
 
         Entity damager = event.getDamager();
-        Entity damagee = event.getEntity();
-        OldEntityDamageByEntityEvent e = new OldEntityDamageByEntityEvent(damager, damagee, event.getCause(), event.getDamage());
+        Entity entityDamager = event.getEntity();
+        OldEntityDamageByEntityEvent e = new OldEntityDamageByEntityEvent(damager, entityDamager, event.getCause(), event.getDamage());
 
         // Appel de l'événement pour que les autres modules apportent leurs modifications.
         plugin.getServer().getPluginManager().callEvent(e);
         if(e.isCancelled()) return;
 
         // Maintenant, nous recalculons les dommages modifiés par les modules et les remettons à l'événement original.
-        // Ordre des dommages : base → effets des potions -> coup critique -> surdommage -> enchantements -> effets de l'armure.
+        // Ordre des dommages : base → effets des potions → coup critique → sur dommage → enchantements → effets de l'armure.
         double newDamage = e.getBaseDamage();
 
         debug("Base: " + e.getBaseDamage(), damager);
@@ -71,7 +71,7 @@ public class EntityDamageByEntityListener extends Module {
 
         // Coup critique : 1.9 est *1.5, 1.8 est *rand(0%,50%) + 1
         // Code Bukkit 1.8_r3 : i += this.random.nextInt(i / 2 + 2) ;
-        if (e.was1_8Crit() && !e.wasSprinting()) {
+        if (e.was1_8Crit() && e.wasSprinting()) {
 
             newDamage *= e.getCriticalMultiplier();
 
@@ -84,7 +84,7 @@ public class EntityDamageByEntityListener extends Module {
         final double lastDamage = newDamage;
 
         // Surdommagements dus à l'immunité
-        if (e.wasInvulnerabilityOverdamage() && damagee instanceof final LivingEntity livingDamagee) {
+        if (e.wasInvulnerabilityOverdamage() && entityDamager instanceof final LivingEntity livingDamagee) {
 
             // Nous devons soustraire les dommages précédents des dommages de la nouvelle arme pour cette attaque.
             newDamage -= livingDamagee.getLastDamage();
@@ -105,8 +105,8 @@ public class EntityDamageByEntityListener extends Module {
 
         event.setDamage(newDamage);
 
-        // Selon le NMS, les derniers dégâts devraient en fait être l'outil de base + la force + le crit, avant l'overdamage.
-        lastDamages.put(damagee.getUniqueId(), lastDamage);
+        // Selon le NMS, les derniers dégâts devraient en fait être l'outil de base + la force + le crie, avant l'overdamage.
+        lastDamages.put(entityDamager.getUniqueId(), lastDamage);
     }
 
     /**

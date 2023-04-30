@@ -368,7 +368,7 @@ public class TokenQueue {
 
     /**
      Consume a CSS identifier (ID or class) off the queue (letter, digit, -, _)
-     http://www.w3.org/TR/CSS2/syndata.html#value-def-identifier
+     <a href="http://www.w3.org/TR/CSS2/syndata.html#value-def-identifier">...</a>
      @return identifier
      */
     public String consumeCssIdentifier() {

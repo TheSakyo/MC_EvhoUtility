@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.*;
 
 /**
- * Gère les 'PacketListeners' et tout le reste.
+ * Gère tous les 'PacketListeners' et tout le reste.
  * Ce gestionnaire supprime les écouteurs lorsque le joueur quitte. Vous n'avez pas besoin de garder la trace de cela !
  */
 public class PacketManager implements Listener {
@@ -113,7 +113,7 @@ public class PacketManager implements Listener {
      * @throws NullPointerException Si l'UUID est nul
      */
     @SuppressWarnings("WeakerAccess")
-    public void removeAllListeners(UUID uuid){
+    public void removeAllListeners(UUID uuid) {
 
         Objects.requireNonNull(uuid, "l'uuid ne peut être nul");
 

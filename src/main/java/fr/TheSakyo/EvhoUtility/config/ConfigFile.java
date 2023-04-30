@@ -3,7 +3,6 @@ package fr.TheSakyo.EvhoUtility.config;
 import java.io.File;
 import java.io.Reader;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
  
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,20 +16,16 @@ public class ConfigFile {
 
     private static ConfigFileManager manager;
 
-    private File file;
+    private final File file;
     private FileConfiguration config;
 
-
     private int comments;
-    
-    /* Récupère la class "Main" et les différentes options pour faire fonctionner le fichier de configuration */
-    @SuppressWarnings("unused")
-	private UtilityMain main;
+
     public ConfigFile(Reader configStream, File configFile, int comments, UtilityMain pluginMain) {
 
     	//Class "Main"
-    	this.main = pluginMain;
-    	
+        /* Récupère la class "Main" et les différentes options pour faire fonctionner le fichier de configuration */
+
         this.comments = comments;
 
         this.file = configFile;
@@ -76,9 +71,9 @@ public class ConfigFile {
 
     public static ItemStack getItemStack(ConfigFile config, String path, ItemStack def) { return config.config.getItemStack(path, def); }
 
-    public static Object getObject(ConfigFile config, String path, Class object) { return config.config.getObject(path, object); }
+    public static Object getObject(ConfigFile config, String path, Class<Object> object) { return config.config.getObject(path, object); }
 
-    public static Object getObject(ConfigFile config, String path, Object def, Class object) { return config.config.getObject(path, object, def); }
+    public static Object getObject(ConfigFile config, String path, Object def, Class<Object> object) { return config.config.getObject(path, object, def); }
 
     public static boolean contains(ConfigFile config, String path) { return config.config.contains(path); }
  

@@ -17,7 +17,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.entity.LevelEntityGetter;
@@ -26,8 +25,8 @@ import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,6 +61,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 
         if(!(msg instanceof Packet<?> packet)) { return; }
@@ -138,7 +138,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
 
         if(packet instanceof ClientboundSetEntityDataPacket metadataPacket) {
 
-            int entityID = metadataPacket.getId();
+            int entityID = metadataPacket.id();
             Entity entity = getEntity(entityID);
 
             if(entity == null) {
@@ -147,57 +147,58 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
                 return;
             }
 
-            List<SynchedEntityData.DataItem<?>> watchers = metadataPacket.getUnpackedData();
-            List<SynchedEntityData.DataItem<?>> remaining = new ArrayList<>();
+            List<SynchedEntityData.DataValue<?>> watchers = metadataPacket.packedItems();
+            List<SynchedEntityData.DataValue<?>> remaining = new ArrayList<>();
 
-            if(watchers != null) {
+            SynchedEntityData.DataValue<?> customName = null;
 
-                SynchedEntityData.DataItem<?> customName = null;
+            for(SynchedEntityData.DataValue<?> watcher : watchers) {
 
-                for(SynchedEntityData.DataItem<?> watcher : watchers) {
-
-                    int id = watcher.getAccessor().getId();
-                    if(id < 15 || id > 20) { remaining.add(watcher); }
-
-                    if(id == 2) { customName = watcher;}
-                }
-
-                //watchers.removeAll(remaining);
-
-                if(customName != null) {
-
-                    Optional<net.minecraft.network.chat.Component> name = (Optional<net.minecraft.network.chat.Component>) customName.getValue();
-
-                    if(entity.isCustomNameVisible()) {
-
-                        Scoreboard scoreboard = new Scoreboard();
-                        PlayerTeam team = new PlayerTeam(scoreboard, getInvisibleName(entityID));
-
-                        if(name.isPresent()) {
-                            team.setNameTagVisibility(Team.Visibility.ALWAYS);
-                            team.setPlayerPrefix(name.get());
-
-                        } else { team.setNameTagVisibility(Team.Visibility.NEVER); }
-
-                        team.getPlayers().add(getInvisibleName(entityID));
-
-                        ClientboundSetPlayerTeamPacket teamPacket = ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false);
-                        super.write(ctx, teamPacket, new DefaultChannelPromise(ctx.channel()));
-                    }
-                }
-
-                if(remaining.isEmpty()) { return; }
-
-                //if(!remaining.isEmpty()) {
-                FriendlyByteBuf serializer = new FriendlyByteBuf(Unpooled.buffer());
-                serializer.writeVarInt(entityID);
-                SynchedEntityData.pack(remaining, serializer);
-
-                ClientboundSetEntityDataPacket newPacket = new ClientboundSetEntityDataPacket(serializer);
-                super.write(ctx, newPacket, promise);
-                return;
-               //}
+                int id = watcher.id();
+                if(id < 15 || id > 20) remaining.add(watcher);
+                if(id == 2) customName = watcher;
             }
+
+            //watchers.removeAll(remaining);
+
+            if(customName != null) {
+
+                Optional<net.minecraft.network.chat.Component> name = (Optional<net.minecraft.network.chat.Component>) customName.value();
+
+                if(entity.isCustomNameVisible()) {
+
+                    Scoreboard scoreboard = new Scoreboard();
+                    PlayerTeam team = new PlayerTeam(scoreboard, getInvisibleName(entityID));
+
+                    if(name.isPresent()) {
+                        team.setNameTagVisibility(Team.Visibility.ALWAYS);
+                        team.setPlayerPrefix(name.get());
+
+                    } else { team.setNameTagVisibility(Team.Visibility.NEVER); }
+
+                    team.getPlayers().add(getInvisibleName(entityID));
+
+                    ClientboundSetPlayerTeamPacket teamPacket = ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false);
+                    super.write(ctx, teamPacket, new DefaultChannelPromise(ctx.channel()));
+                }
+            }
+
+            if(remaining.isEmpty()) return;
+
+            //if(!remaining.isEmpty()) {
+            FriendlyByteBuf serializer = new FriendlyByteBuf(Unpooled.buffer());
+            serializer.writeVarInt(entityID);
+
+           /*********************************/
+
+            for(SynchedEntityData.DataValue<?> dataItem : remaining) { dataItem.write(serializer); }
+
+            /*********************************/
+
+            ClientboundSetEntityDataPacket newPacket = new ClientboundSetEntityDataPacket(serializer);
+            super.write(ctx, newPacket, promise);
+            return;
+            //}
         }
 
         if(packet instanceof ClientboundRemoveEntitiesPacket destroyPacket) {
@@ -206,7 +207,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
 
             for(int entityID : destroyedEntityIDs) {
 
-                if(!entityIDs.contains(entityID)) { continue; }
+                if(!entityIDs.contains(entityID)) continue;
 
                 Scoreboard scoreboard = new Scoreboard();
                 PlayerTeam team = new PlayerTeam(scoreboard, getInvisibleName(entityID));
@@ -261,7 +262,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
 
             if(skin != null) { profile.getProperties().put("textures", new Property("textures", skin.getValue(), skin.getSignature())); }
 
-            ServerPlayer fakePlayer = new ServerPlayer(minecraftServer, entity.level.getMinecraftWorld(), profile);
+            ServerPlayer fakePlayer = new ServerPlayer(minecraftServer, entity.level().getMinecraftWorld(), profile);
 
             fakePlayer.absMoveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
 
@@ -269,7 +270,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
             //l'entité réelle, gérée par le serveur, comme un faux joueur à la place.
             fakePlayer.setId(entityID);
 
-            ClientboundPlayerInfoPacket infoPacket = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, fakePlayer);
+            ClientboundPlayerInfoUpdatePacket infoPacket = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer);
             ClientboundAddPlayerPacket spawnPacket = new ClientboundAddPlayerPacket(fakePlayer);
 
             Scoreboard scoreboard = new Scoreboard();
@@ -288,7 +289,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 
-                ClientboundPlayerInfoPacket removeTablistPacket = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, fakePlayer);
+                ClientboundPlayerInfoRemovePacket removeTablistPacket = new ClientboundPlayerInfoRemovePacket(List.of(fakePlayer.getUUID()));
                 sendPacket(player, removeTablistPacket);
             }, delay);
 
@@ -310,13 +311,13 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
     static {
         try {
 
-            // ⬇️ Essait de remapper le Variable "entityID" récupérant l'identifiant de l'entité du packet "ClientboundMoveEntityPacket" et "ClientboundRotateHeadPacket" ⬇️ //
-            Class entityMovePacket = RemapReflection.remapClassName(ClientboundMoveEntityPacket.class);
-            Class entityRotateHeadPacket = RemapReflection.remapClassName(ClientboundRotateHeadPacket.class);
+            // ⬇️ Essaie de remapper le Variable "entityID" récupérant l'identifiant de l'entité du packet "ClientboundMoveEntityPacket" et "ClientboundRotateHeadPacket" ⬇️ //
+            Class<?> entityMovePacket = RemapReflection.remapClassName(ClientboundMoveEntityPacket.class);
+            Class<?> entityRotateHeadPacket = RemapReflection.remapClassName(ClientboundRotateHeadPacket.class);
 
             String entityMoveId = RemapReflection.remapFieldName(ClientboundMoveEntityPacket.class, "entityId");
             String entityRotateHeadId = RemapReflection.remapFieldName(ClientboundRotateHeadPacket.class, "entityId");
-            // ⬆️ Essait de remapper le Variable "entityID" récupérant l'identifiant de l'entité du packet "ClientboundMoveEntityPacket" et "ClientboundRotateHeadPacket" ⬆️ //
+            // ⬆️ Essaie de remapper le Variable "entityID" récupérant l'identifiant de l'entité du packet "ClientboundMoveEntityPacket" et "ClientboundRotateHeadPacket" ⬆️ //
 
 
             entityPacketEntityIDField = entityMovePacket.getDeclaredField(entityMoveId);
@@ -325,7 +326,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
             headRotationPacketEntityIDField = entityRotateHeadPacket.getDeclaredField(entityRotateHeadId);
             headRotationPacketEntityIDField.setAccessible(true);
 
-        } catch(NoSuchFieldException e) { e.printStackTrace(); }
+        } catch(NoSuchFieldException e) { e.printStackTrace(System.err); }
     }
 
     private void sendPacket(Player player, Packet<?> packet) { ((CraftPlayer) player).getHandle().connection.send(packet); }
@@ -341,7 +342,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
     private Entity getEntity(int entityID) {
 
         ServerPlayer entityPlayer = craftPlayer.getHandle();
-        return ((ServerLevel)entityPlayer.level).entityManager.getEntityGetter().get(entityID);
+        return entityPlayer.level().getEntity(entityID);
     }
 
     @Nullable
@@ -352,7 +353,7 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
             int entityID = entityPacketEntityIDField.getInt(packet);
             return getEntity(entityID);
 
-        } catch(IllegalAccessException e) { e.printStackTrace(); }
+        } catch(IllegalAccessException e) { e.printStackTrace(System.err); }
         return null;
     }
 
@@ -364,9 +365,9 @@ public final class PacketInterceptor extends ChannelDuplexHandler {
             int entityID = headRotationPacketEntityIDField.getInt(packet);
             return getEntity(entityID);
 
-        } catch(IllegalAccessException e) { e.printStackTrace(); }
+        } catch(IllegalAccessException e) { e.printStackTrace(System.err); }
         return null;
     }
 
-    private String getInvisibleName(int id) { return Integer.toHexString(id).replaceAll("(.)", "\u00a7$1"); }
+    private String getInvisibleName(int id) { return Integer.toHexString(id).replaceAll("(.)", "§$1"); }
 }

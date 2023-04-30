@@ -9,55 +9,36 @@ import java.util.Arrays;
 /*************************************************************************************/
 
 public enum ServerVersion {
-  VERSION_1_17(Integer.valueOf(1), "1.17-R0.1-SNAPSHOT") {
+  
+  VERSION_1_20(1, "1.20-R0.1-SNAPSHOT") {
     @Override
     public String toString() {
       return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
     }
   },
-  VERSION_1_17_1(Integer.valueOf(2), "1.17.1-R0.1-SNAPSHOT") {
+
+  VERSION_1_20_1(2, "1.20.1-R0.1-SNAPSHOT") {
     @Override
     public String toString() {
       return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
     }
   },
-  VERSION_1_18(Integer.valueOf(3), "1.18-R0.1-SNAPSHOT") {
+
+  VERSION_1_20_2(3, "1.20.2-R0.1-SNAPSHOT") {
     @Override
     public String toString() {
       return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
     }
   },
-  VERSION_1_18_1(Integer.valueOf(4), "1.18.1-R0.1-SNAPSHOT") {
+
+  VERSION_1_20_3(4, "1.20.3-R0.1-SNAPSHOT") {
     @Override
     public String toString() {
       return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
     }
   },
-  VERSION_1_18_2(Integer.valueOf(5), "1.18.2-R0.1-SNAPSHOT") {
-    @Override
-    public String toString() {
-      return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
-    }
-  },
-  VERSION_1_19(Integer.valueOf(6), "1.19-R0.1-SNAPSHOT") {
-    @Override
-    public String toString() {
-      return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
-    }
-  },
-  VERSION_1_19_1(Integer.valueOf(7), "1.19.1-R0.1-SNAPSHOT") {
-    @Override
-    public String toString() {
-      return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
-    }
-  },
-  VERSION_1_19_2(Integer.valueOf(8), "1.19.2-R0.1-SNAPSHOT") {
-    @Override
-    public String toString() {
-      return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
-    }
-  },
-  VERSION_1_19_3(Integer.valueOf(9), "1.19.3-R0.1-SNAPSHOT") {
+
+  VERSION_1_20_4(5, "1.20.4-R0.1-SNAPSHOT") {
     @Override
     public String toString() {
       return super.getBukkitVersion(); // Transforme la méthode 'toString()' en la méthode 'getBukkitVersion()'
@@ -66,8 +47,8 @@ public enum ServerVersion {
 
                             /* -------------------------------------------------------------- */
 
-  private String bukkitVersion; // Variable récupérant la version Bukkit de la Version supportée actuelle
-  private int versionOrder; // Variable récupérant l'ordre de la Version supportée actuelle
+  private final String bukkitVersion; // Variable récupérant la version Bukkit de la Version supportée actuelle
+  private final int versionOrder; // Variable récupérant l'ordre de la Version supportée actuelle
 
   /**
    * Constructeur de la 'class' pour récupérer les versions supportées du Serveur pour le Plugin en question
@@ -76,7 +57,7 @@ public enum ServerVersion {
   ServerVersion(Integer versionOrder, String bukkitVersion) {
 
     this.bukkitVersion = bukkitVersion;
-    this.versionOrder = versionOrder.intValue();
+    this.versionOrder = versionOrder;
   }
 
                             /* -------------------------------------------------------------- */
@@ -141,7 +122,7 @@ public enum ServerVersion {
    * @param version La version supportée à récupérer
    *
    */
-  public static ServerVersion getVersion(String version) { return Arrays.<ServerVersion>stream(values()).filter(x -> x.getBukkitVersion().equals(version)).findAny().orElse(null); }
+  public static ServerVersion getVersion(String version) { return Arrays.stream(values()).filter(x -> x.getBukkitVersion().equals(version)).findAny().orElse(null); }
 
    /**
    * Récupère la version en question du Serveur

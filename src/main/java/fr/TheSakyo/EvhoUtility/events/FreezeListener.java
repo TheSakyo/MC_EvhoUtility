@@ -3,6 +3,7 @@ package fr.TheSakyo.EvhoUtility.events;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,18 +19,20 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
-import org.bukkit.ChatColor;
 
 public class FreezeListener implements Listener {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main; 
+	private final UtilityMain main;
 	public FreezeListener(UtilityMain pluginMain, LuckPerms luckperms) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
-	 
 
+
+	/*************************************/
+	/* PARTIE ÉVÈNEMENT POUR LE "FREEZE" */
+	/************************************/
 	
-	// Petit évènement quand le joueur bouge on envoie un message d'erreur si le joueur est "freeze" //
+	// Petit évènement quand le joueur bouge, on envoie un message d'erreur si le joueur est "freeze" //
 	
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
@@ -39,30 +42,29 @@ public class FreezeListener implements Listener {
 
 					/* ------------------------ */
 
-		if(main.freezeP.contains(p)) {
+		if(main.freezeP.contains(p.getUniqueId())) {
 
 			if(e.getFrom() != e.getTo()) {
 
 				p.teleport(e.getFrom());
-				p.sendMessage(ChatColor.RED + "Vous ne pouvez pas bouger, vous êtes Freeze !");
-				return;
-			}
+				p.sendMessage(ChatFormatting.RED + "Vous ne pouvez pas bouger, vous êtes Freeze !");
+            }
 		}
 
 	}
 	
-	// Petit évènement quand le joueur bouge on envoie un message d'erreur si le joueur est "freeze" //
+	// Petit évènement quand le joueur bouge, on envoie un message d'erreur si le joueur est "freeze" //
 	
 	
 	
-	// Petite évènementn, on envoie un message d'erreur si le joueur éxécute une commande et si le joueur est "freeze" //
+	// Petit évènement, on envoie un message d'erreur si le joueur éxécute une commande et si le joueur est "freeze" //
     
     @EventHandler(priority=EventPriority.HIGHEST)
     public void onPlayerChat(PlayerCommandPreprocessEvent e) { 
     	
 		Player p = e.getPlayer();
 		
-		if(main.freezeP.contains(p)) {
+		if(main.freezeP.contains(p.getUniqueId())) {
 			
 			List<String> commands = Arrays.asList("/op","/deop","/reload","/rl","/restart","/restore","/stop","/proxycmd","/proxycommand","/freeze","/staff");
 
@@ -73,12 +75,12 @@ public class FreezeListener implements Listener {
 			if(htopic != null) {
 
 				e.setCancelled(true);
-				p.sendMessage(ChatColor.RED + "Impossible d'éxécuter cette commande en êtant Freeze !");
+				p.sendMessage(ChatFormatting.RED + "Impossible d'exécuter cette commande en étant Freeze !");
 			}
       }
   }
     
- // Petite évènementn, on envoie un message d'erreur si le joueur éxécute une commande et si le joueur est "freeze" //
+ // Petit évènement, on envoie un message d'erreur si le joueur éxécute une commande et si le joueur est "freeze" //
     
     
     
@@ -90,12 +92,11 @@ public class FreezeListener implements Listener {
     	
     	Player p = e.getPlayer();
       
-      	if(main.freezeP.contains(p)) {
+      	if(main.freezeP.contains(p.getUniqueId())) {
   		
   			e.setCancelled(true);
-			p.sendMessage(ChatColor.RED + "Vous ne pouvez pas casser de bloc en êtant Freeze !");
-			return;
-  		}
+			p.sendMessage(ChatFormatting.RED + "Vous ne pouvez pas casser de bloc en étant Freeze !");
+        }
     }
     
     // Petit évènement quand le joueur casse un bloc, on envoie un message d'erreur si le joueur est "freeze" //
@@ -103,25 +104,23 @@ public class FreezeListener implements Listener {
     
     
     
-    // Petit évènement quand le joueur pose un bloc, on envoie un message d'erreur si le joueur est "freeze"  //
+    // Petit évènement quand le joueur pose un bloc, on envoie un message d'erreur si le joueur est "freeze" //
     
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
     	
     	Player p = e.getPlayer();
         
-      	if(main.freezeP.contains(p)) {
+      	if(main.freezeP.contains(p.getUniqueId())) {
   		
   			e.setCancelled(true);
-			p.sendMessage(ChatColor.RED + "Vous ne pouvez pas faire ceci en êtant Freeze !");
-			return;
-  		}
+			p.sendMessage(ChatFormatting.RED + "Vous ne pouvez pas faire ceci en étant Freeze !");
+        }
     }
     
     // Petit évènement quand le joueur pose un bloc, on envoie un message d'erreur si le joueur est "freeze" //
 	
-	/***************************************/
-    /* PARTIE EVENEMENENT POUR LE "FREEZE" */ 
-    /***************************************/	
-	
+	/*************************************/
+    /* PARTIE ÉVÈNEMENT POUR LE "FREEZE" */
+    /************************************/
 }

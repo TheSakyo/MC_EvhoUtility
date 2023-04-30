@@ -36,7 +36,7 @@ public class ModuleOldCriticalHits extends Module {
         if(!isEnabled(e.getDamagee().getWorld())) return;
 
          // En 1.9, un coup critique nécessite que le joueur ne sprinte pas.
-        if(e.was1_8Crit() && (allowSprinting || !e.wasSprinting())) {
+        if(e.was1_8Crit() && (allowSprinting || e.wasSprinting())) {
 
             // Recalcule selon les règles 1.8 : https://minecraft.fandom.com/wiki/Damage?oldid=706258#Critical_hits
             // C'est-à-dire que l'attaque inflige une quantité aléatoire de dégâts supplémentaires, jusqu'à 50% de plus (arrondi à l'inférieur) plus un cœur.

@@ -142,7 +142,7 @@ public class ModuleSwordSweep extends Module {
         @Override
         public void onPacketSend(PacketEvent packetEvent) {
 
-            if(disabledDueToError || !isEnabled(packetEvent.getPlayer().getWorld())){ return; }
+            if(disabledDueToError || !isEnabled(packetEvent.getPlayer().getWorld())) { return; }
 
             try {
 

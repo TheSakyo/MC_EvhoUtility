@@ -15,21 +15,21 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 public class GodModeListener implements Listener {
 	
 	/* Récupère la class "Main" */
-    private static UtilityMain mainInstance = UtilityMain.getInstance();
+    private static final UtilityMain mainInstance = UtilityMain.getInstance();
 	/* Récupère la class "Main" */
 
 	
 	
-   /***************************************************************************/
-   /* PARTIE EVENEMENT LORSQUE LE JOUEUR EST EN GODMODE (Devient Invisisible) */ 
-   /***************************************************************************/
+   /**************************************************************************/
+   /* PARTIE ÉVÈNEMENT LORSQUE LE JOUEUR EST EN GODMODE (Devient Invincible) */
+   /**************************************************************************/
 	
 	 // Annule les dommages du joueur ou remet la vie MAX du joueur s'il a perdu des vies //
 	
 	  @EventHandler(priority = EventPriority.MONITOR)
 	  public void onDamage(EntityDamageEvent e) {
 		  
-	    if(e.getEntity() instanceof Player && mainInstance.GODS.contains(e.getEntity())) {
+	    if(e.getEntity() instanceof Player && mainInstance.GODS.contains(e.getEntity().getUniqueId())) {
 	    	
 	  	    e.setCancelled(true);
 	  	    
@@ -50,15 +50,10 @@ public class GodModeListener implements Listener {
 	  @EventHandler(priority = EventPriority.MONITOR)
 	  public void onFood(FoodLevelChangeEvent e) {
 		  
-	    if(e.getEntity() instanceof Player && mainInstance.GODS.contains(e.getEntity())) {
+	    if(e.getEntity() instanceof Player && mainInstance.GODS.contains(e.getEntity().getUniqueId())) {
 	    	
 		      e.setCancelled(true);
-		      
-		      if(((Player) e.getEntity()).getFoodLevel() != 20) {
-		    	  
-			      ((Player) e.getEntity()).setFoodLevel(20);
-		      }
-		      
+		      if(e.getEntity().getFoodLevel() != 20) e.getEntity().setFoodLevel(20);
 		    }
 	  }
 	  
@@ -67,13 +62,13 @@ public class GodModeListener implements Listener {
 	  
 	  
 	  // Enlève le joueur du "GODMODE" s'il rejoint ou quitte le serveur //
-	  public static void onJoin(PlayerJoinEvent e) { mainInstance.GODS.remove(e.getPlayer()); }
+	  public static void onJoin(PlayerJoinEvent e) { mainInstance.GODS.remove(e.getPlayer().getUniqueId()); }
 
-	  public static void onLeave(PlayerQuitEvent e) { mainInstance.GODS.remove(e.getPlayer()); }
+	  public static void onLeave(PlayerQuitEvent e) { mainInstance.GODS.remove(e.getPlayer().getUniqueId()); }
 	  
 	  // Enlève le joueur du "GODMODE" s'il rejoint ou quitte le serveur //
-	  
-   /***************************************************************************/
-   /* PARTIE EVENEMENT LORSQUE LE JOUEUR EST EN GODMODE (Devient Invisisible) */ 
-   /***************************************************************************/
+
+	/**************************************************************************/
+	/* PARTIE ÉVÈNEMENT LORSQUE LE JOUEUR EST EN GODMODE (Devient Invincible) */
+	/**************************************************************************/
 }

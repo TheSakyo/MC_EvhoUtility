@@ -2,7 +2,7 @@ package fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
 import fr.TheSakyo.EvhoUtility.utils.custom.methods.ColorUtils;
-import org.bukkit.ChatColor;
+import net.minecraft.ChatFormatting;
 import org.bukkit.command.CommandSender;
 
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.logging.Level;
 
 public class Messenger {
 
-    public static final String HORIZONTAL_BAR = ChatColor.STRIKETHROUGH + "----------------------------------------------------";
+    public static final String HORIZONTAL_BAR = ChatFormatting.STRIKETHROUGH + "----------------------------------------------------";
     static boolean DEBUG_ENABLED = false;
     private static UtilityMain plugin;
 
@@ -19,15 +19,15 @@ public class Messenger {
     }
 
     public static void info(String message, Object... args) {
-        plugin.getLogger().info(ChatColor.stripColor(String.format(message, args)));
+        plugin.getLogger().info(ChatFormatting.stripFormatting(String.format(message, args)));
     }
 
     public static void warn(Throwable e, String message, Object... args) {
-        plugin.getLogger().log(Level.WARNING, ChatColor.stripColor(String.format(message, args)), e);
+        plugin.getLogger().log(Level.WARNING, ChatFormatting.stripFormatting(String.format(message, args)), e);
     }
 
     public static void warn(String message, Object... args) {
-        plugin.getLogger().log(Level.WARNING, ChatColor.stripColor(String.format(message, args)));
+        plugin.getLogger().log(Level.WARNING, ChatFormatting.stripFormatting(String.format(message, args)));
     }
 
     /**
@@ -61,11 +61,11 @@ public class Messenger {
         send(sender, prefix + " " + message, args);
     }
 
-    public static void sendNormalMessage(CommandSender sender, String message, Object... args){
+    public static void sendNormalMessage(CommandSender sender, String message, Object... args) {
         sendWithPrefix(sender, message, "&6[OCM]&r", args);
     }
 
-    private static void sendDebugMessage(CommandSender sender, String message, Object... args){
+    private static void sendDebugMessage(CommandSender sender, String message, Object... args) {
         sendWithPrefix(sender, message, "&1[Debug]&r", args);
     }
 

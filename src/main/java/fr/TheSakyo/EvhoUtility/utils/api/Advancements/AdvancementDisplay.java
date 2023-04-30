@@ -27,23 +27,19 @@ public class AdvancementDisplay {
 	@SerializedName("visibility")
 	public String visibilityIdentifier = "VANILLA";
 
-	private static boolean announceAdvancementMessages = true;
-	
+	private static final boolean announceAdvancementMessages = true;
+
 	// Variables Utiles //
-	
-	
+
 	
 	
 	/**
 	 * 
-	 * @return <b>true</b> si les messages d'achievement doivent être affichés par défaut<br><b>false</b> si tous les messages d'achievements seront cachés.
+	 * @return <b>true</b> si les messages d'un achievement doivent être affichés par défaut<br><b>false</b> si tous les messages d'un achievement seront cachés.
 	 */
-	public static boolean isAnnounceAdvancementMessages() {
-		return announceAdvancementMessages;
-	}
+	public static boolean isAnnounceAdvancementMessages() { return announceAdvancementMessages; }
 	
-	
-	
+
   /****************************/
   /* CONSTRUCTEUR DE MATÉRIEL */
   /****************************/
@@ -74,7 +70,7 @@ public class AdvancementDisplay {
 	 * 
 	 * @param icon Icône {@link Material}
 	 * @param title Titre {@link JSONMessage}
-	 * @param description D�scription {@link JSONMessage}
+	 * @param description Déscription {@link JSONMessage}
 	 * @param frame cadre {@link AdvancementFrame}
 	 * @param backgroundTexture url de la texture de fond
 	 * @param showToast Faut-il afficher les messages de toast
@@ -85,7 +81,7 @@ public class AdvancementDisplay {
 		this.icon = new ItemStack(icon);
 		this.iconID = icon;
 		this.title = new JSONMessage("{\"text\":\"" + title.replaceAll("\"", "\\\"") + "\"}");
-		this.description = new JSONMessage("{\"text\":\"" + description.replaceAll("\"", "\\\"") + "\"}");
+		this.description = new JSONMessage("{\"text\":\"" + description.replaceAll("\"", "\"") + "\"}");
 		this.frame = frame;
 		this.backgroundTexture = backgroundTexture;
 		this.showToast = showToast;
@@ -273,20 +269,20 @@ public class AdvancementDisplay {
 	
 	
 	
-	// Obtient la longueur de l'affichage de l'achievement //
+	// Obtient la longueur de l'affichage d'un achievement //
 	public float getTabWidth() { return tabWidth; }
-	// Obtient la longueur de l'affichage de l'achievement //
+	// Obtient la longueur de l'affichage d'un achievement //
 	
 	
 	
-	// Obtient la hauteur de l'affichage de l'achievement //
+	// Obtient la hauteur de l'affichage d'un achievement //
 	public float getTabHeight() { return tabHeight; }
-	// Obtient la hauteur de l'affichage de l'achievement //
+	// Obtient la hauteur de l'affichage d'un achievement //
 	
 	
 	
 	/**
-	 * Obtient la visibilitée de l'achievement {@link AdvancementVisibility}
+	 * Obtient la visibilité d'un achievement {@link AdvancementVisibility}
 	 * 
 	 * @return Lorsqu'un achievement est visible.
 	 */
@@ -310,7 +306,7 @@ public class AdvancementDisplay {
 	
 	/**
 	 * 
-	 * @return l'origine des coordonnées de l'achievement
+	 * @return l'origine des coordonnées d'un achievement
 	 */
 	public Advancement getPositionOrigin() { return positionOrigin; }
 	
@@ -388,7 +384,7 @@ public class AdvancementDisplay {
 	
 	
 	/**
-	 * Change la visibilitée
+	 * Change la visibilité
 	 * 
 	 * @param visibility Nouveau type de visibilité
 	 */
@@ -432,20 +428,20 @@ public class AdvancementDisplay {
 	
 	
 	
-	// Change la longueur de l'affichage de l'achievement //
+	// Change la longueur de l'affichage d'un achievement //
 	public void setTabHeight(float tabHeight) { this.tabHeight = tabHeight; }
-	// Change la longueur de l'affichage de l'achievement //
+	// Change la longueur de l'affichage d'un achievement //
 	
 	
 	
-	// Change la hauteur de l'affichage de l'achievement //
+	// Change la hauteur de l'affichage d'un achievement //
 	public void setTabWidth(float tabWidth) { this.tabWidth = tabWidth; }
-	// Change la hauteur de l'affichage de l'achievement //
+	// Change la hauteur de l'affichage d'un achievement //
 	
 	
 	
 	/**
-	 * Change l'origine des coordonnées de l'achievements
+	 * Change l'origine des coordonnées d'un achievements
 	 * 
 	 * @param positionOrigin Nouvelle origine de la position
 	 */

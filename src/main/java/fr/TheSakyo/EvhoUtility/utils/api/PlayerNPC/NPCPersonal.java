@@ -61,9 +61,9 @@ public class NPCPersonal extends NPC {
      * @param plugin Le plugin en question
      * @param code   Un code d'identification
      * @param world  Le monde
-     * @param x      La coordonée x
-     * @param y      La coordonée y
-     * @param z      La coordonée z
+     * @param x      La coordonnée x
+     * @param y      La coordonnée y
+     * @param z      La coordonnée z
      * @param yaw    La rotation 'yaw'
      * @param pitch  La rotation 'pitch'
      */
@@ -95,7 +95,7 @@ public class NPCPersonal extends NPC {
      * @param code   Un code d'identification
      * @param location La {@link Location Localisation} du NPC
      */
-    protected NPCPersonal(@Nonnull NPCUtils npcUtils, @Nonnull Player player, @Nonnull Plugin plugin, @Nonnull String code, @Nonnull Location location){
+    protected NPCPersonal(@Nonnull NPCUtils npcUtils, @Nonnull Player player, @Nonnull Plugin plugin, @Nonnull String code, @Nonnull Location location) {
         this(npcUtils, player, plugin, code, location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
@@ -113,9 +113,9 @@ public class NPCPersonal extends NPC {
         MinecraftServer server = NMSCraftServer.getMinecraftServer(); // Récupère le Serveur Minecraft à partir du NMS
         ServerLevel worldServer = NMSCraftWorld.getWorldServer(super.getWorld()); // Récupère le Monde Minecraft à partir du NMS
 
-        GameProfile gameProfile = new GameProfile(gameProfileID, getReplacedCustomName()); // On crée un nouvaeu profil de jeux
+        GameProfile gameProfile = new GameProfile(gameProfileID, getReplacedCustomName()); // On crée un nouveau profil de jeux
         entityNPC = NMSEntityPlayer.newEntityPlayer(server, worldServer, gameProfile); // On récupère l'Entité du NPC
-        Validate.notNull(entityNPC, "Erreur à NMSentityNPC"); // Si l'Entité du NPC est null, on renvoie une erreur
+        Validate.notNull(entityNPC, "Erreur à NMSEntityNPC"); // Si l'Entité du NPC est null, on renvoie une erreur
         entityNPC.moveTo(super.getX(), super.getY(), super.getZ(), super.getYaw(), super.getPitch()); // On déplace alors l'Entité du NPC
 
         this.npcHologram = new NPC.Hologram(this, player); // On crée un hologramme pour le NPC (Soit : le Texte a affiché)
@@ -230,7 +230,7 @@ public class NPCPersonal extends NPC {
 
         if(canSee && !hiddenToPlayer) return; // Si le NPC est bien visible est qu'il n'est pas caché pour le joueur alors, on ne fait rien
 
-        NPC.Events.Show npcShowEvent = new NPC.Events.Show(getPlayer(), this); // Crée l'évènement d'appariton du NPC
+        NPC.Events.Show npcShowEvent = new NPC.Events.Show(getPlayer(), this); // Crée l'évènement d'apparition du NPC
         if(npcShowEvent.isCancelled()) return; // Si l'évènement a été annuler, on ne fait rien
 
         canSee = true; // On définit la visibilité du NPC sur 'vrai'
@@ -268,7 +268,6 @@ public class NPCPersonal extends NPC {
         hideToPlayer(); // Cache le NPC pour le joueur
 
         canSee = false; // On définit la visibilité du NPC sur 'faux'
-        return; // On sort
     }
 
     /**
@@ -282,7 +281,7 @@ public class NPCPersonal extends NPC {
         hiddenToPlayer = false; // On définit le fait que le NPC soit caché pour le Joueur sur 'faux'
 
         // On récupère le Texte à chaques lignes que doit afficher le NPC, si c'est inférieur à zéro, on met à jour le texte (soit : l'hologramme)
-        if(getText().size() > 0) updateText();
+        if(!getText().isEmpty()) updateText();
 
         // ⬇️ Aprés quelque temps, on vérifie si le NPC n'est pas créé, donc on le met à jour ⬇️ //
         Bukkit.getScheduler().scheduleSyncDelayedTask(getNPCUtils().getPlugin(), () -> {
@@ -306,7 +305,7 @@ public class NPCPersonal extends NPC {
         if(shownOnTabList) {
 
             // Envoie le paquet au joueur pour cacher le NPC du 'tablist'
-            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityNPC));
+            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoRemovePacket(List.of(entityNPC.getUUID())));
 
             shownOnTabList = false; // Définit la visibilité du NPC sur le 'tablist' sur faux
         }
@@ -382,9 +381,9 @@ public class NPCPersonal extends NPC {
      */
     protected void updateGlobalLocation(NPCGlobal npcGlobal) {
 
-        super.setX(npcGlobal.getX()); // Change la coordonée 'X' du NPC par celle du NPC Global en question
-        super.setY(npcGlobal.getY()); // Change la coordonée 'Y' du NPC par celle du NPC Global en question
-        super.setZ(npcGlobal.getZ()); // Change la coordonée 'Z' du NPC par celle du NPC Global en question
+        super.setX(npcGlobal.getX()); // Change la coordonnée 'X' du NPC par celle du NPC Global en question
+        super.setY(npcGlobal.getY()); // Change la coordonnée 'Y' du NPC par celle du NPC Global en question
+        super.setZ(npcGlobal.getZ()); // Change la coordonnée 'Z' du NPC par celle du NPC Global en question
 
         // ⬇️ Si le Type de Suivie du Regard du NPC est égal à rien du tous, on change la rotation du NPC par celle du NPC Global en question ⬇️ //
         if(getGazeTrackingType().equals(GazeTrackingType.NONE)) {
@@ -399,9 +398,9 @@ public class NPCPersonal extends NPC {
      * Force le NPC en question à un endroit préçis.
      *
      * @param world Le Monde où téléporter le NPC
-     * @param x La Coordonée 'X' où téléporter le NPC
-     * @param y La Coordonée 'Y' où téléporter le NPC
-     * @param z La Coordonée 'Z' où téléporter le NPC
+     * @param x La Coordonnée 'X' où téléporter le NPC
+     * @param y La Coordonnée 'Y' où téléporter le NPC
+     * @param z La Coordonnée 'Z' où téléporter le NPC
      * @param yaw La Rotation 'yaw' du NPC
      * @param pitch La Rotation 'pitch' du NPC
      *
@@ -414,9 +413,9 @@ public class NPCPersonal extends NPC {
         NPC.Events.Teleport npcTeleportEvent = new NPC.Events.Teleport(this, new Location(world, x, y, z, yaw, pitch)); // On crée l'évènement de téléportation du NPC
         if(npcTeleportEvent.isCancelled()) return; // Si l'évènement a été annuler, on ne fait rien
 
-        super.setX(x); // Change la coordonée 'X' du NPC
-        super.setY(y); // Change la coordonée 'Y' du NPC
-        super.setZ(z); // Change la coordonée 'Z' du NPC
+        super.setX(x); // Change la coordonnée 'X' du NPC
+        super.setY(y); // Change la coordonnée 'Y' du NPC
+        super.setZ(z); // Change la coordonnée 'Z' du NPC
 
         super.setYaw(yaw); // Change la rotation 'yaw' du NPC
         super.setDefaultYAW(yaw); // On change la rotation 'yaw' par défaut du NPC
@@ -434,7 +433,7 @@ public class NPCPersonal extends NPC {
         // Si l'hologramme du NPC (soit : le texte a affiché) n'est pas null, on force alors la mise à jour du texte (soit : l'hologramme) que le NPC doit afficher
         if(npcHologram != null) forceUpdateText();
 
-        if(show) show(); // Si le NPC est bien visible, on peut réaffiché le NPC
+        if(show) show(); // Si le NPC est bien visible, on peut afficher de nouveau le NPC
 
         // Si l'hologramme du NPC (soit : le texte a affiché) n'est pas null, on cache alors le texte (soit : l'hologramme) que le NPC doit afficher
         else if(npcHologram != null) hideText();
@@ -463,54 +462,53 @@ public class NPCPersonal extends NPC {
     /**
      * Déplace le NPC aux coordonnées précisées.
      *
-     * @param x La Coordonée 'X' où déplacer le NPC
-     * @param x La Coordonée 'Y' où déplacer le NPC
-     * @param y La Coordonée 'Z' où déplacer le NPC
-     *
+     * @param x La Coordonnée 'X' où déplacer le NPC
+     * @param y La Coordonnée 'Y' où déplacer le NPC
+     * @param z La Coordonnée 'Z' où déplacer le NPC
      */
     protected void move(double x, double y, double z) {
 
-        // Si les coordonées sont supérieurs à '8', on renvoie une erreur disant qu'il faudrait mieux téléporter le NPC
+        // Si les coordonnées sont supérieurs à '8', on renvoie une erreur disant qu'il faudrait mieux téléporter le NPC
         Validate.isTrue(x < 8 && y < 8 && z < 8, "Les NPCs ne peuvent pas se déplacer de 8 blocs ou plus à la fois, utilisez la téléportation à la place.");
 
         // Créer l'évènement de déplacement du NPC
         NPC.Events.Move npcMoveEvent = new NPC.Events.Move(this, new Location(super.getWorld(), super.getX() + x, super.getY() + y, super.getZ() + z));
         if(npcMoveEvent.isCancelled()) return; // Si l'évènement a été annuler, on ne fait rien
 
-        super.setX(super.getX() + x); // Change la coordonée 'X' du NPC par le déplacement en question
-        super.setY(super.getY() + y); // Change la coordonée 'Y' du NPC par le déplacement en question
-        super.setZ(super.getZ() + z); // Change la coordonée 'Z' du NPC par le déplacement en question
+        super.setX(super.getX() + x); // Change la coordonnée 'X' du NPC par le déplacement en question
+        super.setY(super.getY() + y); // Change la coordonnée 'Y' du NPC par le déplacement en question
+        super.setZ(super.getZ() + z); // Change la coordonnée 'Z' du NPC par le déplacement en question
 
         entityNPC.moveTo(super.getX(), super.getY(), super.getZ()); // Déplace l'Entité du NPC
-        if(npcHologram != null) npcHologram.move(new Vector(x, y, z)); // Déplace également l'holograme (soit : le texte affiché) du NPC
+        if(npcHologram != null) npcHologram.move(new Vector(x, y, z)); // Déplace également l'hologramme (soit : le texte affiché) du NPC
         movePacket(x, y, z); // Envoie au Joueur associé le paquet de déplacement du NPC
     }
 
     /**
      * Envoie au Joueur associé, le paquet de déplacement du NPC.
      *
-     * @param x La Coordonée 'X' où déplacer le NPC
-     * @param x La Coordonée 'Y' où déplacer le NPC
-     * @param y La Coordonée 'Z' où déplacer le NPC
+     * @param x La Coordonnée 'X' où déplacer le NPC
+     * @param y La Coordonnée 'Y' où déplacer le NPC
+     * @param z La Coordonnée 'Z' où déplacer le NPC
      *
      */
     protected void movePacket(double x, double y, double z) {
 
-        Validate.isTrue(x < 8); // On Valide l'éxécution de la méthode, si la coordonée 'X' est inférieur à '8'
-        Validate.isTrue(y < 8); // On Valide l'éxécution de la méthode, si la coordonée 'Y' est inférieur à '8'
-        Validate.isTrue(z < 8); // On Valide l'éxécution de la méthode, si la coordonée 'Z' est inférieur à '8'
+        Validate.isTrue(x < 8); // On Valide l'exécution de la méthode, si la coordonnée 'X' est inférieur à '8'
+        Validate.isTrue(y < 8); // On Valide l'exécution de la méthode, si la coordonnée 'Y' est inférieur à '8'
+        Validate.isTrue(z < 8); // On Valide l'exécution de la méthode, si la coordonnée 'Z' est inférieur à '8'
 
         // Envoie au Joueur associé le paquet de déplacement du NPC
         NMSCraftPlayer.sendPacket(player, new ClientboundMoveEntityPacket.Pos(NMSEntity.getEntityID(entityNPC), (short) (x * 4096), (short) (y * 4096), (short) (z * 4096), true));
     }
 
     /**
-     * change le Monde actuel du NPC.
+     * Change le Monde actuel du NPC.
      *
      */
     protected void changeWorld(World world) {
 
-        // Atribut au NPC associé avec le Joueur en question le nouveau monde où il doit se trouver
+        // Attribute au NPC associé avec le Joueur en question le nouveau monde où il doit se trouver
         super.getPluginManager().getNPCUtils().getNPCPlayerManager(player).changeWorld(this, super.getWorld(), world);
         super.setWorld(world); // Change le Monde du NPC
     }
@@ -535,12 +533,12 @@ public class NPCPersonal extends NPC {
     /**
      * Le NPC va jouer une {@link Animation Animation} demandée.
      *
-     * @param animation L'Animation a joué
+     * @param animation L'Animation a joué.
      */
     public void playAnimation(NPC.Animation animation) {
 
         ClientboundAnimatePacket packet = new ClientboundAnimatePacket(entityNPC, animation.getId()); // Récupère le paquet pour effectuer l'animation du NPC
-        NMSCraftPlayer.sendPacket(player, packet); // Envoie au Joueur associé le paquet de l'animatione en question du NPC
+        NMSCraftPlayer.sendPacket(player, packet); // Envoie au Joueur associé le paquet d'animation en question du NPC
     }
 
     /**
@@ -572,13 +570,13 @@ public class NPCPersonal extends NPC {
         // Si le Nom Customisé est supérieur à 16 caractères, on renvoie une erreur
         Validate.isTrue(finalName.length() <= 16, "Erreur dans la configuration du nom dans le Tablist. Le nom doit comporter 16 caractères ou moins.");
 
-        // si le Nom Customisé ne contient pas d'UUID a remplacé et que le nom en question éxiste sur un autre NPC, on renvoie donc une erreur
+        // si le Nom Customisé ne contient pas de UUID a remplacé et que le nom en question éxiste sur un autre NPC, on renvoie donc une erreur
         if(!name.contains("{id}")) Validate.isTrue(getNPCUtils().getNPCPlayerManager(player).getNPCs().stream().filter(x-> x != this && x.getReplacedCustomName().equals(finalName)).findAny().orElse(null) == null, "Erreur dans la définition du nom dans le 'tablist'. Il y a déjà un autre NPC avec ce nom.");
         getAttributes().setCustomTabListName(finalName); // Définit le Nom Customisé en question au NPC
     }
 
     /**
-     * Le NPC va perdre des dégats (aucun n'impacte sur le NPC).<br/>
+     * Le NPC va perdre des dégâts (aucun n'impacte sur le NPC).<br/>
      *
      * Une animation et un son seront joués :)
      *
@@ -605,10 +603,10 @@ public class NPCPersonal extends NPC {
      *
      * @param yaw La Rotation 'yaw' du NPC
      * @param pitch La Rotation 'pitch' du NPC
-     * @param forcelook Doit-on forçer la rotation par défaut du NPC ?
+     * @param forceLook Doit-on forçer la rotation par défaut du NPC ?
      *
      */
-    public void lookAt(float yaw, float pitch, boolean forcelook) {
+    public void lookAt(float yaw, float pitch, boolean forceLook) {
 
         // Si l'Entité du NPC est null, on renvoie une erreur
         Validate.notNull(entityNPC, "Impossible de définir la direction du regard. Le NPC n'a pas encore été créé.");
@@ -628,7 +626,7 @@ public class NPCPersonal extends NPC {
             super.setYaw(yaw); // Change la rotation 'yaw' du NPC
             super.setPitch(pitch); // Change la rotation 'pitch' du NPC
 
-            if(forcelook) {
+            if(forceLook) {
 
                 super.setDefaultYAW(yaw); // Change la rotation Par Défaut 'yaw' par défaut du NPC
                 super.setDefaultPITCH(pitch); // Change la rotation Par Défaut 'pitch' par défaut du NPC
@@ -636,8 +634,8 @@ public class NPCPersonal extends NPC {
 
         }
 
-        entityNPC.setYRot(yaw); // Change la rotation de la coordonée 'Y' de l'Entité du NPC
-        entityNPC.setXRot(pitch); // Change la rotation de la coordonée 'X' de l'Entité du NPC
+        entityNPC.setYRot(yaw); // Change la rotation de la coordonnée 'Y' de l'Entité du NPC
+        entityNPC.setXRot(pitch); // Change la rotation de la coordonnée 'X' de l'Entité du NPC
     }
 
 
@@ -659,7 +657,7 @@ public class NPCPersonal extends NPC {
             // Vérifie si le type de suivie du regard du NPC est joueur aux alentours de lui-même
             final boolean isNearest_PlayerGazeTracking = getGazeTrackingType().equals(GazeTrackingType.NEAREST_PLAYER);
 
-            // ⬇️ Si le NPC actuel est un NPC Globale, on vérifie l'Entité le pluis proche de ce NPC ⬇️ //
+            // ⬇️ Si le NPC actuel est un NPC Globale, on vérifie l'Entité le plus proche de ce NPC ⬇️ //
             if(hasNPCGlobal()) {
 
                 Entity near; // Variable permettant de récupérer l'Entité le plus proche
@@ -670,11 +668,11 @@ public class NPCPersonal extends NPC {
 
                 if(near != null) { lookAt(near); return; } // Si l'Entité le plus proche n'est pas null, le NPC va regarder l'Entité en question et on sort
             }
-            // ⬆️ Si le NPC actuel est un NPC Globale, on vérifie l'Entité le pluis proche de ce NPC ⬆️ //
+            // ⬆️ Si le NPC actuel est un NPC Globale, on vérifie l'Entité le plus proche de ce NPC ⬆️ //
 
             Entity near = null; // Variable permettant de récupérer l'Entité le plus proche
-            /*double hideDistance = getHideDistance(); // On récupère la distance auquelle le NPC doit être caché du joueur*/
-            double distance = 5; // On récupère la distance auquelle le NPC doit regarder l'entité le plus proche
+            /*double hideDistance = getHideDistance(); // On récupère la distance à laquelle le NPC doit être caché du joueur*/
+            double distance = 5; // On récupère la distance à laquelle le NPC doit regarder l'entité le plus proche
             final Location npcLocation = getLocation(); // On récupère la localisation actuelle du NPC
 
             // ⬇️ Pour toutes les entités proches, en fonction la distance auquel le NPC doit être caché du joueur, on récupère l'Entité en question à suivre du regard ⬇️ //
@@ -684,9 +682,9 @@ public class NPCPersonal extends NPC {
                 if(isNearest_PlayerGazeTracking && !(entities instanceof Player)) continue;
 
                 double distanceEntity = entities.getLocation().distance(npcLocation); // Récupère la distance entre le NPC et l'Entité
-                if(distanceEntity > distance) continue; // Si la distance de l'entité est plus loin que la distance auquelle le NPC doit regarder l'entité, alors on continue
+                if(distanceEntity > distance) continue; // Si la distance de l'entité est plus loin que la distance à laquelle le NPC doit regarder l'entité, alors on continue
                 near = entities; // On définit l'Entité le plus proche étant l'entité en question
-                distance = distanceEntity; // On définit la distance auquelle le NPC doit regarder l'entité par la distance entre le NPC et l'Entité
+                distance = distanceEntity; // On définit la distance à laquelle le NPC doit regarder l'entité par la distance entre le NPC et l'Entité
             }
             // ⬆️ Pour toutes les entités proches, en fonction la distance auquel le NPC doit être caché du joueur, on récupère l'Entité en question à suivre du regard ⬆️ //
 
@@ -730,8 +728,8 @@ public class NPCPersonal extends NPC {
 
                                       /* ---------------------------------------------------- */
 
-        getClickActions(clickType).forEach(x-> x.execute(player)); // Récupère le type de cliqué pour chaque action avec le Joueur asoccié
-        getClickActions(Interact.ClickType.EITHER).forEach(x-> x.execute(player)); // Récupère les deux types de cliqué en cas, pour chaque action avec le Joueur asoccié
+        getClickActions(clickType).forEach(x-> x.execute(player)); // Récupère le type de cliqué pour chaque action avec le Joueur associé
+        getClickActions(Interact.ClickType.EITHER).forEach(x-> x.execute(player)); // Récupère les deux types de cliqué en cas, pour chaque action avec le Joueur associé
     }
 
     /**
@@ -771,7 +769,7 @@ public class NPCPersonal extends NPC {
         GameProfile gameProfile = NMSEntityPlayer.getGameProfile(entityNPC); // Récupère le profil de Jeux du NPC
         gameProfile.getProperties().get("textures").clear(); // Supprime la texture du NPC
 
-        // Réattribut la texture du NPC en question
+        // Réattribuât la texture du NPC en question
         gameProfile.getProperties().put("textures", new Property("textures", super.getAttributes().skin.getTexture(), super.getAttributes().skin.getSignature()));
     }
 
@@ -781,8 +779,8 @@ public class NPCPersonal extends NPC {
      */
     protected void updatePose() {
 
-        // Si la posture du NPC est endormien alors on indique au NPC qu'il doit effectuer une posture endormie à partir de ses coordonées
-        if(getPose().equals(Pose.SLEEPING)) entityNPC.setSleepingPos(new BlockPos(super.getX(), super.getY(), super.getZ()));
+        // Si la posture du NPC est endormie alors, on indique au NPC qu'il doit effectuer une posture endormie à partir de ses coordinates
+        if(getPose().equals(Pose.SLEEPING)) entityNPC.setSleepingPos(new BlockPos(super.getX().intValue(), super.getY().intValue(), super.getZ().intValue()));
         entityNPC.setPose(getPose());  // Sinon, on définit la posture du NPC
     }
 
@@ -804,7 +802,7 @@ public class NPCPersonal extends NPC {
             net.minecraft.world.item.ItemStack craftItem = null; // Définit l'item depuis le NMS sur null
 
 
-            equipment.add(new Pair(slot, net.minecraft.world.item.ItemStack.fromBukkitCopy(item))); // On ajoute l'équipement récupéré au NPC
+            equipment.add(new Pair<>(slot, net.minecraft.world.item.ItemStack.fromBukkitCopy(item))); // On ajoute l'équipement récupéré au NPC
         }
         // ⬆️ Pour chaques équipements, on met à jour les items en question équipés ⬆️ //
 
@@ -825,7 +823,7 @@ public class NPCPersonal extends NPC {
 
         // ⬇️ On essaie de récupérer le Scoreboard du Joueur associé depuis le NMS ⬇️ //
         try { scoreboard = (Scoreboard)NMSCraftScoreboard.getCraftScoreBoardGetHandle().invoke(NMSCraftScoreboard.getCraftScoreBoardClass().cast(ScoreboardManager.getScoreboard(player))); }
-        catch (Exception ignored){}
+        catch (Exception ignored) {}
         // ⬆️ On essaie de récupérer le Scoreboard du Joueur associé depuis le NMS ⬆️ //
 
         Validate.notNull(scoreboard, "Erreur à NMSCraftScoreboard"); // Si une erreur est survenue sur le Scoreboard récupéré, on renvoie une erreur
@@ -835,12 +833,12 @@ public class NPCPersonal extends NPC {
         scoreboardTeam.setNameTagVisibility(Team.Visibility.NEVER); // On a défini qu'il n'y aura aucune visibilité à cette team
         scoreboardTeam.setColor(getGlowingColor()); // On a défini également la couleur de cette team
 
-        Team.CollisionRule collisonRule = Team.CollisionRule.NEVER; // On récupère les règles de collisions de cette team à 'jamais'
+        Team.CollisionRule collisionRule = Team.CollisionRule.NEVER; // On récupère les règles de collisions de cette team à 'jamais'
 
         // Si le NPC a les collisions activées, on définit la collision de cette team à 'toujours'
-        if(isCollidable()) collisonRule = Team.CollisionRule.ALWAYS;
+        if(isCollidable()) collisionRule = Team.CollisionRule.ALWAYS;
 
-        scoreboardTeam.setCollisionRule(collisonRule); // Définit la collision récupérée pour la team en question
+        scoreboardTeam.setCollisionRule(collisionRule); // Définit la collision récupérée pour la team en question
         scoreboard.addPlayerToTeam(gameProfile.getName(), scoreboardTeam); // Ajoute le NPC dans la team en question
 
         // ⬇️ Envoie au Joueur associé les paquets pour initialiser la team en question ⬇️ //
@@ -853,48 +851,70 @@ public class NPCPersonal extends NPC {
      * Met à jour les métadonnées du NPC.
      *
      */
+    @SuppressWarnings("unchecked")
     protected void updateMetadata() {
 
         SynchedEntityData synchedEntityData = NMSEntity.getSynchedEntityData(entityNPC);  // On récupère les métadonnées actuelles du NPC
 
+        /************************************************/
+
         entityNPC.setGlowingTag(isGlowing()); // On définit la surbrillance du NPC
-        Map<Integer, SynchedEntityData.DataItem<?>> map = null; // Initialise une variable pour récupérer chaque donnée de la métadonnés
+        Map<Integer, SynchedEntityData.DataItem<?>> map = null; // Initialise une variable pour récupérer chaque donnée des métadonnées
 
-        // ⬇️ On essaie de récupérer chaque donnée de la métadonnés depuis le NMS ⬇️ //
-        try { map = (Map<Integer, SynchedEntityData.DataItem<?>>)FieldUtils.readDeclaredField(synchedEntityData, "f", true); }
+        /************************************************/
+
+        // ⬇️ On essaie de récupérer chaque donnée des métadonnées depuis le NMS ⬇️ //
+        try { map = (Map<Integer, SynchedEntityData.DataItem<?>>)FieldUtils.readDeclaredField(synchedEntityData, "e", true); }
         catch(IllegalAccessException ignored) {}
-        // ⬆️ On essaie de récupérer chaque donnée de la métadonnés depuis le NMS ⬆️ //
 
-        // Si la variable récupérant chaque donnée de la métadonnés est null, alors on ne fait rien
+        // ⬆️ On essaie de récupérer chaque donnée des métadonnées depuis le NMS ⬆️ //
+
+        /************************/
+
+        // Si la variable récupérant chaque donnée des métadonnées est null, alors on ne fait rien
         if(map == null) return;
+
+        /************************************************/
 
         //http://wiki.vg/Entities#Entity
         //https://wiki.vg/Entity_metadata#Entity_Metadata_Format
 
-        // ⬇️ ~~ Métadonnées concernant les Entitées ~~ ⬇️ //
+        // ⬇️ ~~ Métadonnées concernant les Entités ~~ ⬇️ //
 
-        SynchedEntityData.DataItem item = map.get(0);
+        SynchedEntityData.DataItem<?> item = map.get(0);
 
-        byte initialBitMask = (Byte)item.getValue();
-        byte b = initialBitMask;
+        /************************/
+
+        byte b = (byte) (Byte)item.getValue();
         byte bitMaskIndex = (byte)0x40;
+        /************************/
 
         if(isGlowing()) b = (byte)(b | bitMaskIndex);
-        else b = (byte)(b & ~(1 << bitMaskIndex));
+        else b = (byte)(b & ~(1));
+
+        /************************/
 
         bitMaskIndex = (byte)0x01;
+
+        /************************/
 
         if(isOnFire()) b = (byte)(b | bitMaskIndex);
         else b = (byte)(b & ~(1 << bitMaskIndex));
 
+        /************************/
+
         NMSEntityData.set(synchedEntityData, EntityDataSerializers.BYTE.createAccessor(0), b); // On redéfinit les métadonnées en question au NPC
 
-        // ⬆️ ~~ Métadonnées concernant les Entitées ~~ ⬆️ //
+        // ⬆️ ~~ Métadonnées concernant les Entités ~~ ⬆️ //
+
+        /************************************************/
 
         // ⬇️ ~~ Métadonnées concernant les Joueurs (Soit : le Skin du NPC) ~~ ⬇️ //
         b = 0x00;
-
         NPC.Skin.Parts parts = getSkinParts();
+
+        /************************/
+
         if(parts.isVisible(Skin.Part.CAPE)) b = (byte)(b | 0x01);
         if(parts.isVisible(Skin.Part.JACKET)) b = (byte)(b | 0x02);
         if(parts.isVisible(Skin.Part.LEFT_SLEEVE)) b = (byte)(b | 0x04);
@@ -907,8 +927,10 @@ public class NPCPersonal extends NPC {
 
         // ⬆️ ~~ Métadonnées concernant les Joueurs (Soit : le Skin du NPC) ~~ ⬆️ //
 
+        /************************************************/
+
         // Récupère le paquet de métadonnées du NPC
-        ClientboundSetEntityDataPacket metadataPacket = new ClientboundSetEntityDataPacket(NMSEntity.getEntityID(entityNPC), synchedEntityData, true);
+        ClientboundSetEntityDataPacket metadataPacket = new ClientboundSetEntityDataPacket(NMSEntity.getEntityID(entityNPC), synchedEntityData.getNonDefaultValues());
         NMSCraftPlayer.sendPacket(player, metadataPacket); // Envoie au Joueur associé le paquet de métadonnées du NPC
     }
 
@@ -923,7 +945,7 @@ public class NPCPersonal extends NPC {
         // ⬇️ On essaie d'envoyer au Joueur associé les paquets d'affichage dans le 'tablist' et de création du NPC ⬇️ //
         try {
 
-            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityNPC));
+            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, entityNPC));
             NMSCraftPlayer.sendPacket(player, new ClientboundAddPlayerPacket(entityNPC));
 
         } catch(Exception e) { return; }
@@ -933,17 +955,17 @@ public class NPCPersonal extends NPC {
         updatePlayerRotation(); // Met à jour la rotation du NPC
         if(isShowOnTabList()) return; // Si la visibilité du NPC dans le 'tablist' est "vrai", alors on sort
 
-        // ⬇️ Aprés quelque temps, on vérifie la création du NPC ainsi on retire l'affichage du NPC dans le 'tablist' ⬇️ //
+        // ⬇️ Aprés quelque temps, on vérifie la création du NPC ainsi, on retire l'affichage du NPC dans le 'tablist' ⬇️ //
         Bukkit.getScheduler().scheduleSyncDelayedTask(getNPCUtils().getPlugin(), ()-> {
 
             if(!isCreated()) return; // Si le NPC n'est pas créé, alors on ne fait rien
 
             // Envoie au Joueur associé le paquet d'affichage dans le 'tablist' sur 'faux'
-            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entityNPC));
+            NMSCraftPlayer.sendPacket(player, new ClientboundPlayerInfoRemovePacket(List.of(entityNPC.getUUID())));
             shownOnTabList = false; // Définit donc la visibilité du NPC dans le 'tablist' "faux"
 
         }, pluginManager.getTicksUntilTabListHide());
-        // ⬆️ Aprés quelque temps, on vérifie la création du NPC ainsi on retire l'affichage du NPC dans le 'tablist' ⬆️ //
+        // ⬆️ Aprés quelque temps, on vérifie la création du NPC ainsi, on retire l'affichage du NPC dans le 'tablist' ⬆️ //
     }
 
                             /* -------------------------------------------------------------*/
@@ -963,7 +985,7 @@ public class NPCPersonal extends NPC {
     protected String getReplacedCustomName(String name) {
 
         String id = getShortUUID();
-        String replaced = name.replaceAll("\\{id\\}", id);
+        String replaced = name.replaceAll("\\{id}", id);
         if(replaced.length() > 16) replaced = replaced.substring(0, 15);
         return replaced;
     }
@@ -1032,7 +1054,7 @@ public class NPCPersonal extends NPC {
     /**
      * Vérifie si le NPC est dans la mesure demandée du champ de vision du Joueur associé.
      *
-     * @param fov La mesure en question a vérifié
+     * @param fov La mesure en question qu'il faut vérifier.
      *
      * @return Une valeur Booléenne
      */
@@ -1052,7 +1074,7 @@ public class NPCPersonal extends NPC {
      */
     public boolean isInRange() {
 
-        // Si le NPC n'est pas dans le monde que le Joueur associé on retourne faux
+        // Si le NPC n'est pas dans le monde que le Joueur associé, on retourne faux
         if(!getWorld().getName().equals(player.getWorld().getName())) return false;
 
         // On retourne alors si la distance entre la localisation du joueur est inférieure à la distance auquel le NPC soit caché

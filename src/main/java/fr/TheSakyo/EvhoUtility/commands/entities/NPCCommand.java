@@ -16,10 +16,10 @@ import fr.TheSakyo.EvhoUtility.utils.entity.player.utilities.Skin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -36,14 +36,14 @@ import java.util.*;
 public class NPCCommand implements CommandExecutor {
 
     /* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public NPCCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
 
 	// Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
-	String header = ChatColor.GRAY + "============== " + ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "NPC" + ChatColor.GRAY + " ==============";
-	String footer = ChatColor.GRAY + "=============================";
+	String header = ChatFormatting.GRAY + "============== " + ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "NPC" + ChatFormatting.GRAY + " ==============";
+	String footer = ChatFormatting.GRAY + "=============================";
 	//Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
 
 
@@ -81,44 +81,44 @@ public class NPCCommand implements CommandExecutor {
 			final Location location = p.getLocation(); // Récupère l'Emplacement du Joueur
 			NPCGlobal npc = null; // Permettra de récupérer le NPC
 
-			if(!p.hasPermission("evhoutility.npc")) { p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !"); return true; }
+			if(!p.hasPermission("evhoutility.npc")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !"); return true; }
 
 			if(args.length == 0) {
 
 				p.sendMessage(header);
 				p.sendMessage("");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + help + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des commandes des NPCs.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + help + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des commandes des NPCs.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + list + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des NPCs dans le Serveur.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + list + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des NPCs dans le Serveur.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + reload + ChatColor.WHITE + " : " + ChatColor.GRAY + "Recharge tous les NPCs associés au joueur ou un NPC spécifique.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + reload + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Recharge tous les NPCs associés au joueur ou un NPC spécifique.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + forcereload + ChatColor.WHITE + " : " + ChatColor.GRAY + "Force le rechargement de tous les NPCs associés au joueur ou un NPC spécifique à partir du fichier de configuration.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + forcereload + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Force le rechargement de tous les NPCs associés au joueur ou un NPC spécifique à partir du fichier de configuration.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + create + ChatColor.WHITE + " : " + ChatColor.GRAY + "Créer un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + create + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Créer un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + remove + ChatColor.WHITE + " : " + ChatColor.GRAY + "Supprime un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + remove + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Supprime un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + tp + ChatColor.WHITE + " : " + ChatColor.GRAY + "Se Téléporte à un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + tp + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Se Téléporte à un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + tpto + ChatColor.WHITE + " : " + ChatColor.GRAY + "Téléporte un NPC à la location du joueur.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + tpto + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Téléporte un NPC à la location du joueur.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + rotate + ChatColor.WHITE + " : " + ChatColor.GRAY + "Change la Rotation d'un NPC à partir de la même Rotation du Joueur.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + rotate + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Change la Rotation d'un NPC à partir de la même Rotation du Joueur.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + lookplayer + ChatColor.WHITE + " : " + ChatColor.GRAY + "Change la Rotation de tête d'un NPC et suis le joueur s'il est proche.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + lookplayer + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Change la Rotation de tête d'un NPC et suis le joueur s'il est proche.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + skin + ChatColor.WHITE + " : "  + ChatColor.GRAY + "Change le Skin du NPC éxistant");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + skin + ChatFormatting.WHITE + " : "  + ChatFormatting.GRAY + "Change le Skin du NPC éxistant");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + pose + ChatColor.WHITE + " : " + ChatColor.GRAY + "Définit une pose à un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + pose + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Définit une pose à un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + equipment + ChatColor.WHITE + " : " + ChatColor.GRAY + "Définit l'Équipement d'un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + equipment + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Définit l'Équipement d'un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + animation + ChatColor.WHITE + " : " + ChatColor.GRAY + "Joue une animation à un NPC (true|false - pour jouer l'animation à l'infinie ou non [false par défaut]).");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + animation + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Joue une animation à un NPC (true|false - pour jouer l'animation à l'infinie ou non [false par défaut]).");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + skinstatus + ChatColor.WHITE + " : " + ChatColor.GRAY + "Définit l'État du Skin à Affiché d'un NPC.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + skinstatus + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Définit l'État du Skin à Affiché d'un NPC.");
 				p.sendMessage("");
-				p.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + interactMessage + ChatColor.WHITE + " : " + ChatColor.GRAY + "Définit un message du 'NPC' avec un Nom Customisé lorsqu'un joueur intéragira avec.");
+				p.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + interactMessage + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Définit un message du 'NPC' avec un Nom Customisé lorsqu'un joueur intéragira avec.");
 				p.sendMessage("");
 				p.sendMessage("");
 				p.sendMessage(footer);
@@ -132,31 +132,31 @@ public class NPCCommand implements CommandExecutor {
 						Set<NPCGlobal> npcs = NPCUtils.getInstance().getAllGlobalNPCs(); // Liste des noms de 'NPCs' enregistrés
 
 						// Récupère la couleur blanche avec de l'italique des codes couleurs Minecraft
-						String white_italique = ChatColor.WHITE.toString() + ChatColor.ITALIC.toString();
+						String white_italique = ChatFormatting.WHITE.toString() + ChatFormatting.ITALIC.toString();
 
 						// Récupère la couleur gris foncé avec de l'italique des codes couleurs Minecraft
-						String darkgray_italic = ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC.toString();
+						String darkgray_italic = ChatFormatting.DARK_GRAY.toString() + ChatFormatting.ITALIC.toString();
 
 						// Récupère la couleur Or avec du gras des codes couleurs Minecraft
-						String gold_bold = ChatColor.GOLD.toString() + ChatColor.BOLD.toString();
+						String gold_bold = ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString();
 
-						if(npcs.size() == 0) {
+						if(npcs.isEmpty()) {
 
-							p.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) dans le plugin !");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) dans le plugin !");
 
 						} else if(npcs.size() == 1) {
 
 							NPCGlobal firstNPC = npcs.stream().findFirst().get();
-		    				p.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement le NPC " + gold_bold + firstNPC.getSimpleCode()
-										 + white_italique + " (" + darkgray_italic + firstNPC.getCustomName() + white_italique + ")" + ChatColor.GRAY + " dans le serveur !");
+		    				p.sendMessage(main.prefix + ChatFormatting.GRAY + "Il y'a seulement le NPC " + gold_bold + firstNPC.getSimpleCode()
+										 + white_italique + " (" + darkgray_italic + firstNPC.getCustomName() + white_italique + ")" + ChatFormatting.GRAY + " dans le serveur !");
 
 						} else {
 
-							p.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+							p.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 			    			p.sendMessage(" ");
 			    			p.sendMessage(" ");
 
-			    			p.sendMessage(ChatColor.YELLOW.toString() + ChatColor.UNDERLINE.toString() + "Liste du/des NPC(s) dans le serveur :");
+			    			p.sendMessage(ChatFormatting.YELLOW.toString() + ChatFormatting.UNDERLINE.toString() + "Liste du/des NPC(s) dans le serveur :");
 
 			    			for(NPCGlobal NPC : npcs) {
 
@@ -168,21 +168,21 @@ public class NPCCommand implements CommandExecutor {
 								npcName = npcName.hoverEvent(HoverEvent.showText(CustomMethod.StringToComponent("Cliquez pour vous y téléporter")));
 
 
-								Component message = CustomMethod.StringToComponent(ChatColor.WHITE + "- ").append(npcName);
+								Component message = CustomMethod.StringToComponent(ChatFormatting.WHITE + "- ").append(npcName);
 								p.sendMessage(message);
 			    			}
 
 			    			p.sendMessage(" ");
 			    			p.sendMessage(" ");
-			    			p.sendMessage(ChatColor.GRAY + "===========================");
+			    			p.sendMessage(ChatFormatting.GRAY + "===========================");
 						}
 
 				} else if(args[0].equalsIgnoreCase("reload")) {
 
-					List<NPCPersonal> NPCS = new ArrayList<NPCPersonal>(NPCUtils.getInstance().getPersonalNPCs(p, main));
-					p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Rechargement de votre/vos NPC(s)...");
+					List<NPCPersonal> NPCS = new ArrayList<>(NPCUtils.getInstance().getPersonalNPCs(p, main));
+					p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Rechargement de votre/vos NPC(s)...");
 
-					if(NPCS.isEmpty()) { p.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) !"); return false; }
+					if(NPCS.isEmpty()) { p.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) !"); return false; }
 
 					NPCManager.unloadNPC(p, false);
 					NPCManager.loadNPC(p, false, false, false);
@@ -190,7 +190,7 @@ public class NPCCommand implements CommandExecutor {
 
 				} else if(args[0].equalsIgnoreCase("forcereload")) {
 
-					p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Forçage du rechargement de votre/vos NPC(s)...");
+					p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Forçage du rechargement de votre/vos NPC(s)...");
 
 													/* ----------------------------------------------------- */
 
@@ -200,14 +200,14 @@ public class NPCCommand implements CommandExecutor {
 						NPCManager.loadNPC(p, true, false, false);
 						return true;
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) !"); return false;
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) !"); return false;
 
 				} else { p.sendMessage(Error_Argument(args[0])); return false; }
 
 			} else if(args.length == 2) {
 
 				final String npcname = args[1].toUpperCase(); // Permettra de récupérer le Nom du NPC
-				if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatColor.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
+				if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
 
 				String npcReg = "NPC." + npcname; // Récupère la section du NPC en question
 
@@ -219,11 +219,11 @@ public class NPCCommand implements CommandExecutor {
 
 				if(args[0].equalsIgnoreCase("create")) {
 
-					if(!checkNPCExists(npc, p, false)) return false;
+					if(checkNPCExists(npc, p, false)) return false;
 					else {
 
-						Map<NPC.Skin.Part, String> skinStatus = new HashMap<NPC.Skin.Part, String>();
-						Map<EquipmentSlot, ItemStack> equipments = new HashMap<EquipmentSlot, ItemStack>();
+						Map<NPC.Skin.Part, String> skinStatus = new HashMap<>();
+						Map<EquipmentSlot, ItemStack> equipments = new HashMap<>();
 
 										/* -------------------------------------------- */
 
@@ -252,8 +252,8 @@ public class NPCCommand implements CommandExecutor {
 
 										/* -------------------------------------------- */
 
-						String customName = ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC.toString() + "Inconnu(e)";
-						String format = ChatColor.WHITE.toString() + ChatColor.ITALIC.toString() + " >> " + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "...";
+						String customName = ChatFormatting.DARK_GRAY.toString() + ChatFormatting.ITALIC.toString() + "Inconnu(e)";
+						String format = ChatFormatting.WHITE.toString() + ChatFormatting.ITALIC.toString() + " >> " + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "...";
 
 						npc.addMessageClickAction(customName + format); // Définit un message customisé
 						npc.setCustomName("Inconnu(e)"); // Définit un Nom Customisé pour le NPC.
@@ -269,50 +269,50 @@ public class NPCCommand implements CommandExecutor {
 						NPCEntity.runAnimation(npc).updateConfig(false);
 						main.NPCS.putIfAbsent(npcname, npc);
 
-						p.sendMessage(main.prefix + ChatColor.GREEN + "Le NPC a été créer !");
+						p.sendMessage(main.prefix + ChatFormatting.GREEN + "Le NPC a été créer !");
 						return true;
 					}
 
 				} else if(args[0].equalsIgnoreCase("remove")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 					else {
 
-						NPCManager.unsave_NPC(npcname);
-						if(main.NPCS.containsKey(npcname)) main.NPCS.remove(npcname);
+						NPCManager.unSave_NPC(npcname);
+                        main.NPCS.remove(npcname);
 						NPCUtils.getInstance().removeGlobalNPC(npc);
 
-						p.sendMessage(main.prefix + ChatColor.GREEN + "Le NPC a été supprimer !");
+						p.sendMessage(main.prefix + ChatFormatting.GREEN + "Le NPC a été supprimer !");
 						return true;
 					}
 
 				} else if(args[0].equalsIgnoreCase("tp")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 					p.teleport(npc.getLocation());
-					p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez été Téléporté vers le NPC !");
+					p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez été Téléporté vers le NPC !");
 					return true;
 
 				} else if(args[0].equalsIgnoreCase("tpto")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 					npc.teleport(p);
-					p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez Téléporté le NPC vers vous !");
+					p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez Téléporté le NPC vers vous !");
 
 					// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.x", String.valueOf(npc.getX()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.y", String.valueOf(npc.getY()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.z", String.valueOf(npc.getZ()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.World", String.valueOf(npc.getWorld()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.Yaw", String.valueOf(npc.getYaw()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.Pitch", String.valueOf(npc.getPitch()));
-					ConfigFile.saveConfig(main.NPCconfig);
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.x", String.valueOf(npc.getX()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.y", String.valueOf(npc.getY()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.z", String.valueOf(npc.getZ()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.World", String.valueOf(npc.getWorld()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.Yaw", String.valueOf(npc.getYaw()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.Pitch", String.valueOf(npc.getPitch()));
+					ConfigFile.saveConfig(main.NPCConfig);
 					// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 					// ⬇️ Recharge le NPC ⬇️ //
@@ -323,17 +323,17 @@ public class NPCCommand implements CommandExecutor {
 
 				} else if(args[0].equalsIgnoreCase("rotate")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 					npc.lookAt(location.getYaw(), location.getPitch(), true);
-					p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez changé la Rotation du NPC !");
+					p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez changé la Rotation du NPC !");
 
 					// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.Yaw", String.valueOf(location.getYaw()));
-					ConfigFile.set(main.NPCconfig, npcReg + ".Location.Pitch", String.valueOf(location.getPitch()));
-					ConfigFile.saveConfig(main.NPCconfig);
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.Yaw", String.valueOf(location.getYaw()));
+					ConfigFile.set(main.NPCConfig, npcReg + ".Location.Pitch", String.valueOf(location.getPitch()));
+					ConfigFile.saveConfig(main.NPCConfig);
 					// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 					// ⬇️ Recharge le NPC ⬇️ //
@@ -344,7 +344,7 @@ public class NPCCommand implements CommandExecutor {
 
 				} else if(args[0].equalsIgnoreCase("lookplayer")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -352,19 +352,19 @@ public class NPCCommand implements CommandExecutor {
 
 						npc.setGazeTrackingType(NPC.GazeTrackingType.NONE);
 						npc.getGazeTrackingType();
-						p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le NPC ne va plus suivre avec sa tête les joueurs proches");
+						p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le NPC ne va plus suivre avec sa tête les joueurs proches");
 
 						// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-						ConfigFile.set(main.NPCconfig, npcReg + ".FollowPlayerWithHead", false);
+						ConfigFile.set(main.NPCConfig, npcReg + ".FollowPlayerWithHead", false);
 						// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 					} else {
 
 						npc.setGazeTrackingType(NPC.GazeTrackingType.NEAREST_PLAYER);
-						p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le NPC va désormait suivre avec sa tête les joueurs proches");
+						p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le NPC va désormait suivre avec sa tête les joueurs proches");
 
 						// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-						ConfigFile.set(main.NPCconfig, npcReg + ".FollowPlayerWithHead", true);
+						ConfigFile.set(main.NPCConfig, npcReg + ".FollowPlayerWithHead", true);
 						// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 					}
 
@@ -372,29 +372,29 @@ public class NPCCommand implements CommandExecutor {
 					npc.update();
 					// ⬆️ Recharge le NPC ⬆️ //
 
-					ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+					ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 					return true;
 
 				} else if(args[0].equalsIgnoreCase("reload")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 					NPCManager.unloadNPC(null, false);
 					NPCManager.loadNPC(null, false, false, false);
-					p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le NPC a été recharger !");
+					p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le NPC a été recharger !");
 					return true;
 
 				} else if(args[0].equalsIgnoreCase("forcereload")) {
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 					NPCManager.unloadNPC(null, false);
 					NPCManager.loadNPC(null, true, false, false);
-					p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le NPC a été recharger de force !");
+					p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le NPC a été recharger de force !");
 					return true;
 
 				} else { p.sendMessage(Error_Argument(args[0])); }
@@ -402,7 +402,7 @@ public class NPCCommand implements CommandExecutor {
 			} else if(args.length == 3) {
 
 				final String npcname = args[2].toUpperCase();
-				if(args[2].length() >= 16) { p.sendMessage(main.prefix + ChatColor.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
+				if(args[2].length() >= 16) { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
 
 				String npcReg = "NPC." + npcname; // Récupère la section du NPC en question
 
@@ -414,12 +414,12 @@ public class NPCCommand implements CommandExecutor {
 
 				if(args[0].equalsIgnoreCase("animation")) {
 
-					String animationMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "L'Animation choisit du NPC a été joué !";
+					String animationMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "L'Animation choisit du NPC a été joué !";
 					RunAnimationNPC animationRunnable = NPCEntity.runAnimation(npc);
 
 					if(args[1].equalsIgnoreCase("mainswing")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -433,7 +433,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("offswing")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -447,7 +447,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("damage")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -461,7 +461,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("criticeffect")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -475,7 +475,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("criticmagiceffect")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -491,7 +491,7 @@ public class NPCCommand implements CommandExecutor {
 
 						BukkitTask task = animationRunnable.getTask();
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -504,7 +504,7 @@ public class NPCCommand implements CommandExecutor {
 						animationRunnable.updateConfig(false);
 						if(task != null && !task.isCancelled()) animationRunnable.getTask().cancel();
 
-						p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Toutes les Animations du NPC ont été arrêtées !");
+						p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Toutes les Animations du NPC ont été arrêtées !");
 
 						// ⬇️ Recharge le NPC ⬇️ //
 						npc.update();
@@ -512,16 +512,16 @@ public class NPCCommand implements CommandExecutor {
 
 						return true;
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + animation + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + animation + " !");
 
 				} else if(args[0].equalsIgnoreCase("pose")) {
 
-					String poseMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "La Posture du NPC a été effectuée !";
-					String alreadyPoseMessage = main.prefix + ChatColor.RED.toString() + ChatColor.ITALIC.toString() + "Le NPC a déjà cette Posture !";
+					String poseMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "La Posture du NPC a été effectuée !";
+					String alreadyPoseMessage = main.prefix + ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString() + "Le NPC a déjà cette Posture !";
 
 					if(args[1].equalsIgnoreCase("stand")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -534,8 +534,8 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(poseMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.Pose", npc.getPose().name());
-							ConfigFile.saveConfig(main.NPCconfig);
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.Pose", npc.getPose().name());
+							ConfigFile.saveConfig(main.NPCConfig);
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 							// ⬇️ Recharge le NPC ⬇️ //
@@ -547,7 +547,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("fallfly")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -560,8 +560,8 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(poseMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.Pose", npc.getPose().name());
-							ConfigFile.saveConfig(main.NPCconfig);
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.Pose", npc.getPose().name());
+							ConfigFile.saveConfig(main.NPCConfig);
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 							// ⬇️ Recharge le NPC ⬇️ //
@@ -573,7 +573,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("sleep")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -586,8 +586,8 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(poseMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.Pose", npc.getPose().name());
-							ConfigFile.saveConfig(main.NPCconfig);
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.Pose", npc.getPose().name());
+							ConfigFile.saveConfig(main.NPCConfig);
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 							// ⬇️ Recharge le NPC ⬇️ //
@@ -599,7 +599,7 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("crouch")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -612,8 +612,8 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(poseMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.Pose", npc.getPose().name());
-							ConfigFile.saveConfig(main.NPCconfig);
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.Pose", npc.getPose().name());
+							ConfigFile.saveConfig(main.NPCConfig);
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 							// ⬇️ Recharge le NPC ⬇️ //
@@ -623,61 +623,45 @@ public class NPCCommand implements CommandExecutor {
 							return true;
 						}
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + pose + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + pose + " !");
 
 				} else if(args[0].equalsIgnoreCase("skinstatus")) {
 
 					NPC.Skin.Parts skinParts = npc.getSkinParts();
 
-					String skinStatusOnMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin en question a été affiché au NPC !";
-					String allSkinStatusOnMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez affiché tous les Status du Skin du NPC !";
+					String skinStatusOnMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin en question a été affiché au NPC !";
+					String allSkinStatusOnMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez affiché tous les Status du Skin du NPC !";
 
-					String skinStatusOffMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin en question a été enlevé du NPC !";
-					String allSkinStatusOffMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez enlevé tous les Status du Skin du NPC !";
+					String skinStatusOffMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin en question a été enlevé du NPC !";
+					String allSkinStatusOffMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez enlevé tous les Status du Skin du NPC !";
 
 					if(args[1].equalsIgnoreCase("all")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(skinParts.getInvisibleParts().isEmpty()) {
 
 							skinParts.disableAll();
-							p.sendMessage(allSkinStatusOffMessage);
-
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "true");
+							updateNPCSkinStatus(p, npcReg, allSkinStatusOffMessage, true);
 
 						} else {
 
 							skinParts.enableAll();
-							p.sendMessage(allSkinStatusOnMessage);
-
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "false");
+							updateNPCSkinStatus(p, npcReg, allSkinStatusOffMessage, false);
 						}
 
 						// ⬇️ Recharge le NPC ⬇️ //
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("hat")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -687,7 +671,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.HAT", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -696,7 +680,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.HAT", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -704,12 +688,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("rightpants")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -719,7 +703,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -728,7 +712,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -736,12 +720,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("leftpants")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -751,7 +735,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -760,7 +744,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -768,12 +752,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("rightsleeve")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -783,7 +767,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -792,7 +776,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -800,12 +784,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("leftsleeve")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -815,7 +799,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -824,7 +808,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -832,12 +816,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("jacket")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -847,7 +831,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.JACKET", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -856,7 +840,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.JACKET", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -864,12 +848,12 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("cape")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -879,7 +863,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOffMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "false");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.CAPE", "false");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 						} else {
@@ -888,7 +872,7 @@ public class NPCCommand implements CommandExecutor {
 							p.sendMessage(skinStatusOnMessage);
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "true");
+							ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.CAPE", "true");
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 						}
 
@@ -896,14 +880,14 @@ public class NPCCommand implements CommandExecutor {
 						npc.forceUpdate();
 						// ⬆️ Recharge le NPC ⬆️ //
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + skinstatus + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + skinstatus + " !");
 
 				} else if(args[0].equalsIgnoreCase("skin")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
@@ -916,13 +900,13 @@ public class NPCCommand implements CommandExecutor {
 						if(!npc.getSkin().equals(skinNPC)) {
 
 							npc.setSkin(skinNPC);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez changé le Skin du NPC !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez changé le Skin du NPC !");
 
 							// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-							ConfigFile.set(main.NPCconfig, npcReg + ".Skin.Texture", skinNPC.getTexture());
-							ConfigFile.set(main.NPCconfig, npcReg + ".Skin.Signature", skinNPC.getSignature());
+							ConfigFile.set(main.NPCConfig, npcReg + ".Skin.Texture", skinNPC.getTexture());
+							ConfigFile.set(main.NPCConfig, npcReg + ".Skin.Signature", skinNPC.getSignature());
 
-							ConfigFile.saveConfig(main.NPCconfig);
+							ConfigFile.saveConfig(main.NPCConfig);
 							// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 							// ⬇️ Recharge le NPC ⬇️ //
@@ -931,14 +915,14 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le Skin du NPC est déjà celui que vous voulez attribué !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Skin du NPC est déjà celui que vous voulez attribué !"); return false; }
 
 				} else { p.sendMessage(Error_Argument(args[0])); }
 
 			} else if(args.length == 4) {
 
 				final String npcname = args[3].toUpperCase();
-				if(args[3].length() >= 16) { p.sendMessage(main.prefix + ChatColor.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
+				if(args[3].length() >= 16) { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
 
 				String npcReg = "NPC." + npcname; // Récupère la section du NPC en question
 
@@ -955,14 +939,14 @@ public class NPCCommand implements CommandExecutor {
 
 					if(args[1].equalsIgnoreCase("main")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.MAINHAND).equals(item)) {
 
 							npc.setItem(EquipmentSlot.MAINHAND, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "La Main Principale du NPC a été équipée !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "La Main Principale du NPC a été équipée !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "MAINHAND", true);
@@ -974,18 +958,18 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé dans sa Main Principale !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé dans sa Main Principale !"); return false; }
 
 					} else if(args[1].equalsIgnoreCase("off")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.OFFHAND).equals(item)) {
 
 							npc.setItem(EquipmentSlot.OFFHAND, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "La Main Secondaire du NPC a été équipée !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "La Main Secondaire du NPC a été équipée !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "OFFHAND", true);
@@ -997,18 +981,18 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé dans sa Main Secondaire !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé dans sa Main Secondaire !"); return false; }
 
 					} else if(args[1].equalsIgnoreCase("feet")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.FEET).equals(item)) {
 
 							npc.setItem(EquipmentSlot.FEET, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Les Bottes du NPC ont été équipées !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Les Bottes du NPC ont été équipées !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "BOOTS", true);
@@ -1020,18 +1004,18 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé au niveau de ses Bottes !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé au niveau de ses Bottes !"); return false; }
 
 					} else if(args[1].equalsIgnoreCase("legs")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.LEGS).equals(item)) {
 
 							npc.setItem(EquipmentSlot.LEGS, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Les jambières du NPC ont été équipées !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Les jambières du NPC ont été équipées !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "LEGGINGS", true);
@@ -1043,18 +1027,18 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé au niveau de ses Jambières !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé au niveau de ses Jambières !"); return false; }
 
 					} else if(args[1].equalsIgnoreCase("chest")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.CHEST).equals(item)) {
 
 							npc.setItem(EquipmentSlot.CHEST, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Plastron du NPC a été équipées !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Plastron du NPC a été équipées !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "CHESTPLATE", true);
@@ -1066,18 +1050,18 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé au niveau de son Plastron !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé au niveau de son Plastron !"); return false; }
 
 					} else if(args[1].equalsIgnoreCase("head")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						if(!npc.getEquipment(EquipmentSlot.HEAD).equals(item)) {
 
 							npc.setItem(EquipmentSlot.HEAD, item);
-							p.sendMessage(main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Casque du NPC a été équipées !");
+							p.sendMessage(main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Casque du NPC a été équipées !");
 
 							// ⬇️ Enregistre dans le fichier de configuration l'Équipement en question du NPC ⬇️ //
 							NPCManager.saveEquipment(npcname, item, "HEAD", true);
@@ -1089,19 +1073,19 @@ public class NPCCommand implements CommandExecutor {
 
 							return true;
 
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC a déjà cette Item d'Équipé au niveau de son Casque !"); return false; }
+						} else { p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC a déjà cette Item d'Équipé au niveau de son Casque !"); return false; }
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + equipment + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + equipment + " !");
 
 				} else if(args[0].equalsIgnoreCase("animation")) {
 
 					RunAnimationNPC animationRunnable = NPCEntity.runAnimation(npc);
 					BukkitTask task = animationRunnable.getTask();
 
-					String animationMessage = null;
-					Integer valueInfinite = null;
+					String animationMessage;
+					Integer valueInfinite;
 
-					if(args[1].equalsIgnoreCase("stop")) { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /npc animation stop <name> !"); return false; }
+					if(args[1].equalsIgnoreCase("stop")) { p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /npc animation stop <name> !"); return false; }
 
 					if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
 
@@ -1109,18 +1093,18 @@ public class NPCCommand implements CommandExecutor {
 
 						if(infinite) {
 
-							animationMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "L'Animation choisit du NPC sera joué en boucle !";
-							valueInfinite = Integer.valueOf(1);
+							animationMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "L'Animation choisit du NPC sera joué en boucle !";
+							valueInfinite = 1;
 
 						} else {
 
-							animationMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "L'Animation choisit du NPC sera joué une seule fois !";
-							valueInfinite = Integer.valueOf(0);
+							animationMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "L'Animation choisit du NPC sera joué une seule fois !";
+							valueInfinite = 0;
 						}
 
 					} else {
 
-						p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + animationWithThirdArgument + " !");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + animationWithThirdArgument + " !");
 						return false;
 					}
 
@@ -1136,16 +1120,16 @@ public class NPCCommand implements CommandExecutor {
 
 					if(args[1].equalsIgnoreCase("mainswing")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						animationRunnable.setAnimationStatus(NPC.Animation.SWING_MAIN_ARM, valueInfinite);
-						if(valueInfinite.equals(Integer.valueOf(0))) npc.playAnimation(NPC.Animation.SWING_MAIN_ARM);
+						if(valueInfinite.equals(0)) npc.playAnimation(NPC.Animation.SWING_MAIN_ARM);
 
 						animationRunnable.updateConfig(false);
 
-						if(valueInfinite.equals(Integer.valueOf(1))) {
+						if(valueInfinite.equals(1)) {
 
 							if(task == null || task.isCancelled()) animationRunnable.run();
 							else { task.cancel(); animationRunnable.run(); }
@@ -1157,37 +1141,36 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("offswing")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						animationRunnable.setAnimationStatus(NPC.Animation.SWING_OFF_HAND, valueInfinite);
-						if(valueInfinite.equals(Integer.valueOf(0))) npc.playAnimation(NPC.Animation.SWING_OFF_HAND);
+						if(valueInfinite.equals(0)) npc.playAnimation(NPC.Animation.SWING_OFF_HAND);
 
 						animationRunnable.updateConfig(false);
 
-						if(valueInfinite.equals(Integer.valueOf(1))) {
+						if(valueInfinite.equals(1)) {
 
 							if(task == null || task.isCancelled()) animationRunnable.run();
 							else { task.cancel(); animationRunnable.run(); }
 						}
 
 						p.sendMessage(animationMessage);
-
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("damage")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						animationRunnable.setAnimationStatus(NPC.Animation.TAKE_DAMAGE, valueInfinite);
-						if(valueInfinite.equals(Integer.valueOf(0))) npc.playAnimation(NPC.Animation.TAKE_DAMAGE);
+						if(valueInfinite.equals(0)) npc.playAnimation(NPC.Animation.TAKE_DAMAGE);
 
 						animationRunnable.updateConfig(false);
 
-						if(valueInfinite.equals(Integer.valueOf(1))) {
+						if(valueInfinite.equals(1)) {
 
 							if(task == null || task.isCancelled()) animationRunnable.run();
 							else { task.cancel(); animationRunnable.run(); }
@@ -1199,16 +1182,16 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("criticeffect")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						animationRunnable.setAnimationStatus(NPC.Animation.CRITICAL_EFFECT, valueInfinite);
-						if(valueInfinite.equals(Integer.valueOf(0))) npc.playAnimation(NPC.Animation.CRITICAL_EFFECT);
+						if(valueInfinite.equals(0)) npc.playAnimation(NPC.Animation.CRITICAL_EFFECT);
 
 						animationRunnable.updateConfig(false);
 
-						if(valueInfinite.equals(Integer.valueOf(1))) {
+						if(valueInfinite.equals(1)) {
 
 							if(task == null || task.isCancelled()) animationRunnable.run();
 							else { task.cancel(); animationRunnable.run(); }
@@ -1220,16 +1203,16 @@ public class NPCCommand implements CommandExecutor {
 
 					} else if(args[1].equalsIgnoreCase("criticmagiceffect")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 										/* ------------------------------------------- */
 
 						animationRunnable.setAnimationStatus(NPC.Animation.MAGICAL_CRITICAL_EFFECT, valueInfinite);
-						if(valueInfinite.equals(Integer.valueOf(0))) npc.playAnimation(NPC.Animation.MAGICAL_CRITICAL_EFFECT);
+						if(valueInfinite.equals(0)) npc.playAnimation(NPC.Animation.MAGICAL_CRITICAL_EFFECT);
 
 						animationRunnable.updateConfig(false);
 
-						if(valueInfinite.equals(Integer.valueOf(1))) {
+						if(valueInfinite.equals(1)) {
 
 							if(task == null || task.isCancelled()) animationRunnable.run();
 							else { task.cancel(); animationRunnable.run(); }
@@ -1239,18 +1222,18 @@ public class NPCCommand implements CommandExecutor {
 
 						return true;
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + animationWithThirdArgument + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + animationWithThirdArgument + " !");
 
 				} else if(args[0].equalsIgnoreCase("skinstatus")) {
 
 					NPC.Skin.Parts skinParts = npc.getSkinParts();
 
-					String skinStatusMessage = null;
-					String allSkinStatusMessage = null;
-					String alreadySkinStatusMessage = null;
-					String alreadyAllSkinStatusMessage = null;
+					String skinStatusMessage;
+					String allSkinStatusMessage;
+					String alreadySkinStatusMessage;
+					String alreadyAllSkinStatusMessage;
 
-					boolean hasEnabled = true;
+					boolean hasEnabled;
 
 					if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
 
@@ -1260,30 +1243,30 @@ public class NPCCommand implements CommandExecutor {
 
 							hasEnabled = true;
 
-							skinStatusMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin en question a été affiché au NPC !";
-							alreadySkinStatusMessage = main.prefix + ChatColor.RED.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin que vous demandez est déjà affiché sur le NPC !";
-							allSkinStatusMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez affiché tous les Status du Skin du NPC !";
-							alreadyAllSkinStatusMessage = main.prefix + ChatColor.RED.toString() + ChatColor.ITALIC.toString() + "Le NPC possède dèjà tous les Status de Skin !";
+							skinStatusMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin en question a été affiché au NPC !";
+							alreadySkinStatusMessage = main.prefix + ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin que vous demandez est déjà affiché sur le NPC !";
+							allSkinStatusMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez affiché tous les Status du Skin du NPC !";
+							alreadyAllSkinStatusMessage = main.prefix + ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString() + "Le NPC possède dèjà tous les Status de Skin !";
 
 						} else {
 
 							hasEnabled = false;
 
-							skinStatusMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin en question a été enlevé du NPC !";
-							alreadySkinStatusMessage = main.prefix + ChatColor.RED.toString() + ChatColor.ITALIC.toString() + "Le Status du Skin que vous demandez n'est pas sur le NPC !";
-							allSkinStatusMessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez enlevé tous les Status du Skin du NPC !";
-							alreadyAllSkinStatusMessage = main.prefix + ChatColor.RED.toString() + ChatColor.ITALIC.toString() + "Le NPC ne possède pas tous les Status de Skin !";
+							skinStatusMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin en question a été enlevé du NPC !";
+							alreadySkinStatusMessage = main.prefix + ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString() + "Le Status du Skin que vous demandez n'est pas sur le NPC !";
+							allSkinStatusMessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez enlevé tous les Status du Skin du NPC !";
+							alreadyAllSkinStatusMessage = main.prefix + ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString() + "Le NPC ne possède pas tous les Status de Skin !";
 						}
 
 					} else {
 
-						p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + skinstatusWithThirdArgument + " !");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + skinstatusWithThirdArgument + " !");
 						return false;
 					}
 
 					if(args[1].equalsIgnoreCase("all")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1293,15 +1276,7 @@ public class NPCCommand implements CommandExecutor {
 							else {
 
 								skinParts.enableAll();
-								p.sendMessage(allSkinStatusMessage);
-
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "true");
+								updateNPCSkinStatus(p, npcReg, allSkinStatusMessage, true);
 
 								// ⬇️ Recharge le NPC ⬇️ //
 								npc.forceUpdate();
@@ -1314,15 +1289,7 @@ public class NPCCommand implements CommandExecutor {
 							else {
 
 								skinParts.disableAll();
-								p.sendMessage(allSkinStatusMessage);
-
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "false");
+								updateNPCSkinStatus(p, npcReg, allSkinStatusMessage, false);
 
 								// ⬇️ Recharge le NPC ⬇️ //
 								npc.forceUpdate();
@@ -1330,12 +1297,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("hat")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1348,7 +1315,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.HAT", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1365,7 +1332,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.HAT", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.HAT", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1374,12 +1341,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("rightpants")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1392,7 +1359,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1409,7 +1376,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1418,12 +1385,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("leftpants")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1436,7 +1403,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1453,7 +1420,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1462,12 +1429,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("rightsleeve")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1480,7 +1447,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1497,7 +1464,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1506,12 +1473,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("leftsleeve")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1524,7 +1491,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1541,7 +1508,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1550,12 +1517,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("jacket")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1568,7 +1535,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.JACKET", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1585,7 +1552,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.JACKET", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.JACKET", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1594,12 +1561,12 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
 					} else if(args[1].equalsIgnoreCase("cape")) {
 
-						if(!checkNPCExists(npc, p, true)) return false;
+						if(checkNPCExists(npc, p, true)) return false;
 
 												/* ------------------------------------------- */
 
@@ -1612,7 +1579,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "false");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.CAPE", "false");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1629,7 +1596,7 @@ public class NPCCommand implements CommandExecutor {
 								p.sendMessage(skinStatusMessage);
 
 								// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-								ConfigFile.set(main.NPCconfig, npcReg + ".Data.SkinStatus.CAPE", "true");
+								ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.CAPE", "true");
 								// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 								// ⬇️ Recharge le NPC ⬇️ //
@@ -1638,14 +1605,14 @@ public class NPCCommand implements CommandExecutor {
 							}
 						}
 
-						ConfigFile.saveConfig(main.NPCconfig); // Enregistre le fichier de configuration
+						ConfigFile.saveConfig(main.NPCConfig); // Enregistre le fichier de configuration
 						return true;
 
-					} else p.sendMessage(main.prefix + ChatColor.RED + "Essayez " + skinstatusWithThirdArgument + " !");
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez " + skinstatusWithThirdArgument + " !");
 
 				} else if(args[0].equalsIgnoreCase("interactmessage")) {
 
-					if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatColor.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
+					if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
 
 					npcReg = "NPC." + args[1].toUpperCase(); // Récupère la section du NPC en question
 
@@ -1656,9 +1623,9 @@ public class NPCCommand implements CommandExecutor {
 											 /*-------------------------------------*/
 
 					// Message de succès
-					String interactmessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez changé le message d'interaction du NPC.";
+					String interactmessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez changé le message d'interaction du NPC.";
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 									/* ------------------------------------------- */
 
@@ -1672,17 +1639,17 @@ public class NPCCommand implements CommandExecutor {
 									/* ------------------------------------------- */
 
 					npc.setCustomName(args[2]);
-					String customName = ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC.toString() + args[2];
-					String format = ChatColor.WHITE.toString() + ChatColor.ITALIC.toString() + " >> " + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + args[3];
+					String customName = ChatFormatting.DARK_GRAY.toString() + ChatFormatting.ITALIC.toString() + args[2];
+					String format = ChatFormatting.WHITE.toString() + ChatFormatting.ITALIC.toString() + " >> " + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + args[3];
 
 					npc.addMessageClickAction(customName + format); // Définit un message customisé
 					p.sendMessage(interactmessage);
 
 					// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-					ConfigFile.set(main.NPCconfig, npcReg + ".InteractEvent.Sender", args[2]);
-					ConfigFile.set(main.NPCconfig, npcReg + ".InteractEvent.Message", args[3]);
+					ConfigFile.set(main.NPCConfig, npcReg + ".InteractEvent.Sender", args[2]);
+					ConfigFile.set(main.NPCConfig, npcReg + ".InteractEvent.Message", args[3]);
 
-					ConfigFile.saveConfig(main.NPCconfig);
+					ConfigFile.saveConfig(main.NPCConfig);
 					// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 					// ⬇️ Recharge le NPC ⬇️ //
@@ -1696,7 +1663,7 @@ public class NPCCommand implements CommandExecutor {
 				if(args[0].equalsIgnoreCase("interactmessage")) {
 
 					final String npcname = args[1].toUpperCase();
-					if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatColor.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
+					if(args[1].length() >= 16) { p.sendMessage(main.prefix + ChatFormatting.RED + "Le Nom peut pas faire plus de 16 caractères !"); return false; }
 
 					String npcReg = "NPC." + npcname; // Récupère la section du NPC en question
 
@@ -1717,17 +1684,15 @@ public class NPCCommand implements CommandExecutor {
 					// On combine tous les arguments restant en message //
 
 					// Message de succès
-					String interactmessage = main.prefix + ChatColor.GREEN.toString() + ChatColor.ITALIC.toString() + "Vous avez changé le message d'interaction du NPC.";
+					String interactmessage = main.prefix + ChatFormatting.GREEN.toString() + ChatFormatting.ITALIC.toString() + "Vous avez changé le message d'interaction du NPC.";
 
-					if(!checkNPCExists(npc, p, true)) return false;
+					if(checkNPCExists(npc, p, true)) return false;
 
 
 									/* ------------------------------------------- */
 
 					// ⬇️ On enlève les actions du NPC comportant des Messages Customisés ⬇️ //
-					List<NPC.Interact.ClickAction> clickActionList = new ArrayList<NPC.Interact.ClickAction>();
-
-					npc.getClickActions().forEach(clickActionList::add);
+                    List<NPC.Interact.ClickAction> clickActionList = new ArrayList<>(npc.getClickActions());
 					clickActionList.forEach(clickAction -> {
 
 						if(clickAction.getActionType() == NPC.Interact.Actions.Type.SEND_MESSAGE) clickAction.getNPC().removeClickAction(clickAction);
@@ -1739,8 +1704,8 @@ public class NPCCommand implements CommandExecutor {
 
 
 					npc.setCustomName(args[2]);
-					String customName = ChatColor.DARK_GRAY.toString() + ChatColor.ITALIC.toString() + args[2];
-					String format = ChatColor.WHITE.toString() + ChatColor.ITALIC.toString() + " >> " + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + combinedArgs;
+					String customName = ChatFormatting.DARK_GRAY.toString() + ChatFormatting.ITALIC.toString() + args[2];
+					String format = ChatFormatting.WHITE.toString() + ChatFormatting.ITALIC.toString() + " >> " + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + combinedArgs;
 
 
 					// Convertie le message en question à envoyer
@@ -1750,10 +1715,10 @@ public class NPCCommand implements CommandExecutor {
 					p.sendMessage(interactmessage);
 
 					// ⬇️ Enregistre dans le fichier de configuration ⬇️ //
-					ConfigFile.set(main.NPCconfig, npcReg + ".InteractEvent.Sender", args[2]);
-					ConfigFile.set(main.NPCconfig, npcReg + ".InteractEvent.Message", combinedArgs);
+					ConfigFile.set(main.NPCConfig, npcReg + ".InteractEvent.Sender", args[2]);
+					ConfigFile.set(main.NPCConfig, npcReg + ".InteractEvent.Message", combinedArgs);
 
-					ConfigFile.saveConfig(main.NPCconfig);
+					ConfigFile.saveConfig(main.NPCConfig);
 					// ⬆️ Enregistre dans le fichier de configuration ⬆️ //
 
 					// ⬇️ Recharge le NPC ⬇️ //
@@ -1772,13 +1737,13 @@ public class NPCCommand implements CommandExecutor {
 				sender.sendMessage(header);
 				sender.sendMessage("");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + help + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des commandes des NPCs.");
+				sender.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + help + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des commandes des NPCs.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + list + ChatColor.WHITE + " : " + ChatColor.GRAY + "Affiche la liste des NPCs dans le Serveur.");
+				sender.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + list + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Affiche la liste des NPCs dans le Serveur.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + "/npc reload" + ChatColor.WHITE + " : " + ChatColor.GRAY + "Recharge tous les NPCs dans le Serveur.");
+				sender.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + "/npc reload" + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Recharge tous les NPCs dans le Serveur.");
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.YELLOW + "- " + ChatColor.GOLD + "/npc forcereload" + ChatColor.WHITE + " : " + ChatColor.GRAY + "Force le rechargement de tous les NPCs dans le Serveur à partir du fichier de configuration.");
+				sender.sendMessage(ChatFormatting.YELLOW + "- " + ChatFormatting.GOLD + "/npc forcereload" + ChatFormatting.WHITE + " : " + ChatFormatting.GRAY + "Force le rechargement de tous les NPCs dans le Serveur à partir du fichier de configuration.");
 				sender.sendMessage("");
 				sender.sendMessage("");
 				sender.sendMessage(footer);
@@ -1791,31 +1756,27 @@ public class NPCCommand implements CommandExecutor {
 
 						Set<String> npcs = main.NPCS.keySet();
 
-						if(npcs.size() == 0) {
+						/****************************************/
 
-							sender.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) dans le plugin !");
+						if(npcs.isEmpty()) sender.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) dans le plugin !");
+						else if(npcs.size() == 1) sender.sendMessage(main.prefix + ChatFormatting.GRAY + "Il y'a seulement le NPC " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + npcs.toArray()[0] + ChatFormatting.GRAY + " dans le serveur !");
+						else {
 
-						} else if(npcs.size() == 1) {
-
-		    				sender.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement le NPC " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + npcs.toArray()[0] + ChatColor.GRAY + " dans le serveur !");
-
-						} else {
-
-							sender.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+							sender.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 			    			sender.sendMessage(" ");
 			    			sender.sendMessage(" ");
 
-			    			sender.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Liste des NPC(s) dans le serveur :");
+			    			sender.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Liste des NPC(s) dans le serveur :");
 
 			    			for(String names : npcs) {
 
 			    				sender.sendMessage(" ");
-			    				sender.sendMessage(ChatColor.WHITE + "- " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + names);
+			    				sender.sendMessage(ChatFormatting.WHITE + "- " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + names);
 			    			}
 
 			    			sender.sendMessage(" ");
 			    			sender.sendMessage(" ");
-			    			sender.sendMessage(ChatColor.GRAY + "===========================");
+			    			sender.sendMessage(ChatFormatting.GRAY + "===========================");
 
 						}
 
@@ -1823,10 +1784,14 @@ public class NPCCommand implements CommandExecutor {
 
 				} else if(args[0].equalsIgnoreCase("reload")) {
 
-					List<NPCGlobal> NPCS = new ArrayList<NPCGlobal>(NPCUtils.getInstance().getAllGlobalNPCs(main));
-					sender.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Rechargement du/des NPC(s)...");
+					List<NPCGlobal> NPCS = new ArrayList<>(NPCUtils.getInstance().getAllGlobalNPCs(main));
+					sender.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Rechargement du/des NPC(s)...");
 
-					if(NPCS.isEmpty()) { sender.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) dans le plugin !"); return false; }
+					if(NPCS.isEmpty()) {
+
+						sender.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) dans le plugin !");
+						return false;
+					}
 
 					NPCManager.unloadNPC(null, false);
 					NPCManager.loadNPC(null, false, false, false);
@@ -1834,7 +1799,7 @@ public class NPCCommand implements CommandExecutor {
 
 				} else if(args[0].equalsIgnoreCase("forcereload")) {
 
-					sender.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Forçage du rechargement du/des NPC(s)...");
+					sender.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Forçage du rechargement du/des NPC(s)...");
 
 													/* ----------------------------------------------------- */
 
@@ -1844,14 +1809,14 @@ public class NPCCommand implements CommandExecutor {
 						NPCManager.loadNPC(null, true, false, false);
 						return true;
 
-					} else sender.sendMessage(main.prefix + ChatColor.RED + "Aucun NPC(s) enregistré(s) dans le plugin !"); return false;
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Aucun NPC(s) enregistré(s) dans le plugin !"); return false;
 
-				} else { sender.sendMessage(main.prefix + ChatColor.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !"); }
+				} else { sender.sendMessage(main.prefix + ChatFormatting.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !"); }
 
 			} else {
 
 				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("list")) sender.sendMessage(Error_Argument(args[0]));
-				else sender.sendMessage(main.prefix + ChatColor.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !");
+				else sender.sendMessage(main.prefix + ChatFormatting.RED + "Argument incorrect, Veuillez voir les arguments accessible en faisant : " + help + " !");
 			}
 		}
 
@@ -1873,7 +1838,7 @@ public class NPCCommand implements CommandExecutor {
 
 		String result = null;
 
-		Map<String, String> messages = new HashMap<String, String>();
+		Map<String, String> messages = new HashMap<>();
 
 		try {
 
@@ -1889,11 +1854,11 @@ public class NPCCommand implements CommandExecutor {
 
 			for(String argument : messages.keySet()) {
 
-				if(arg.equalsIgnoreCase(argument)) { result = main.prefix + ChatColor.RED + "Essayez " +  messages.get(argument) + " !"; break; }
-				else result = main.prefix + ChatColor.RED + "Essayez /npc ? ou /npc help pour vérifier comment utiliser la commande '/npc' !";
+				if(arg.equalsIgnoreCase(argument)) { result = main.prefix + ChatFormatting.RED + "Essayez " +  messages.get(argument) + " !"; break; }
+				else result = main.prefix + ChatFormatting.RED + "Essayez /npc ? ou /npc help pour vérifier comment utiliser la commande '/npc' !";
 			}
 
-		} catch(IllegalAccessException e) { e.printStackTrace(); }
+		} catch(IllegalAccessException e) { e.printStackTrace(System.err); }
 
 		return result;
 	}
@@ -1913,21 +1878,50 @@ public class NPCCommand implements CommandExecutor {
 
 		if(checkNotExist) {
 
-			if(npc == null || !NPCEntity.isCreated(npc) && !npc.getPersonal(p).isCreated()) { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC n'éxiste pas !"); return false; }
+			if(npc == null || !NPCEntity.isCreated(npc) && !npc.getPersonal(p).isCreated()) {
+
+				p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC n'éxiste pas !");
+				return true;
+			}
 
 									/* ----------------------------------------------------- */
 
 			NPCEntity.checkToCreate(npc);
-			return true;
 
-		} else {
+        } else {
 
-			if(npc != null && NPCEntity.isCreated(npc) && npc.getPersonal(p).isCreated()) { p.sendMessage(main.prefix + ChatColor.RED + "Le NPC éxiste déjà !"); return false; }
+			if(npc != null && NPCEntity.isCreated(npc) && npc.getPersonal(p).isCreated()) {
+
+				p.sendMessage(main.prefix + ChatFormatting.RED + "Le NPC éxiste déjà !");
+				return true;
+			}
 
 									/* ----------------------------------------------------- */
 
 			NPCEntity.checkToDestroy(npc);
-			return true;
-		}
+        }
+        return false;
+    }
+
+	/**
+	 * Met à jour les statuts de la peau d'un NPC dans le fichier de configuration
+	 * et envoie un message au joueur spécifié.
+	 *
+	 * @param player Le joueur auquel envoie le message.
+	 * @param npcReg La clé du registre du NPC à mettre à jour.
+	 */
+	public void updateNPCSkinStatus(Player player, String npcReg, String allSkinStatusMessage, boolean state) {
+
+		// Envoyer un message au joueur
+		player.sendMessage(allSkinStatusMessage);
+
+		// Mettre à jour les statuts de la peau dans le fichier de configuration
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.CAPE", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.JACKET", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_SLEEVE", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_SLEEVE", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.LEFT_PANTS", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.RIGHT_PANTS", state ? "true" : "false");
+		ConfigFile.set(main.NPCConfig, npcReg + ".Data.SkinStatus.HAT", state ? "true" : "false");
 	}
 }

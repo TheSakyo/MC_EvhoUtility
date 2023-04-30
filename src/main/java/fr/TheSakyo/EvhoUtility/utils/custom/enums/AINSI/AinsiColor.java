@@ -85,9 +85,7 @@ public enum AinsiColor {
     /**
      * Récupère la couleur 'AINSI' en question de {@link AinsiColor}.
      *
-     * @param colorCode Un Code Couleur 'AINSI' a interprété
-     *
-     * @return Une instance d'un code couleur 'AINSI' spécial.
+     * @param colorCode Un Code Couleur 'AINSI' qu'il faut interpréter.
      */
     AinsiColor(String colorCode) { this.colorCode = colorCode; }
 

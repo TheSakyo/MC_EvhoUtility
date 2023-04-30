@@ -35,13 +35,13 @@ public enum MaterialsUtils {
                 /* ------------------------------------------------------------------ */
 
     /**
-     * récupère une Liste d'objets {@link MaterialsUtils} pour renvoyer une liste d'objets {@link Material}
+     * Récupère une Liste d'objets {@link MaterialsUtils} pour renvoyer une liste d'objets {@link Material}
      *
      * @return Une collection de matériaux.
      */
     public static Collection<Material> getMaterials(MaterialsUtils... materials) {
 
-        List<Material> materialList = new ArrayList<Material>();
+        List<Material> materialList = new ArrayList<>();
         for(MaterialsUtils material : materials) materialList.addAll(material.getMaterials());
 
         return materialList;

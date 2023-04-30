@@ -50,7 +50,7 @@ public class NMSCraftServer {
   /**
    * Récupère une instance du Serveur (serveur Minecraft) en fonction du Serveur demandé
    *
-   * @param server Une instance du serveur a récupéré
+   * @param server Une instance du serveur qu'il faut récupérer.
    *
    */
   public static MinecraftServer getMinecraftServer(Server server) {

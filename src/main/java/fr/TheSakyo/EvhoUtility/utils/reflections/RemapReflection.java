@@ -12,9 +12,9 @@ public class RemapReflection {
 	/***************************************************************************************************************/
 
 	// ⬇️ ** Récupère une variable de "class" à remappé ** ⬇️ //
-	public static String remapFieldName(Class c, String string) {
+	public static String remapFieldName(Class<?> c, String string) {
 
-		Class<?> remapClass = remapClassName(c); //Récupère la "class" en paramètre pour le remappé
+		Class<?> remapClass = remapClassName(c); //On récupère la "class" en paramètre pour le remappé
 
 		//Retourne la variable remappé à partir de la "class" remappé
 		return reflectRemapper.remapFieldName(remapClass, string);
@@ -24,9 +24,9 @@ public class RemapReflection {
 					/* ------------------- */
 
 	// ⬇️ ** Récupère une méthode de "class" à remappé ** ⬇️ //
-	public static String remapMethodName(Class c, String string, Class<?>... paramTypes) {
+	public static String remapMethodName(Class<?> c, String string, Class<?>... paramTypes) {
 
-		Class<?> remapClass = remapClassName(c); //Récupère la "class" en paramètre pour le remappé
+		Class<?> remapClass = remapClassName(c); //On récupère la "class" en paramètre pour le remappé
 
 		//Retourne la variable remappé à partir de la "class" remappé
 		return reflectRemapper.remapMethodName(remapClass, string, paramTypes);
@@ -36,7 +36,7 @@ public class RemapReflection {
 					/* ------------------- */
 
 	// ⬇️️ ** Récupère la Class à Remappé ** ⬇️️ //
-	public static Class<?> remapClassName(Class c) {
+	public static Class<?> remapClassName(Class<?> c) {
 
 		//Récupère le nom de la "class" remappé à partir de la "class" en paramètre
 		final String runtimeName = reflectRemapper.remapClassName(c.getName());
@@ -44,7 +44,7 @@ public class RemapReflection {
 		try { return Class.forName(runtimeName); } //Essaie de récupèrer la "Class" remappé par son nom
 
 		//Sinon, si la "Class" est introuvable, on affiche une erreur détaillée à la console
-		catch(ClassNotFoundException e) { e.printStackTrace(); }
+		catch(ClassNotFoundException e) { e.printStackTrace(System.err); }
 
 		return null; // On retourne "NULL" (dans le cas, si rien n'a été retourné).
 	}

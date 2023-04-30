@@ -3,7 +3,7 @@ package fr.TheSakyo.EvhoUtility.utils.api.Advancements;
 import net.minecraft.advancements.FrameType;
 
 /**********************************/
-/* TYPES DE CADRES D'ACHIEVEMENTS */
+/* TYPES DE CADRES DE ACHIEVEMENTS */
 /**********************************/
 public enum AdvancementFrame {
 
@@ -12,7 +12,7 @@ public enum AdvancementFrame {
     GOAL(FrameType.GOAL);
 
 
-    private FrameType nms;
+    private final FrameType nms;
 
     AdvancementFrame(FrameType nms) { this.nms = nms; }
 
@@ -20,5 +20,5 @@ public enum AdvancementFrame {
 
 }
 /**********************************/
-/* TYPES DE CADRES D'ACHIEVEMENTS */
+/* TYPES DE CADRES DE ACHIEVEMENTS */
 /**********************************/

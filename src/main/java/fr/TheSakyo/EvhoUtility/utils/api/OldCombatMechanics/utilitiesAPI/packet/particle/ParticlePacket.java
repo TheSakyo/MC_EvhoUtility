@@ -12,7 +12,7 @@ public abstract class ParticlePacket implements ImmutablePacket {
 
     private final Object nmsPacket;
 
-    protected ParticlePacket(ImmutablePacket packet){ this.nmsPacket = packet.getNmsPacket(); }
+    protected ParticlePacket(ImmutablePacket packet) { this.nmsPacket = packet.getNmsPacket(); }
 
     @Override
     public Object getNmsPacket() { return nmsPacket; }

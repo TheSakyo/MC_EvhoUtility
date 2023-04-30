@@ -1,13 +1,13 @@
 package fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
+import net.minecraft.ChatFormatting;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 
 public class OldCM_ConfigHandler {
-    private UtilityMain plugin;
+    private final UtilityMain plugin;
 
     public OldCM_ConfigHandler(UtilityMain instance) { this.plugin = instance; }
 
@@ -15,15 +15,15 @@ public class OldCM_ConfigHandler {
 
         File configFile = getFile("/OldCombatCfg.yml");
 
-        if(doesConfigExist()){
+        if(doesConfigExist()) {
 
-            //D'abord nous changeons le nom de l'ancienne configuration
+            //D'abord, nous changeons le nom de l'ancienne configuration
             File backup = getFile("/OldCombatCfg-BACKUP.yml");
             if(backup.exists()) backup.delete();
 
             configFile.renameTo(backup); // Renomme l'ancienne configuration
 
-            //Puis nous sauvegardons la nouvelle version
+            //Puis, nous sauvegardons la nouvelle version
             plugin.saveResource("OldCombatCfg.yml", false);
         }
 
@@ -35,7 +35,7 @@ public class OldCM_ConfigHandler {
     private void setupConfig(String fileName) {
 
         plugin.saveResource(fileName, false);
-        plugin.console.sendMessage(plugin.prefix + ChatColor.DARK_GREEN + "Fichier de Configuration " + fileName + " rechargé !");
+        plugin.console.sendMessage(plugin.prefix + ChatFormatting.DARK_GREEN + "Fichier de Configuration " + fileName + " rechargé !");
     }
 
     public YamlConfiguration getConfig(String fileName) { return YamlConfiguration.loadConfiguration(getFile(fileName)); }

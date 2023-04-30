@@ -4,7 +4,7 @@
  * ce travail pour des informations supplémentaires concernant la propriété des droits d'auteur.
  * L'ASF vous concède ce fichier sous licence Apache License, Version 2.0 (la "Licence").
  * (la "Licence") ; vous ne pouvez utiliser ce fichier que conformément à la Licence.
- * La Licence.  Vous pouvez obtenir une copie de la licence à l'adresse suivante
+ * La Licence. Vous pouvez obtenir une copie de la licence à l'adresse suivante
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -16,9 +16,8 @@
  */
 package fr.TheSakyo.EvhoUtility.utils;
 
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.time.FastDateFormat;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.time.FastTimeZone;
-
+import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastTimeZone;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;

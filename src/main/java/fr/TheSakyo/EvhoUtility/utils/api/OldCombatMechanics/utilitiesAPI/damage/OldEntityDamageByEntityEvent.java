@@ -1,7 +1,6 @@
 package fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.damage;
 
 import fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.potions.PotionEffects;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -70,7 +69,6 @@ public class OldEntityDamageByEntityEvent extends Event implements Cancellable {
         weapon = equipment.getItemInMainHand();
 
         // Yay paper. Pourquoi dois-tu retourner null ici ?
-        if (weapon == null) weapon = new ItemStack(Material.AIR);
 
         // Techniquement, l'arme peut être en main secondaire, par exemple un arc.
         // Cependant, nous ne nous intéressons ici qu'aux armes de mêlée, qui seront toujours dans la main principale.
@@ -87,7 +85,7 @@ public class OldEntityDamageByEntityEvent extends Event implements Cancellable {
 
             if((float)livingDamagee.getNoDamageTicks() > (float) livingDamagee.getMaximumNoDamageTicks() / 2.0F) {
 
-                // Le code du NMS vérifie également si le dommage actuel est supérieur au dommage précédent. Cependant, ici l'événement
+                // Le code du NMS vérifie également si le dommage actuel qui est supérieur au dommage précédent. Cependant, ici l'événement
                 // a déjà la différence entre les deux comme dommage brut et l'événement ne se déclenche pas du tout
                 // si cette condition préalable n'est pas remplie.
                 wasInvulnerabilityOverdamage = true;
@@ -207,7 +205,7 @@ public class OldEntityDamageByEntityEvent extends Event implements Cancellable {
 
     public void setCriticalAddend(double criticalAddend) { this.criticalAddend = criticalAddend; }
 
-    public boolean wasSprinting() { return wasSprinting; }
+    public boolean wasSprinting() { return !wasSprinting; }
 
     public void setWasSprinting(boolean wasSprinting) { this.wasSprinting = wasSprinting; }
 

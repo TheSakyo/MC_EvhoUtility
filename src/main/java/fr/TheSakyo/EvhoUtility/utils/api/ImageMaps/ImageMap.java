@@ -8,15 +8,15 @@ public class ImageMap {
 	
 	// Variables Utiles //
 	
-	private UUID uuid;
+	private final UUID uuid;
 	
-	private String name;
+	private final String name;
 	
-	private String path;
+	private final String path;
 	
-	private int mapID;
+	private final int mapID;
 	
-	private ItemStack item;
+	private final ItemStack item;
 	
 	// Variables Utiles //
 	
@@ -37,14 +37,14 @@ public class ImageMap {
 	public UUID getUUID() { return uuid; } //Récupère l'uuid de "l'imagemap"
 	
 	
-	public String getName() { return name; } //Récupère le nom de "l'imagemap" qui a été définit à la création
+	public String getName() { return name; } //Récupère le nom de "l'imagemap" qui a été défini à la création
 	
 	
-	public String getPath() { return path; } //Récupère le lien ou le fichier de "l'imagemap" qui a été définit à la création
+	public String getPath() { return path; } //Récupère le lien ou le fichier de "l'imagemap" qui a été défini à la création
 	
 	
 	public int getMapID() { return mapID; }  //Récupère l'ID de "l'imagemap"
 	
 	
-	public ItemStack getitem() { return item; }  //Récupère l'item de "l'imagemap"
+	public ItemStack getItem() { return item; }  //Récupère l'item de "l'imagemap"
 }

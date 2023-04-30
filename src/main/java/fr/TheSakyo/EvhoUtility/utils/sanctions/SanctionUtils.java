@@ -5,8 +5,8 @@ import java.util.List;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import fr.TheSakyo.EvhoUtility.utils.entity.player.utilities.Skin;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,39 +21,40 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 public class SanctionUtils implements Listener {
 	
 		/* Récupère la class "Main" */
-		private UtilityMain main;
+		private final UtilityMain main;
+
 	    public SanctionUtils(UtilityMain pluginMain) { this.main = pluginMain; }
 		/* Récupère la class "Main" */
-	    
+
 	    
 	    // Variables Utiles //
-	   
-	  	InventoryMenu InvL = new InventoryMenu(main);
-	   
-	  	public static Inventory sanctionInv = Bukkit.getServer().createInventory(null, 27, CustomMethod.StringToComponent(ChatColor.DARK_RED + "Sanction Evhonia"));
-	  	
-	   
-	  	public static String prefix = ChatColor.WHITE + "[" + ChatColor.GOLD + "Evho" + ChatColor.RED + "Sanction" + ChatColor.WHITE + "]" + " ";
-	  	
-	  	
-	  	public static ArrayList<String> InvNameReason = new ArrayList<String>();
-	   
-	  	public static ArrayList<String> InvNameTime = new ArrayList<String>();
-	   
-	  	public static ArrayList<String> InvSoloName = new ArrayList<String>();
-	   
-	  	public static ArrayList<String> InvAllName = new ArrayList<String>();
-	   
-	  	public 	static ArrayList<String> GetPlayer = new ArrayList<String>();
-	   
-	  	public static ArrayList<String> GetTime = new ArrayList<String>();
 
-	  	public static ArrayList<ItemStack> itemsP = new ArrayList<ItemStack>();
+	  	InventoryMenu inventoryMenu = new InventoryMenu();
+	   
+	  	public static Inventory sanctionInv = Bukkit.getServer().createInventory(null, 27, CustomMethod.StringToComponent(ChatFormatting.DARK_RED + "Sanction Evhonia"));
+	  	
+	   
+	  	public static String prefix = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "Evho" + ChatFormatting.RED + "Sanction" + ChatFormatting.WHITE + "]" + " ";
+	  	
+	  	
+	  	public static ArrayList<String> InvNameReason = new ArrayList<>();
+	   
+	  	public static ArrayList<String> InvNameTime = new ArrayList<>();
+	   
+	  	public static ArrayList<String> InvSoloName = new ArrayList<>();
+	   
+	  	public static ArrayList<String> InvAllName = new ArrayList<>();
+	   
+	  	public 	static ArrayList<String> GetPlayer = new ArrayList<>();
+	   
+	  	public static ArrayList<String> GetTime = new ArrayList<>();
+
+	  	public static ArrayList<ItemStack> itemsP = new ArrayList<>();
 	   	
 	   
-	  	public static ArrayList<ItemStack> itemsCloseQuit = new ArrayList<ItemStack>();
+	  	public static ArrayList<ItemStack> itemsCloseQuit = new ArrayList<>();
 
-	  	public static ArrayList<ItemStack> itemsCloseReturn = new ArrayList<ItemStack>();
+	  	public static ArrayList<ItemStack> itemsCloseReturn = new ArrayList<>();
 	   
 	  	// Variables Utiles //
 	  	
@@ -73,7 +74,7 @@ public class SanctionUtils implements Listener {
 				ItemStack item = Skin.PlayerHead(null, p, online.getName());
 				itemsP.add(item);
 	  	    }
-			  new ScrollInventory(itemsP, ChatColor.DARK_GRAY + "Liste " + string, p);
+			  new ScrollInventory(itemsP, ChatFormatting.DARK_GRAY + "Liste " + string, p);
   		} 
 	  	
 	  	/*********************************/
@@ -90,14 +91,14 @@ public class SanctionUtils implements Listener {
 	  		
 			ItemStack closeQuit = new ItemStack(Material.BARRIER, 1);
 			ItemMeta CustomCQ = closeQuit.getItemMeta();
-			CustomCQ.displayName(CustomMethod.StringToComponent(ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "Quitter"));
-			CustomCQ.lore(List.of(CustomMethod.StringToComponent(ChatColor.RED + "Quittez le menu !")));
+			CustomCQ.displayName(CustomMethod.StringToComponent(ChatFormatting.DARK_RED.toString() + ChatFormatting.BOLD.toString() + "Quitter"));
+			CustomCQ.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.RED + "Quittez le menu !")));
 			closeQuit.setItemMeta(CustomCQ);
 			
 			ItemStack closeReturn = new ItemStack(Material.BARRIER, 1);
 			ItemMeta CustomCR = closeReturn.getItemMeta();
-			CustomCR.displayName(CustomMethod.StringToComponent(ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "Retour"));
-			CustomCR.lore(List.of(CustomMethod.StringToComponent(ChatColor.RED + "Retour au menu précédent !")));
+			CustomCR.displayName(CustomMethod.StringToComponent(ChatFormatting.DARK_RED.toString() + ChatFormatting.BOLD.toString() + "Retour"));
+			CustomCR.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.RED + "Retour au menu précédent !")));
 			closeReturn.setItemMeta(CustomCR);
 			
 			if(!itemsCloseQuit.contains(closeQuit)) itemsCloseQuit.add(closeQuit);
@@ -120,32 +121,32 @@ public class SanctionUtils implements Listener {
 			
 			ItemStack Kick = new ItemStack(Material.REDSTONE_TORCH, 1);
 			ItemMeta CustomK = Kick.getItemMeta();
-			CustomK.displayName(CustomMethod.StringToComponent(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Kick"));
-			CustomK.lore(List.of(CustomMethod.StringToComponent(ChatColor.WHITE + "Menu de gestion Kick !")));
+			CustomK.displayName(CustomMethod.StringToComponent(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Kick"));
+			CustomK.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.WHITE + "Menu de gestion Kick !")));
 			Kick.setItemMeta(CustomK);
 			
 			sanctionInv.setItem(12, Kick);
 			
 			ItemStack Mute = new ItemStack(Material.BELL, 1);
 			ItemMeta CustomM = Mute.getItemMeta();
-			CustomM.displayName(CustomMethod.StringToComponent(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Mute"));
-			CustomM.lore(List.of(CustomMethod.StringToComponent(ChatColor.WHITE + "Menu de gestion Mute !")));
+			CustomM.displayName(CustomMethod.StringToComponent(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Mute"));
+			CustomM.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.WHITE + "Menu de gestion Mute !")));
 			Mute.setItemMeta(CustomM);
 			
 			sanctionInv.setItem(10, Mute);
 			
 			ItemStack Ban = new ItemStack(Material.COMMAND_BLOCK, 1);
 			ItemMeta CustomB = Ban.getItemMeta();
-			CustomB.displayName(CustomMethod.StringToComponent(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu BAN"));
-			CustomB.lore(List.of(CustomMethod.StringToComponent(ChatColor.WHITE + "Menu de gestion Ban !")));
+			CustomB.displayName(CustomMethod.StringToComponent(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu BAN"));
+			CustomB.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.WHITE + "Menu de gestion Ban !")));
 			Ban.setItemMeta(CustomB);
 			
 			sanctionInv.setItem(14, Ban);
 			
 			ItemStack Autres = new ItemStack(Material.SUNFLOWER, 1);
 			ItemMeta CustomBN = Autres.getItemMeta();
-			CustomBN.displayName(CustomMethod.StringToComponent(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Autres"));
-			CustomBN.lore(List.of(CustomMethod.StringToComponent(ChatColor.WHITE + "Menu de gestion Autres !")));
+			CustomBN.displayName(CustomMethod.StringToComponent(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Autres"));
+			CustomBN.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.WHITE + "Menu de gestion Autres !")));
 			Autres.setItemMeta(CustomBN);
 			
 			sanctionInv.setItem(16, Autres);
@@ -225,7 +226,7 @@ public class SanctionUtils implements Listener {
 			
 			if(current == null) return;	
 			
-			if(current.getType() == Material.BARRIER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "Retour")) {
+			if(current.getType() == Material.BARRIER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(ChatFormatting.DARK_RED.toString() + ChatFormatting.BOLD.toString() + "Retour")) {
 				
 				p.closeInventory();
 				p.openInventory(sanctionInv);
@@ -258,7 +259,7 @@ public class SanctionUtils implements Listener {
 				getItemDisplayName = CustomMethod.ComponentToString(current.getItemMeta().displayName());
 			}
 
-			if(title.equalsIgnoreCase(ChatColor.DARK_RED + "Sanction Evhonia")) {
+			if(title.equalsIgnoreCase(ChatFormatting.DARK_RED + "Sanction Evhonia")) {
 				
 				e.setCancelled(true);	
 				p.closeInventory();
@@ -267,29 +268,29 @@ public class SanctionUtils implements Listener {
 	    	   	
 	    	   	InvSoloName.add(title);
 				
-				if(current.getType() == Material.REDSTONE_TORCH && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Kick")) {
+				if(current.getType() == Material.REDSTONE_TORCH && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Kick")) {
 					
-					InvL.InventoryKick(p);
+					inventoryMenu.InventoryKick(p);
 				} 
 				
-				if(current.getType() == Material.BELL && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Mute")) {
+				if(current.getType() == Material.BELL && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Mute")) {
 					
-					InvL.InventoryMute(p);
+					inventoryMenu.InventoryMute(p);
 					
 				}
 				
-				if(current.getType() == Material.COMMAND_BLOCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu BAN")) {
+				if(current.getType() == Material.COMMAND_BLOCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu BAN")) {
 					
-					InvL.InventoryBan(p);
+					inventoryMenu.InventoryBan(p);
 				}
 				
-				if(current.getType() == Material.SUNFLOWER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Menu Autres")) {
+				if(current.getType() == Material.SUNFLOWER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Menu Autres")) {
 					
-					InvL.InventoryOther(p);
+					inventoryMenu.InventoryOther(p);
 				}
 			}
 			
-			else if(title.equalsIgnoreCase(ChatColor.RED + "Menu-Kick")) {
+			else if(title.equalsIgnoreCase(ChatFormatting.RED + "Menu-Kick")) {
 				
 				e.setCancelled(true);
 				p.closeInventory();
@@ -300,49 +301,49 @@ public class SanctionUtils implements Listener {
 				
 				OpenSanctionInventoryOnClose(e);
 				
-				if(current.getType() == Material.LEVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Kick")) {
+				if(current.getType() == Material.LEVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Kick")) {
 						
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Kick]"));
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Kick]"));
 				}
 				
-				if(current.getType() == Material.LEVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Kick En Silcnce")) {
+				if(current.getType() == Material.LEVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Kick En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Kick-S]"));
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Kick-S]"));
 				}
 				
 			}
 			
-			else if(title.equalsIgnoreCase(ChatColor.RED + "Menu-Mute")) {
+			else if(title.equalsIgnoreCase(ChatFormatting.RED + "Menu-Mute")) {
 				
 				e.setCancelled(true);
 				p.closeInventory();
 				
 				OpenSanctionInventoryOnClose(e);
 				
-				if(current.getType() == Material.DROPPER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "TempMute")) {
+				if(current.getType() == Material.DROPPER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "TempMute")) {
 
-					this.InventoryPlayers(p, StringMenuPlayerTime(ChatColor.DARK_GRAY + "Joueurs [TempMute]"));
+					this.InventoryPlayers(p, StringMenuPlayerTime(ChatFormatting.DARK_GRAY + "Joueurs [TempMute]"));
 				}
 				
-				if(current.getType() == Material.DROPPER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "TempMute En Silence")) {
+				if(current.getType() == Material.DROPPER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "TempMute En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerTime(ChatColor.DARK_GRAY + "Joueurs [TempMute-S]"));
+					this.InventoryPlayers(p, StringMenuPlayerTime(ChatFormatting.DARK_GRAY + "Joueurs [TempMute-S]"));
 				}
 				
 				
-				if(current.getType() == Material.DISPENSER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Mute")) {
+				if(current.getType() == Material.DISPENSER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Mute")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Mute]"));
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Mute]"));
 				}
 				
-				if(current.getType() == Material.DISPENSER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Mute En Silence")) {
+				if(current.getType() == Material.DISPENSER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Mute En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Mute-S]"));					
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Mute-S]"));					
 				}
 				
 			}
 			
-			else if(title.equalsIgnoreCase(ChatColor.RED + "Menu-BAN")) {
+			else if(title.equalsIgnoreCase(ChatFormatting.RED + "Menu-BAN")) {
 				
 				e.setCancelled(true);
 				p.closeInventory();
@@ -353,39 +354,39 @@ public class SanctionUtils implements Listener {
 				
 				OpenSanctionInventoryOnClose(e);
 				
-				if(current.getType() == Material.OBSERVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "TempBan")) {
+				if(current.getType() == Material.OBSERVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "TempBan")) {
 
-					this.InventoryPlayers(p, StringMenuPlayerTime(ChatColor.DARK_GRAY + "Joueurs [TempBan]"));
+					this.InventoryPlayers(p, StringMenuPlayerTime(ChatFormatting.DARK_GRAY + "Joueurs [TempBan]"));
 				}
 				
-				if(current.getType() == Material.OBSERVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "TempBan En Silence")) {
+				if(current.getType() == Material.OBSERVER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "TempBan En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerTime(ChatColor.DARK_GRAY + "Joueurs [TempBan-S]"));
+					this.InventoryPlayers(p, StringMenuPlayerTime(ChatFormatting.DARK_GRAY + "Joueurs [TempBan-S]"));
 				}
 				
-				if(current.getType() == Material.TNT && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Ban")) {
+				if(current.getType() == Material.TNT && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Ban")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Ban]"));
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Ban]"));
 				}
 				
-				if(current.getType() == Material.TNT && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Ban En Silence")) {
+				if(current.getType() == Material.TNT && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Ban En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Ban-S]"));					
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Ban-S]"));					
 				}
 				
-				if(current.getType() == Material.BEDROCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Ban-IP")) {
+				if(current.getType() == Material.BEDROCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Ban-IP")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Ban-IP]"));
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Ban-IP]"));
 				}
 				
-				if(current.getType() == Material.BEDROCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + "Ban-IP En Silence")) {
+				if(current.getType() == Material.BEDROCK && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + "Ban-IP En Silence")) {
 					
-					this.InventoryPlayers(p, StringMenuPlayerReason(ChatColor.DARK_GRAY + "Joueurs [Ban-IP-S]"));					
+					this.InventoryPlayers(p, StringMenuPlayerReason(ChatFormatting.DARK_GRAY + "Joueurs [Ban-IP-S]"));					
 				}
 
 			}
 			
-			else if(title.equalsIgnoreCase(ChatColor.YELLOW + "Menu-Autres")) {
+			else if(title.equalsIgnoreCase(ChatFormatting.YELLOW + "Menu-Autres")) {
 				
 				e.setCancelled(true);
 				p.closeInventory();
@@ -396,36 +397,36 @@ public class SanctionUtils implements Listener {
 	    	   	
 				OpenSanctionInventoryOnClose(e);
 
-				if(current.getType() == Material.BLAZE_ROD && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Freeze")) {
+				if(current.getType() == Material.BLAZE_ROD && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Freeze")) {
 
-					this.InventoryPlayers(p, StringMenuPlayer(ChatColor.DARK_GRAY + "Joueurs [Freeze]"));
+					this.InventoryPlayers(p, StringMenuPlayer(ChatFormatting.DARK_GRAY + "Joueurs [Freeze]"));
 					
 				} 
 				
-				if(current.getType() == Material.CHEST && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.BLUE.toString() + ChatColor.BOLD.toString() + "Inventaire Du Joueur")) {
+				if(current.getType() == Material.CHEST && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.BLUE.toString() + ChatFormatting.BOLD.toString() + "Inventaire Du Joueur")) {
 
-					this.InventoryPlayers(p, StringMenuPlayer(ChatColor.DARK_GRAY + "Joueurs [Inventaire]"));
+					this.InventoryPlayers(p, StringMenuPlayer(ChatFormatting.DARK_GRAY + "Joueurs [Inventaire]"));
 				} 
 				
-				if(current.getType() == Material.ENDER_CHEST && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + "EnderChest Du Joueur")) {
+				if(current.getType() == Material.ENDER_CHEST && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.BOLD.toString() + "EnderChest Du Joueur")) {
 
-					this.InventoryPlayers(p, StringMenuPlayer(ChatColor.DARK_GRAY + "Joueurs [EnderChest]"));
+					this.InventoryPlayers(p, StringMenuPlayer(ChatFormatting.DARK_GRAY + "Joueurs [EnderChest]"));
 				}
 				
-				if(current.getType() == Material.FEATHER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Mode Vanish")) {
+				if(current.getType() == Material.FEATHER && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Mode Vanish")) {
 	
-					Inventory playerVanish = Bukkit.getServer().createInventory(null, 27, CustomMethod.StringToComponent(ChatColor.DARK_GRAY + "Mode-Vanish"));
+					Inventory playerVanish = Bukkit.getServer().createInventory(null, 27, CustomMethod.StringToComponent(ChatFormatting.DARK_GRAY + "Mode-Vanish"));
 					
 					ItemStack VanishOn = new ItemStack(Material.POTION, 1);
 					ItemMeta CustomVON = VanishOn.getItemMeta();
-					CustomVON.displayName(CustomMethod.StringToComponent(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Vanish ON"));
+					CustomVON.displayName(CustomMethod.StringToComponent(ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Vanish ON"));
 					VanishOn.setItemMeta(CustomVON);
 					
 					playerVanish.setItem(12, VanishOn);
 					
 					ItemStack VanishOff = new ItemStack(Material.POTION, 1);
 					ItemMeta CustomVOFF = VanishOff.getItemMeta();
-					CustomVOFF.displayName(CustomMethod.StringToComponent(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Vanish OFF"));
+					CustomVOFF.displayName(CustomMethod.StringToComponent(ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Vanish OFF"));
 					VanishOff.setItemMeta(CustomVOFF);
 					
 					playerVanish.setItem(14, VanishOff);
@@ -440,7 +441,7 @@ public class SanctionUtils implements Listener {
 			
 			}
 			
-			else if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Mode-Vanish")) {
+			else if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Mode-Vanish")) {
 				
 				e.setCancelled(true);
 				p.closeInventory();
@@ -451,12 +452,12 @@ public class SanctionUtils implements Listener {
 	    	   	
 	    	   	OpenSanctionInventoryOnClose(e);
 	    	   	
-	    	   	if(current.getType() == Material.POTION && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Vanish ON")) {
+	    	   	if(current.getType() == Material.POTION && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Vanish ON")) {
 	    	   		
 	    	   		new AnvilCreation(main).CreateSearchVanishOnAnvilGui(p);
 	    	   	}
 	    	   	
-	    	   	if(current.getType() == Material.POTION && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Vanish OFF")) {
+	    	   	if(current.getType() == Material.POTION && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && getItemDisplayName.equalsIgnoreCase(ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Vanish OFF")) {
 	    	   		
 	    	   		new AnvilCreation(main).CreateSearchVanishOffAnvilGui(p);
 	    	   	}

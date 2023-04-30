@@ -14,49 +14,55 @@ import net.luckperms.api.model.user.User;
 public class VanishUtils {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public VanishUtils(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
   
-  
-  
+
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /* PARTIE METHODES POUR LE SYSTEME DE VANISH */ 
+  /* PARTIE MÉTHODES POUR LE SYSTÈME DE VANISH */
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */	
 
 	/******************************************************/
 	/* MÉTHODE "BOOLEAN" POUR VÉRIFIER LE JOUEUR "VANISH" */
 	/******************************************************/
+
 	@SuppressWarnings("all")
-	public boolean PlayerVanished(Player p) {
+	public boolean playerVanished(Player player) { return playerVanished(player.getUniqueId()); }
 
-      User user = CustomMethod.getLuckPermUserOffline(p.getUniqueId());
 
-	  //Si le joueur contient la permission du mode "Vanish"
-	  if(CustomMethod.hasLuckPermission(p, "EvhoProxy.vanished") == true) {
+	public boolean playerVanished(UUID uuid) {
 
-		  //Ajoute le joueur dans listes des joueurs étant "vanish", s'il y est pas
-		  if(!main.VANISHED.contains(p.getUniqueId())) main.VANISHED.add(p.getUniqueId());
+		User user = CustomMethod.getLuckPermUserOffline(uuid);
 
-		 //Appel la méthode pour vérfifier le "vanish" du joueur (devient invisible)
-		  GetVanishedPlayer(main.VANISHED, p);
+		/*************************************/
 
-		  return true;
-	   }
+		//Si le joueur contient la permission du mode "Vanish"
+		if(CustomMethod.hasLuckPermission(uuid, "EvhoProxy.vanished")) {
 
-	  //sinon si le joueur ne contient pas la permission du mode "Vanish", s'il y est
-	  else {
+			//Ajoute le joueur dans la liste des joueurs étant "vanish", s'il y est pas
+			if(!main.VANISHED.contains(uuid)) main.VANISHED.add(uuid);
 
-		//Enl�ve le joueur dans listes des joueurs étant "vanish"
-		if(main.VANISHED.contains(p.getUniqueId())) main.VANISHED.remove(p.getUniqueId());
+			/***********************/
 
-		//Appel la méthode pour vérfifier le "Vanish" du joueur (devient visible)
-		GetVanishedPlayer(main.VANISHED, p);
+			//Appel la méthode pour verifier le "vanish" du joueur (devient invisible)
+			GetVanishedPlayer(main.VANISHED, uuid);
+			return true;
 
-		return false;
-	  }
+			//sinon si le joueur ne contient pas la permission du mode "Vanish", s'il y est
+		} else {
+
+			//Enlève le joueur dans la liste des joueurs étant "vanish"
+            main.VANISHED.remove(uuid);
+
+			/***********************/
+
+			//Appel la méthode pour verifier le "Vanish" du joueur (devient visible)
+			GetVanishedPlayer(main.VANISHED, uuid);
+			return false;
+		}
 	}
-	
+
 	/******************************************************/
 	/* MÉTHODE "BOOLEAN" POUR VÉRIFIER LE JOUEUR "VANISH" */
 	/******************************************************/
@@ -66,11 +72,11 @@ public class VanishUtils {
    /* METHODE "BOOLEAN" POUR CACHER OU AFFICHER LE JOUEUR "VANISH" [méthode locale] */
    /*********************************************************************************/
    @SuppressWarnings("all")
-   private boolean GetVanishedPlayer(List<UUID> vanish, Player p) {
+   private boolean GetVanishedPlayer(List<UUID> vanish, UUID uuid) {
 	    
 	    BukkitScheduler Run = Bukkit.getServer().getScheduler();
 
-		  if(vanish.contains(p.getUniqueId())) {
+		  if(vanish.contains(uuid)) {
 			  
 			  	Run.scheduleSyncDelayedTask(main, new Runnable() {
 				   
@@ -78,9 +84,12 @@ public class VanishUtils {
 				   public void run() {
 					   
 					for(Player players : Bukkit.getServer().getOnlinePlayers()) { 
-						
-					  
-					  if(players != p) { if(players.canSee(p)) players.hidePlayer(main, p); }
+
+					  if(players.getUniqueId() != uuid) {
+
+						  Player targetPlayer = Bukkit.getPlayer(uuid);
+						  if(targetPlayer != null && players.canSee(targetPlayer)) players.hidePlayer(main, targetPlayer);
+					  }
 					}
 				  }
 			   }, 0L);
@@ -94,9 +103,13 @@ public class VanishUtils {
 				   @Override
 				  	public void run() {
 					   
-					  for(Player players : Bukkit.getServer().getOnlinePlayers()) { 						  
-						  
-						  if(players != p) { if(!players.canSee(p)) players.showPlayer(main, p); }   
+					  for(Player players : Bukkit.getServer().getOnlinePlayers()) {
+
+						  if(players != null && players.getUniqueId() != uuid) {
+
+							  Player targetPlayer = Bukkit.getPlayer(uuid);
+							  if(targetPlayer != null || !players.canSee(targetPlayer)) players.showPlayer(main, targetPlayer);
+						  }
 					  }
 				  }
 			   }, 0L);
@@ -110,7 +123,7 @@ public class VanishUtils {
   
   
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /* PARTIE METHODES POUR LE SYSTEME DE VANISH */ 
+  /* PARTIE MÉTHODES POUR LE SYSTÈME DE VANISH */
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	
 }

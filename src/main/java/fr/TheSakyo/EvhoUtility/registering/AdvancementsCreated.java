@@ -13,13 +13,13 @@ import fr.TheSakyo.EvhoUtility.utils.api.Advancements.Advancement;
 public class AdvancementsCreated {
 	
     // Récupère la class "Main" en tant que "static"
-    private static UtilityMain mainInstance = UtilityMain.getInstance();
+    private static final UtilityMain mainInstance = UtilityMain.getInstance();
 	
 	
 	
 
    /***********************************************************************************/
-   /* MÉTHODE D'AJOUT/SUPPRESION DES ACHIEVEMENTS AVEC LA CLASS "ADVANCEMENTSMANAGER' */
+   /* MÉTHODE D'AJOUT/SUPPRESSION DES ACHIEVEMENTS AVEC LA CLASS "ADVANCEMENTSMANAGER' */
    /***********************************************************************************/  
 	
 	// Ajoute/Supprime des faux achievements //
@@ -27,7 +27,7 @@ public class AdvancementsCreated {
 	      
 	  for(Advancement advancement : advs) { mainInstance.advManager.addAdvancement(p, advancement); }
 
-	 }
+	}
 	   
 	public static void RemovingFalseAdvancement(List<Advancement> advs, Player p) {
 		   
@@ -53,8 +53,8 @@ public class AdvancementsCreated {
    
    public static void AddingRealAdvancement(Advancement adv, Player p) { 
 		 
-	  ConfigFile.set(mainInstance.advconfig, adv.getName() + "." + p.getUniqueId().toString(), p.getName());
-	  ConfigFile.saveConfig(mainInstance.advconfig);
+	  ConfigFile.set(mainInstance.advConfig, adv.getName() + "." + p.getUniqueId().toString(), p.getName());
+	  ConfigFile.saveConfig(mainInstance.advConfig);
 	  
 	  List<Advancement> advList = List.of(adv);
 	  
@@ -66,8 +66,8 @@ public class AdvancementsCreated {
   
 	public static void RemovingRealAdvancement(Advancement adv, Player p) { 
 			   
-	   ConfigFile.set(mainInstance.advconfig, adv.getName() + "." + p.getUniqueId().toString(), null);
-	   ConfigFile.saveConfig(mainInstance.advconfig);
+	   ConfigFile.set(mainInstance.advConfig, adv.getName() + "." + p.getUniqueId().toString(), null);
+	   ConfigFile.saveConfig(mainInstance.advConfig);
 	   
 	   List<Advancement> advList = List.of(adv);
 		  
@@ -79,21 +79,21 @@ public class AdvancementsCreated {
    // Ajoute/Supprime des vrais achievements // 
    
    /***********************************************************************************/
-   /* MÉTHODE D'AJOUT/SUPPRESION DES ACHIEVEMENTS AVEC LA CLASS "ADVANCEMENTSMANAGER' */
+   /* MÉTHODE D'AJOUT/SUPPRESSION DES ACHIEVEMENTS AVEC LA CLASS "ADVANCEMENTSMANAGER' */
    /***********************************************************************************/  
    
    
    
    
    
-   /********************************************************/
-   /* MÉTHODES POUR VÉRIFIER ET SAUVEGARDER L'ACHIEVEMENT  */
-   /********************************************************/  
+   /*********************************************************/
+   /* MÉTHODES POUR VÉRIFIER ET SAUVEGARDER UN ACHIEVEMENT  */
+   /*********************************************************/
 	public static void CheckAdvancementPlayer(Advancement adv, Player p) { 
 		
-		if(ConfigFile.getString(mainInstance.advconfig, adv.getName() + "." + p.getUniqueId().toString()) != null) {
+		if(ConfigFile.getString(mainInstance.advConfig, adv.getName() + "." + p.getUniqueId().toString()) != null) {
 			 
-			 if(ConfigFile.getString(mainInstance.advconfig, adv.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
+			 if(ConfigFile.getString(mainInstance.advConfig, adv.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
 				 
 				 List<Advancement> advList = List.of(adv);
 				 
@@ -109,9 +109,9 @@ public class AdvancementsCreated {
 	   
 	   for(Advancement advancement : advs) {
 		   
-		   if(ConfigFile.getString(mainInstance.advconfig, advancement.getName() + "." + p.getUniqueId().toString()) != null) {
+		   if(ConfigFile.getString(mainInstance.advConfig, advancement.getName() + "." + p.getUniqueId().toString()) != null) {
 				 
-				 if(ConfigFile.getString(mainInstance.advconfig, advancement.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
+				 if(ConfigFile.getString(mainInstance.advConfig, advancement.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
 					 
 					 List<Advancement> advList = List.of(advancement);
 					 
@@ -132,9 +132,9 @@ public class AdvancementsCreated {
 
 		  for(Advancement advancement : advs) {
 			  
-			 if(ConfigFile.getString(mainInstance.advconfig, advancement.getName() + "." + p.getUniqueId().toString()) != null) {
+			 if(ConfigFile.getString(mainInstance.advConfig, advancement.getName() + "." + p.getUniqueId().toString()) != null) {
 				 
-				 if(ConfigFile.getString(mainInstance.advconfig, advancement.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
+				 if(ConfigFile.getString(mainInstance.advConfig, advancement.getName() + "." + p.getUniqueId().toString()).equalsIgnoreCase(p.getName())) {
 					 
 					 mainInstance.advManager.addAdvancement(p, advancement);
 				   
@@ -161,7 +161,8 @@ public class AdvancementsCreated {
 	
 	  }
    }
-   /********************************************************/
-   /* MÉTHODES POUR VÉRIFIER ET SAUVEGARDER L'ACHIEVEMENT  */
-   /********************************************************/
+   
+	/*********************************************************/
+	/* MÉTHODES POUR VÉRIFIER ET SAUVEGARDER UN ACHIEVEMENT  */
+	/*********************************************************/
 }

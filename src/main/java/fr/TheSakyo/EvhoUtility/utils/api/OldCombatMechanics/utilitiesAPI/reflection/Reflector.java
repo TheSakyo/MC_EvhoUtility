@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Reflector {
+
     private static String version;
 
     static {
 
         try { version = Bukkit.getServer().getClass().getName().split("\\.")[3]; }
-
         catch(Exception e) {
 
             System.err.println("Échec du chargement de la réflection");
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
     }
 
@@ -87,14 +87,11 @@ public class Reflector {
                 .orElse(null);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T invokeMethod(Method method, Object handle, Object... params) {
 
-        try {
-
-            T t = (T) method.invoke(handle, params);
-            return t;
-
-        } catch (IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
+        try { return (T)method.invoke(handle, params); }
+        catch(IllegalAccessException | InvocationTargetException e) { throw new RuntimeException(e); }
     }
 
     /**

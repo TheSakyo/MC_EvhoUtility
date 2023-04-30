@@ -20,7 +20,8 @@ public class TeamUtils {
      * @param player Le joueur à vérifier
      * @return Vrai si le paquet cible le joueur.
      */
-    public static boolean targetsPlayer(TeamPacket packet, Player player){
+    public static boolean targetsPlayer(TeamPacket packet, Player player) {
+
         return packet.getPlayerNames().contains(player.getName());
     }
 
@@ -30,10 +31,10 @@ public class TeamUtils {
      * @param player Le joueur à qui l'envoyer
      * @param collisionRule La règle de collision à utiliser
      */
-    public static TeamPacket craftTeamCreatePacket(Player player, CollisionRule collisionRule){
+    public static TeamPacket craftTeamCreatePacket(Player player, CollisionRule collisionRule) {
 
         // À la bonne taille (10) et est unique.
-        String teamName = "OCM-" + TEAM_NAME_COUNTER.getAndIncrement() + "";
+        String teamName = "OCM-" + TEAM_NAME_COUNTER.getAndIncrement();
         return TeamPacket.create(TeamAction.CREATE, collisionRule, teamName, Collections.singletonList(player));
     }
 
@@ -41,9 +42,7 @@ public class TeamUtils {
      * @param team Le paquet de la Team
      * @return Vrai si l'équipe a été créée par OldCombatMechanics
      */
-    public static boolean isOcmTeam(TeamPacket team){
-        return team.getName().startsWith("OCM-");
-    }
+    public static boolean isOcmTeam(TeamPacket team) { return team.getName().startsWith("OCM-"); }
 
     /**
      * Dissout une équipe.
@@ -51,12 +50,11 @@ public class TeamUtils {
      * @param teamName Le nom de l'équipe à dissoudre
      * @param player Le joueur pour lequel l'équipe doit être dissoute
      */
-    public static void disband(String teamName, Player player){
+    public static void disband(String teamName, Player player) {
+
         TeamPacket packet = TeamPacket.create(
-                TeamAction.DISBAND,
-                CollisionRule.NEVER,
-                teamName,
-                Collections.singletonList(player)
+                TeamAction.DISBAND, CollisionRule.NEVER,
+                teamName, Collections.singletonList(player)
         );
         packet.send(player);
     }

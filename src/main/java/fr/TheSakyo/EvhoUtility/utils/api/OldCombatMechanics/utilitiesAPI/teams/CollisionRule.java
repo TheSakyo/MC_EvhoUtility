@@ -7,7 +7,7 @@ public enum CollisionRule {
     HIDE_FOR_OTHER_TEAMS("pushOtherTeams"),
     HIDE_FOR_OWN_TEAM("pushOwnTeam");
 
-    private String name;
+    private final String name;
 
     CollisionRule(String name) { this.name = name; }
 

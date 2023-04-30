@@ -72,6 +72,7 @@ public class PreV17TeamPacket extends TeamPacket {
 
         public String getName(Object packet) { return Reflector.getUnchecked(() -> (String) fieldName.get(packet)); }
 
+        @SuppressWarnings("unchecked")
         public Collection<String> getPlayerNames(Object packet) {
 
             Collection<String> identifiers = Reflector.getUnchecked(() -> (Collection<String>) fieldPlayerNames.get(packet));

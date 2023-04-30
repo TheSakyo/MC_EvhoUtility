@@ -12,8 +12,8 @@ import java.util.function.Supplier;
  */
 public class DualVersionedMaterial implements VersionedMaterial {
 
-    private Supplier<ItemStack> oldItem;
-    private Supplier<ItemStack> newItem;
+    private final Supplier<ItemStack> oldItem;
+    private final Supplier<ItemStack> newItem;
 
     /**
      * Crée un nouveau matériau à double version.

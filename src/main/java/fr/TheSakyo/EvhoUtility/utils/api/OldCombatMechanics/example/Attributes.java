@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 public class Attributes {
 
     public ItemStack stack; // Ceci peut être modifié
-    private NbtFactory.NbtList attributes;
+    private final NbtFactory.NbtList attributes;
 
     public Attributes(ItemStack stack) {
 
@@ -34,7 +34,7 @@ public class Attributes {
     public ItemStack getStack() { return stack; }
 
     /**
-     * Récupére le nombre d'attributs.
+     * Récupère le nombre d'attributs.
      *
      * @return Nombre d'attributs.
      */
@@ -91,7 +91,7 @@ public class Attributes {
         ADD_NUMBER(0),
         MULTIPLY_PERCENTAGE(1),
         ADD_PERCENTAGE(2);
-        private int id;
+        private final int id;
 
         Operation(int id) { this.id = id; }
 
@@ -105,21 +105,17 @@ public class Attributes {
         public int getId() { return id; }
     }
 
-    public static class AttributeType {
+    public record AttributeType(String minecraftId) {
 
-        private static ConcurrentMap<String, AttributeType> LOOKUP = Maps.newConcurrentMap();
+            private static final ConcurrentMap<String, AttributeType> LOOKUP = Maps.newConcurrentMap();
 
-        public static final AttributeType GENERIC_MAX_HEALTH = new AttributeType("generic.maxHealth").register();
-        public static final AttributeType GENERIC_FOLLOW_RANGE = new AttributeType("generic.followRange").register();
-        public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
-        public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
-        public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
-        // Ajouté par Rayzr522
-        public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
-        // Ajouté par kernitus
-        public static final AttributeType GENERIC_ARMOR_TOUGHNESS = new AttributeType("generic.armorToughness").register();
-
-        private final String minecraftId;
+            public static final AttributeType GENERIC_MAX_HEALTH = new AttributeType("generic.maxHealth").register();
+            public static final AttributeType GENERIC_FOLLOW_RANGE = new AttributeType("generic.followRange").register();
+            public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
+            public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
+            public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
+            public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
+            public static final AttributeType GENERIC_ARMOR_TOUGHNESS = new AttributeType("generic.armorToughness").register();
 
         /**
          * Construit un nouveau type d'attribut.
@@ -127,42 +123,44 @@ public class Attributes {
          *
          * @param minecraftId - l'ID du type.
          */
-        public AttributeType(String minecraftId) { this.minecraftId = minecraftId; }
-
-        /**
-         * Récupère le type d'attribut associé à un ID donné.
-         *
-         * @param minecraftId L'ID à rechercher.
-         * @return Le type d'attribut, ou NULL si non trouvé.
-         */
-        public static AttributeType fromId(String minecraftId) { return LOOKUP.get(minecraftId); }
-
-        /**
-         * Récupére chaque type d'attribut enregistré.
-         *
-         * @return Chaque type.
-         */
-        public static Iterable<AttributeType> values() { return LOOKUP.values(); }
-
-        /**
-         * Récupére l'identifiant Minecraft associé.
-         *
-         * @return L'ID associé.
-         */
-        public String getMinecraftId() { return minecraftId; }
-
-        /**
-         * Enregistrer le type dans le registre central.
-         *
-         * @return Le type enregistré.
-         */
-        // Les constructeurs ne doivent pas avoir d'effets secondaires !
-        public AttributeType register() {
-
-            AttributeType old = LOOKUP.putIfAbsent(minecraftId, this);
-            return old != null ? old : this;
+        public AttributeType {
         }
-    }
+
+            /**
+             * Récupère le type d'attribut associé à un ID donné.
+             *
+             * @param minecraftId L'ID à rechercher.
+             * @return Le type d'attribut, ou NULL si non trouvé.
+             */
+            public static AttributeType fromId(String minecraftId) { return LOOKUP.get(minecraftId); }
+
+            /**
+             * Récupère chaque type d'attribut enregistré.
+             *
+             * @return Chaque type.
+             */
+            public static Iterable<AttributeType> values() { return LOOKUP.values(); }
+
+            /**
+             * Récupère l'identifiant Minecraft associé.
+             *
+             * @return L'ID associé.
+             */
+            @Override
+            public String minecraftId() { return minecraftId; }
+
+            /**
+             * Enregistrer le type dans le registre central.
+             *
+             * @return Le type enregistré.
+             */
+            // Les constructeurs ne doivent pas avoir d'effets secondaires !
+            public AttributeType register() {
+
+                AttributeType old = LOOKUP.putIfAbsent(minecraftId, this);
+                return old != null ? old : this;
+            }
+        }
 
     public static class Attribute {
         private NbtFactory.NbtCompound data;
@@ -211,7 +209,7 @@ public class Attributes {
         public void setAttributeType(AttributeType type) {
 
             Preconditions.checkNotNull(type, "le type ne peut pas être NULL.");
-            data.put("AttributeName", type.getMinecraftId());
+            data.put("AttributeName", type.minecraftId());
         }
 
         public String getName() { return data.getString("Name", null); }
@@ -242,11 +240,11 @@ public class Attributes {
         /**
          * Une petite méthode simple ajoutée par Rayzr522
          */
-        public NbtFactory.NbtCompound getData(){
+        public NbtFactory.NbtCompound getData() {
             return data;
         }
 
-        public void setData(NbtFactory.NbtCompound data){
+        public void setData(NbtFactory.NbtCompound data) {
             this.data = data;
         }
 
@@ -259,7 +257,7 @@ public class Attributes {
             private UUID uuid;
             private String slot;
 
-            private Builder(){ /* Ne rendez pas cela accessible */ }
+            private Builder() { /* Ne rendez pas cela accessible */ }
 
             public Builder amount(double amount) {
 

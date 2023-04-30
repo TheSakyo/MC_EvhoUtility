@@ -6,6 +6,7 @@ import fr.TheSakyo.EvhoUtility.managers.HologramManager;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import fr.TheSakyo.EvhoUtility.utils.custom.methods.ColorUtils;
 import io.papermc.paper.adventure.PaperAdventure;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -13,9 +14,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -23,15 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 public class HologramEntity {
 
-    private UtilityMain main; // La class Main du Plugin
+    private final UtilityMain main; // La class Main du Plugin
 
                                 /* ------------------------- */
-    private ServerLevel serverLevel; // Le Monde où se situe l'Hologramme (Porte-Armure)
+    private final ServerLevel serverLevel; // Le Monde où se situe l'Hologramme (Porte-Armure)
 
                                 /* ------------------------- */
-    private String title; // Le Titre de l'Hologramme (Porte-Armure)
-    private String text; // Le Texte de l'Hologramme (Porte-Armure) [ce qu'il sera affiché]
-    private Location location; // La localisation de l'entité de l'Hologramme (Porte-Armure)
+    private final String title; // Le Titre de l'Hologramme (Porte-Armure)
+    private final String text; // Le Texte de l'Hologramme (Porte-Armure) [ce qu'il sera affiché]
+    private final Location location; // La localisation de l'entité de l'Hologramme (Porte-Armure)
 
                                 /* ------------------------- */
 
@@ -40,15 +40,15 @@ public class HologramEntity {
     private Boolean isDestroyed = Boolean.TRUE; // Si l'Entité de l'Hologramme (Porte-Armure) est détruite ou non
 
                                 /* ------------------------- */
-    private List<HologramEntity> armorlist = new ArrayList<HologramEntity>(); // Liste des Hologrammes dans une nouvelle ligne pour l'appararition de l'Entité (Porte-Armure)
+    private final List<HologramEntity> armorlist = new ArrayList<>(); // Liste des Hologrammes dans une nouvelle ligne pour apparition de l'Entité (Porte-Armure)
 
-    private final List<HologramEntity> entityHolograms = new ArrayList<HologramEntity>(); // Liste finale des Hologrammes dans une nouvelle ligne (Portes Armures)
+    private final List<HologramEntity> entityHolograms = new ArrayList<>(); // Liste finale des Hologrammes dans une nouvelle ligne (Portes Armures)
 
                         /* ----------------------------------- */
                         /* ----------------------------------- */
 
     /**
-     * Renvoie une Nouvelle instande d'{@link HologramEntity hologramme}.
+     * Renvoie une Nouvelle instance d'{@link HologramEntity hologramme}.
      *
      * @param main Une Instance du plugin {@link UtilityMain}
      * @param p Le joueur qui subira les changements
@@ -58,8 +58,6 @@ public class HologramEntity {
      * @param loc La localisation de l'{@link HologramEntity hologramme}
      * @param saveConfig Doit-on sauvegarder l'{@link HologramEntity hologramme} dans un fichier de configuration
      * @param newInstance Doit-on construire de nouveau l'{@link HologramEntity hologramme}
-     *
-     * @return Une Nouvelle instande d'{@link HologramEntity hologramme}.
      */
     public HologramEntity(UtilityMain main, Player p, Integer ID, String title, String text, Location loc, boolean saveConfig, boolean newInstance) {
 
@@ -74,7 +72,7 @@ public class HologramEntity {
 
 
         if(this.armorStand == null) this.armorStand = new ArmorStand(EntityType.ARMOR_STAND, level); // Définit l'Entité de l'Hologramme
-        if(ID != null) this.armorStand.setId(ID.intValue()); // Redéfinit l'identifiant de l'entité de l'hologramme, si cela a été demandé dans les paramètres
+        if(ID != null) this.armorStand.setId(ID); // Redéfinit l'identifiant de l'entité de l'hologramme, si cela a été demandé dans les paramètres
 
         if(newInstance) this.build(p, text, saveConfig); // Si on veut faire une nouvelle instance, on construit alors l'Hologramme
     }
@@ -138,10 +136,10 @@ public class HologramEntity {
 	 * Supprime l'{@link HologramEntity hologramme} en supprimant ses {@link ArmorStand entité(s)} associé(s).
 	 *
      * @param p Le joueur qui subira les changements
-     * @param unsaveConfig Si oui ou non, on supprime l'hologramme dans son fichier de configuration.
+     * @param unSaveConfig Si oui ou non, on supprime l'hologramme dans son fichier de configuration.
      *
 	 */
-    public void remove(Player p, boolean unsaveConfig) {
+    public void remove(Player p, boolean unSaveConfig) {
 
         if(p != null) { NMSCraftPlayer.sendPacket(p, new ClientboundRemoveEntitiesPacket(getEntity().getId())); } // On Supprime l'hologramme
         else {
@@ -153,14 +151,14 @@ public class HologramEntity {
         }
 
         // Décharger l'hologramme de son fichier de configuration si on l'a demandé
-        if(unsaveConfig) HologramManager.unsaveHologram(this.getTitle());
+        if(unSaveConfig) HologramManager.unsaveHologram(this.getTitle());
     }
 
                         /* ----------------------------------- */
                         /* ----------------------------------- */
 
     /**
-	 * Construit l'{@link HologramEntity hologramme} avec son texte en utilsant des {@link ArmorStand entité(s)}.
+	 * Construit l'{@link HologramEntity hologramme} avec son texte en utilisant des {@link ArmorStand entité(s)}.
 	 *
      * @param p Le joueur qui subira les changements
      * @param text Le texte de l'{@link HologramEntity hologramme} à afficher (Nom Customisé de {@link ArmorStand}).
@@ -172,10 +170,10 @@ public class HologramEntity {
         main.SuccessHolograms = null; // Permettra de récupérer le message de succès après la construction de l'hologramme.
         HologramEntity hologram = null; // Permettra de récupérer une nouvelle instance d'hologramme pour chaque ligne.
 
-        List<String> originalList = new ArrayList<String>(); // Permettra de stocker le texte affiché (contenu de l'hologramme).
-        List<String> finalList = new ArrayList<String>(); // Permettra de stocker le texte affiché final (contenu de l'hologramme).
+        List<String> originalList = new ArrayList<>(); // Permettra de stocker le texte affiché (contenu de l'hologramme).
+        List<String> finalList = new ArrayList<>(); // Permettra de stocker le texte affiché final (contenu de l'hologramme).
 
-        // Si le premier caracètre du texte a affiché contient le caractère '//n', on lui enlève alors, ce caractère
+        // Si le premier caractère du texte a affiché contient le caractère '//n', on lui enlève alors, ce caractère
         if(text.startsWith("//n")) text = text.replaceFirst("//n", "");
         originalList.add(text); // On Ajoute texte a affiché dans une liste originale qui stockera le contenu
 
@@ -183,7 +181,7 @@ public class HologramEntity {
 
         // On enregistre chaque ligne si le contenu contient le caractère '//n'
         for(String myString : originalList) finalList.addAll(Arrays.asList(myString.trim().split("//n")));
-        originalList.clear(); // On Supprime la liste origtinal récupéré, car le contenu a été stocker dans une autre liste
+        originalList.clear(); // On Supprime la liste originale récupérée, car le contenu a été stocker dans une autre liste
 
                                 /* ------------------------------------------------------ */
 
@@ -197,9 +195,9 @@ public class HologramEntity {
         	if(content.endsWith(" ")) content = content.substring(0, content.length() - " ".length());
             // ⬆️ Supprime les espaces au début et a la fin du contenu de la ligne en question ⬆️ //
 
-			if(i == 0) { hologram = this; } // Si le nombre de lignes est égal à 0, on définit l'instande de l'Hologramme en question étant l'hologramme lui-même
+			if(i == 0) { hologram = this; } // Si le nombre de lignes est égal à 0, on définit l'instance de l'Hologramme en question étant l'hologramme lui-même
 
-            // Sinon, si le nombre de lignes eest égal à 1, 2, ou 3, on ajoute une nouvelle instance de l'hologramme pour ajouter une nouvelle ligne
+            // Sinon, si le nombre de lignes est égal à 1, 2, ou 3, on ajoute une nouvelle instance de l'hologramme pour ajouter une nouvelle ligne
 			else if(i == 1 || i == 2 || i == 3) {
 
 				Location LastLocEntities = armorlist.get(0).getLocation(); // Récupère la dernière localisation de la ligne suivante
@@ -207,17 +205,17 @@ public class HologramEntity {
                 // Créer la nouvelle ligne à partir de la localisation récupérée
 				Location newLine = new Location(LastLocEntities.getWorld(), LastLocEntities.getX(), LastLocEntities.getY() - 0.26, LastLocEntities.getZ());
 
-                // Définit la nouvelle instande de l'Hologramme
-				hologram = new HologramEntity(main, p, Integer.valueOf(hologram.getEntity().getId() + 1), this.getTitle(), text, newLine, saveConfig, false);
+                // Définit la nouvelle instance de l'Hologramme
+				hologram = new HologramEntity(main, p, hologram.getEntity().getId() + 1, this.getTitle(), text, newLine, saveConfig, false);
 
             // Sinon, si le nombre de lignes est supérieur à 4, on envoie un message d'erreur
-			} else if(i >= 4) {
+			} else {
 
-				main.ErrorLineHolograms = main.prefix + ChatColor.RED + "Vous ne pouvez pas avoir plus de 4 lignes, le reste a donc été supprimé"; // Enregistre le message d'Erreur
-				hologram = null; // Définit l'instande de l'Hologramme en question en "NULL"
+				main.ErrorLineHolograms = main.prefix + ChatFormatting.RED + "Vous ne pouvez pas avoir plus de 4 lignes, le reste a donc été supprimé"; // Enregistre le message d'Erreur
+				hologram = null; // Définit l'instance de l'Hologramme en question en "NULL"
 			}
 
-			if(hologram != null) { this.spawn(p, content, hologram); } // Si l'instande de l'Hologramme en question n'est pas nul, on le fait appraître
+			if(hologram != null) { this.spawn(p, content, hologram); } // Si l'instance de l'Hologramme en question n'est pas nul, on le fait apparaître
         }
         // ⬆️ On Boucle sur toutes les ligne(s) récupérée(s) pour construire l'hologramme ⬆️ //
 
@@ -226,7 +224,7 @@ public class HologramEntity {
         if(saveConfig) HologramManager.saveHologram(this.getTitle(), entityHolograms);
 
         // On enregistre le message de succès aprés la construction des lignes
-        if(main.SuccessHolograms == null) main.SuccessHolograms = main.prefix + ChatColor.GREEN + "L'Hologramme " + ChatColor.GOLD + this.getTitle() + ChatColor.GREEN + " a été Créé !";
+        if(main.SuccessHolograms == null) main.SuccessHolograms = main.prefix + ChatFormatting.GREEN + "L'Hologramme " + ChatFormatting.GOLD + this.getTitle() + ChatFormatting.GREEN + " a été Créé !";
         finalList.clear(); // On vide la liste finale nous permettant de construire chaque ligne
 
         this.isDestroyed = Boolean.FALSE; // On Définit l'hologramme n'étant pas détruit
@@ -236,11 +234,11 @@ public class HologramEntity {
 
 
     /**
-	 * Définit les différents paramètrage de l'{@link ArmorStand entité} de l'{@link HologramEntity hologramme} pour ensuite le faire apparaître.
+	 * Définit les différents paramétrages de l'{@link ArmorStand entité} de l'{@link HologramEntity hologramme} pour ensuite le faire apparaître.
 	 *
      * @param p Le joueur qui subira les changements
      * @param text Le texte de l'{@link HologramEntity hologramme} à afficher (Nom Customisé de {@link ArmorStand}).
-     * @param hg L'{@link HologramEntity Hologramme} à faire appraitre ({@link ArmorStand}).
+     * @param hg L'{@link HologramEntity Hologramme} à faire apparaitre ({@link ArmorStand}).
      *
 	 */
     private void spawn(Player p, String text, HologramEntity hg) {
@@ -261,25 +259,25 @@ public class HologramEntity {
          entity.setPos(hg.getLocation().getX(), hg.getLocation().getY(), hg.getLocation().getZ()); // Définit la position du Porte-Armure (Hologramme).
          entity.setRot(hg.getLocation().getYaw(), hg.getLocation().getPitch()); // Définit la rotation du Porte-Armure (Hologramme).
 
-        armorlist.add(hg); // Ajoute l'hologrames à la liste correspondante
-        entityHolograms.add(hg); // Ajoute l'hologrames à la liste correspondante
+        armorlist.add(hg); // Ajoute l'hologramme à la liste correspondante
+        entityHolograms.add(hg); // Ajoute l'hologramme à la liste correspondante
 
-        // Fait appraître le Porte-Armure et actualise ses métadonnées pour le Joueur en question
+        // Fait apparaître le Porte-Armure et actualise ses métadonnées pour le Joueur en question
         if(p != null) {
 
             NMSCraftPlayer.sendPacket(p, new ClientboundAddEntityPacket(entity));
-            NMSCraftPlayer.sendPacket(p, new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData(), true));
+            NMSCraftPlayer.sendPacket(p, new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().getNonDefaultValues()));
 
-        // Sinon, on fait appraître le Porte-Armure et actualise ses métadonnées pour tous les joueurs
+        // Sinon, on fait apparaître le Porte-Armure et actualise ses métadonnées pour tous les joueurs
         } else {
 
-            // ⬇️ on fait appraître le Porte-Armure et actualise ses métadonnées pour tous les joueurs en ligne ⬇️ //
+            // ⬇️ on fait apparaître le Porte-Armure et actualise ses métadonnées pour tous les joueurs en ligne ⬇️ //
             Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 
                 NMSCraftPlayer.sendPacket(player, new ClientboundAddEntityPacket(entity));
-                NMSCraftPlayer.sendPacket(player, new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData(), true));
+                NMSCraftPlayer.sendPacket(player, new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().getNonDefaultValues()));
             });
-            // ⬆️ on fait appraître le Porte-Armure et actualise ses métadonnées pour tous les joueurs en ligne ⬆️ //
+            // ⬆️ on fait apparaître le Porte-Armure et actualise ses métadonnées pour tous les joueurs en ligne ⬆️ //
         }
     }
 

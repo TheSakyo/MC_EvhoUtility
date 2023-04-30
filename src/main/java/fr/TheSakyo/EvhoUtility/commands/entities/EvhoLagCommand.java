@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -14,32 +15,30 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class EvhoLagCommand implements CommandExecutor {
 	
   
-  //Timer pour la suppression automatique des entitées
+  //Timer pour la suppression automatique des entités
   public static int AutoRemove = 600;
   
-  //Listes des Entitées
-  public static List<Entity> entities = new ArrayList<Entity>();
+  //Listes des Entités
+  public static List<Entity> entities = new ArrayList<>();
   
   
   // Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
-  String evholag = ChatColor.GRAY + "========= " + ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + "Evho" + ChatColor.DARK_GREEN.toString() + ChatColor.BOLD.toString() + "Lag" + ChatColor.GRAY + " ========="; 
-  String footer = ChatColor.GRAY + "===========================";
+  String evholag = ChatFormatting.GRAY + "========= " + ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.BOLD.toString() + "Evho" + ChatFormatting.DARK_GREEN.toString() + ChatFormatting.BOLD.toString() + "Lag" + ChatFormatting.GRAY + " =========";
+  String footer = ChatFormatting.GRAY + "===========================";
   //Mise En Page En-Tête et Pied De Page de la partie "help" ou "info" //
   
   // Préfix "EvhoLag" //
-  private static String prefixlag = ChatColor.WHITE + "[" + ChatColor.RED + "EvhoLag" + ChatColor.WHITE + "]" + " ";
+  private static final String prefixlag = ChatFormatting.WHITE + "[" + ChatFormatting.RED + "EvhoLag" + ChatFormatting.WHITE + "]" + " ";
   // Préfix "EvhoLag" //
   
-  
-  
+
   
   /***************************************************************************************/
-  /* PARTIE COMMANDE POUR LA PARTIE "EVHOLAGG" (Supression d'entitées, corrige les lags) */
+  /* PARTIE COMMANDE POUR LA PARTIE "EVHOLAGG" (Suppression d'entités, corrige les lags) */
   /***************************************************************************************/
   
   public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
@@ -48,7 +47,7 @@ public class EvhoLagCommand implements CommandExecutor {
 
 		  if(!p.hasPermission("evhoutility.lag")) {
 			  
-			  p.sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + " - " + ChatColor.RED + "Vous n'avez pas la permission !");
+			  p.sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY.toString() + ChatFormatting.BOLD.toString() + " - " + ChatFormatting.RED + "Vous n'avez pas la permission !");
 			  return true;
 		  } 
 	  }
@@ -57,11 +56,11 @@ public class EvhoLagCommand implements CommandExecutor {
 		  
 		  sender.sendMessage(evholag);
 		  sender.sendMessage("");
-		  sender.sendMessage(ChatColor.GREEN + "Alias : " + ChatColor.GOLD + "/elag ou /lag");
+		  sender.sendMessage(ChatFormatting.GREEN + "Alias : " + ChatFormatting.GOLD + "/elag ou /lag");
 		  sender.sendMessage("");
-		  sender.sendMessage(ChatColor.LIGHT_PURPLE + "/evhoLag " + ChatColor.AQUA + "help " + ChatColor.WHITE + ":" + ChatColor.GRAY + " Affiche la listes des commandes d'EvhoLag.");
-		  sender.sendMessage(ChatColor.LIGHT_PURPLE + "/evhoLag " + ChatColor.AQUA + "info " + ChatColor.WHITE + ":" + ChatColor.GRAY + " Information sur le Serveur.");
-		  sender.sendMessage(ChatColor.LIGHT_PURPLE + "/evhoLag " + ChatColor.AQUA + "clear " + ChatColor.WHITE + ":" + ChatColor.GRAY + " Suppression d'Entité(s).");
+		  sender.sendMessage(ChatFormatting.LIGHT_PURPLE + "/evhoLag " + ChatFormatting.AQUA + "help " + ChatFormatting.WHITE + ":" + ChatFormatting.GRAY + " Affiche la listes des commandes d'EvhoLag.");
+		  sender.sendMessage(ChatFormatting.LIGHT_PURPLE + "/evhoLag " + ChatFormatting.AQUA + "info " + ChatFormatting.WHITE + ":" + ChatFormatting.GRAY + " Information sur le Serveur.");
+		  sender.sendMessage(ChatFormatting.LIGHT_PURPLE + "/evhoLag " + ChatFormatting.AQUA + "clear " + ChatFormatting.WHITE + ":" + ChatFormatting.GRAY + " Suppression d'Entité(s).");
 		  sender.sendMessage("");
 		  sender.sendMessage(footer);
 	 
@@ -75,10 +74,10 @@ public class EvhoLagCommand implements CommandExecutor {
 			  
 			  sender.sendMessage(evholag);
 			  sender.sendMessage("");
-			  sender.sendMessage(ChatColor.GOLD + "Ram Utilisée(s) : " + ChatColor.RED.toString() + ChatColor.BOLD.toString() + ((run.totalMemory() - run.freeMemory()) / 1046576L) + ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + " MB.");
-			  sender.sendMessage(ChatColor.GOLD + "Ram Disponible(s) : " + ChatColor.DARK_GREEN.toString() + ChatColor.BOLD.toString() + (run.maxMemory() / 1046576L - (run.totalMemory() - run.freeMemory()) / 1046576L) + ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + " MB.");
-			  sender.sendMessage(ChatColor.GOLD + "Ram Max : " + ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + (run.maxMemory() / 1046576L) + ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + " MB.");
-			  sender.sendMessage(ChatColor.GOLD + "Entité(s) Supprimée(s) Dans : " + ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + AutoRemove + ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + " Secondes.");
+			  sender.sendMessage(ChatFormatting.GOLD + "Ram Utilisée(s) : " + ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + ((run.totalMemory() - run.freeMemory()) / 1046576L) + ChatFormatting.WHITE.toString() + ChatFormatting.BOLD.toString() + " MB.");
+			  sender.sendMessage(ChatFormatting.GOLD + "Ram Disponible(s) : " + ChatFormatting.DARK_GREEN.toString() + ChatFormatting.BOLD.toString() + (run.maxMemory() / 1046576L - (run.totalMemory() - run.freeMemory()) / 1046576L) + ChatFormatting.WHITE.toString() + ChatFormatting.BOLD.toString() + " MB.");
+			  sender.sendMessage(ChatFormatting.GOLD + "Ram Max : " + ChatFormatting.DARK_AQUA.toString() + ChatFormatting.BOLD.toString() + (run.maxMemory() / 1046576L) + ChatFormatting.WHITE.toString() + ChatFormatting.BOLD.toString() + " MB.");
+			  sender.sendMessage(ChatFormatting.GOLD + "Entité(s) Supprimée(s) Dans : " + ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + AutoRemove + ChatFormatting.WHITE.toString() + ChatFormatting.BOLD.toString() + " Secondes.");
 			  sender.sendMessage("");
 			  sender.sendMessage(footer);
 		  
@@ -95,20 +94,20 @@ public class EvhoLagCommand implements CommandExecutor {
   	}
   
    /***************************************************************************************/
-   /* PARTIE COMMANDE POUR LA PARTIE "EVHOLAGG" (Supression d'entitées, corrige les lags) */
+   /* PARTIE COMMANDE POUR LA PARTIE "EVHOLAGG" (Suppression d'entités, corrige les lags) */
    /***************************************************************************************/
   	
   
   
   
-    // Méthode rapide pour la partie de suppression d'entitées //
+    // Méthode rapide pour la partie de suppression d'entités //
   
   	public static void ItemRemoved(CommandSender sender, Player p) {
   		
   		int count = 0;
-  		
   		if(!entities.isEmpty()) entities.clear();
-  		
+
+		/**************************************************/
 
   		for(World entity : Bukkit.getServer().getWorlds()) {
   			
@@ -119,31 +118,30 @@ public class EvhoLagCommand implements CommandExecutor {
   					count++;
   				
 	  				if(entities.isEmpty()) { entities = entity.getEntities(); }
-	  				
 	  				else { if(!entities.contains(current)) entities.add(current); }
   				} 
   				
   			}
   			
   		}
-  		
+
+		/**************************************************/
 
   		if(count == 0 || count == 1) {
   			
   			if(sender != null && p == null) { 
 				
-			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entité a été supprimer par " + ChatColor.YELLOW + "La Console" + ChatColor.GRAY + " !"));
+			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entité a été supprimer par " + ChatFormatting.YELLOW + "La Console" + ChatFormatting.GRAY + " !"));
 
 			} else if(sender == null && p != null) {
 					
-			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entité a été supprimer par " + ChatColor.YELLOW + p.getName() + ChatColor.GRAY + " !"));
+			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entité a été supprimer par " + ChatFormatting.YELLOW + p.getName() + ChatFormatting.GRAY + " !"));
 					
-			} else if(sender == null && p == null) {
+			} else if(sender == null) {
 				
 				for(Player player : Bukkit.getServer().getOnlinePlayers()) {
 					
-					player.sendMessage(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entité a été supprimer !");
-					
+					player.sendMessage(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entité a été supprimer !");
 				}
 			}
   			
@@ -151,73 +149,88 @@ public class EvhoLagCommand implements CommandExecutor {
   			
 			if(sender != null && p == null) { 
 				
-			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entités ont été supprimer par " + ChatColor.YELLOW + "La Console" + ChatColor.GRAY + " !"));
+			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entités ont été supprimer par " + ChatFormatting.YELLOW + "La Console" + ChatFormatting.GRAY + " !"));
 
 			} else if(sender == null && p != null) {
 					
-			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entités ont été supprimer par " + ChatColor.YELLOW + p.getName() + ChatColor.GRAY + " !"));
+			    Bukkit.getServer().broadcast(CustomMethod.StringToComponent(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entités ont été supprimer par " + ChatFormatting.YELLOW + p.getName() + ChatFormatting.GRAY + " !"));
 					
-			} else if(sender == null && p == null) {
+			} else if(sender == null) {
 				
 				for(Player player : Bukkit.getServer().getOnlinePlayers()) {
 					
-					player.sendMessage(prefixlag + ChatColor.GOLD + count + ChatColor.GRAY + " Entités ont été supprimer !");
-					
+					player.sendMessage(prefixlag + ChatFormatting.GOLD + count + ChatFormatting.GRAY + " Entités ont été supprimer !");
 				}
 			}
   		}
-  		
+
+		/**********************************************************/
   			
   		for(Entity current : entities) { if(current instanceof Item) { current.remove(); } }
-  		
   		entities.clear();
-  		
   	}
   	
-   // Méthode rapide pour la partie de suppression d'entitées //
+   // Méthode rapide pour la partie de suppression d'entités //
+  	
+
   	
   	
-  	
-  	
-  	
-  	
-   // Timer pour la supression d'entitées AUTOMATIQUE //
+   // Timer pour la suppression d'entités AUTOMATIQUE //
   	
    public static void AutoRemove() {
 	
-	Bukkit.getScheduler().scheduleSyncRepeatingTask(UtilityMain.getInstance(), new Runnable() {
+	Bukkit.getScheduler().scheduleSyncRepeatingTask(UtilityMain.getInstance(), () -> {
 
-		public void run() {
+        switch(AutoRemove) {
 
-			if(AutoRemove > 0) {
-				
-  				if(AutoRemove == 300)
-  					for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-  					  player.sendMessage(prefixlag + ChatColor.GRAY + "Suppression d'Entité(s) dans " + ChatColor.GOLD + "5 Minutes" + ChatColor.GRAY + ".");
-  					}
-				else if(AutoRemove == 60)
-					for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-  					  player.sendMessage(prefixlag + ChatColor.GRAY + "Suppression d'Entité(s) dans " + ChatColor.GOLD + "1 Minute" + ChatColor.GRAY + ".");
-  					}
-				else if((AutoRemove == 30) || (AutoRemove == 10) || (AutoRemove <= 5 && AutoRemove >= 2)) {
-					for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-						player.sendMessage(prefixlag + ChatColor.GRAY + "Suppression d'Entité(s) dans " + ChatColor.GOLD + AutoRemove + " Secondes" + ChatColor.GRAY + ".");
-					}
-				}
-				else if(AutoRemove == 1)
-					for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-  					  player.sendMessage(prefixlag + ChatColor.GRAY + "Suppression d'Entité(s) dans " + ChatColor.GOLD + AutoRemove + " Seconde" + ChatColor.GRAY + ".");
-  					}
-				AutoRemove--;
-			} 
+            case 300:
 
-			if(AutoRemove == 0) {
-				ItemRemoved(null, null);
-				AutoRemove = 600;
-			} 
-		 }
-	  },  20L, 20L);
+                sendMessageToPlayers("Suppression d'Entité(s) dans " + ChatFormatting.GOLD + "5 Minutes" );
+                AutoRemove--;
+                break;
+
+            case 60:
+
+                sendMessageToPlayers("Suppression d'Entité(s) dans " + ChatFormatting.GOLD + "1 Minute");
+                AutoRemove--;
+                break;
+
+            case 30: case 10: case 5:
+            case 4: case 3: case 2:
+
+                sendMessageToPlayers("Suppression d'Entité(s) dans " + ChatFormatting.GOLD + AutoRemove + " Secondes");
+                AutoRemove--;
+                break;
+
+            case 1:
+
+                sendMessageToPlayers("Suppression d'Entité(s) dans " + ChatFormatting.GOLD + AutoRemove + " Seconde");
+                AutoRemove--;
+                break;
+        }
+
+        /******************************************/
+
+        if(AutoRemove == 0) {
+
+            ItemRemoved(null, null);
+            AutoRemove = 600;
+        }
+     },  20L, 20L);
    }
    
-   // Timer pour la supression d'entitées AUTOMATIQUE //
+   // Timer pour la suppression d'entités AUTOMATIQUE //
+
+	/******************************************/
+	/******************************************/
+
+	// Méthode pour envoyer le message du 'clearlag' à tous les joueurs //
+	private static void sendMessageToPlayers(String message) {
+
+		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+
+			player.sendMessage(prefixlag + ChatFormatting.GRAY + message + ChatFormatting.GRAY + ".");
+		}
+	}
+	// Méthode pour envoyer le message du 'clearlag' à tous les joueurs //
 }

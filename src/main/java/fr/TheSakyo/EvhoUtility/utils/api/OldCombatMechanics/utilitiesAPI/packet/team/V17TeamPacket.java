@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class V17TeamPacket extends TeamPacket {
 
-    protected V17TeamPacket(Object nmsPacket){
+    protected V17TeamPacket(Object nmsPacket) {
         super(nmsPacket);
     }
 
@@ -39,13 +39,13 @@ public class V17TeamPacket extends TeamPacket {
     }
 
     @Override
-    public TeamAction getAction(){
+    public TeamAction getAction() {
 
         return PacketAccess.getAction(getNmsPacket());
     }
 
     @Override
-    public String getName(){
+    public String getName() {
 
         return PacketAccess.getName(getNmsPacket());
     }
@@ -97,9 +97,10 @@ public class V17TeamPacket extends TeamPacket {
             return Reflector.getUnchecked(() -> (String) fieldName.get(packet));
         }
 
+        @SuppressWarnings("unchecked")
         public static Collection<String> getPlayerNames(Object packet) {
 
-            Collection<String> identifiers = Reflector.getUnchecked(() -> (Collection<String>) fieldPlayerNames.get(packet));
+            Collection<String> identifiers = Reflector.getUnchecked(() -> (Collection<String>)fieldPlayerNames.get(packet));
             return Objects.requireNonNullElse(identifiers, Collections.emptyList());
         }
 
@@ -156,7 +157,7 @@ public class V17TeamPacket extends TeamPacket {
         protected Method setPrefix;
         protected Method setSuffix;
 
-        public static ScoreboardTeamMethods getInstance(){
+        public static ScoreboardTeamMethods getInstance() {
             return INSTANCE;
         }
 
@@ -235,7 +236,7 @@ public class V17TeamPacket extends TeamPacket {
             return team;
         }
 
-        public static ScoreboardTeamWither from(Object dataClass){
+        public static ScoreboardTeamWither from(Object dataClass) {
 
             return new ScoreboardTeamWither(OptionalDataClassHelper.getDisplayName(dataClass), OptionalDataClassHelper.getPackOptionData(dataClass),
                     OptionalDataClassHelper.getNameTagVisibility(dataClass), OptionalDataClassHelper.getCollisionRule(dataClass), OptionalDataClassHelper.getColor(dataClass),
@@ -260,22 +261,22 @@ public class V17TeamPacket extends TeamPacket {
         private static final Method nameTagVisibilityValueOf = Reflector.getMethod(NAME_TAG_VISIBILITY_CLASS, "a", 1);
         private static final Method teamPushValueOf = Reflector.getMethod(TEAM_PUSH_CLASS, "a", 1);
 
-        static Object getDisplayName(Object dataClass){ return Reflector.invokeMethod(getDisplayName, dataClass); }
+        static Object getDisplayName(Object dataClass) { return Reflector.invokeMethod(getDisplayName, dataClass); }
 
-        static int getPackOptionData(Object dataClass){ return Reflector.invokeMethod(getPackOptionData, dataClass); }
+        static int getPackOptionData(Object dataClass) { return Reflector.invokeMethod(getPackOptionData, dataClass); }
 
-        static String getNameTagVisibility(Object dataClass){ return Reflector.invokeMethod(getNameTagVisibility, dataClass); }
+        static String getNameTagVisibility(Object dataClass) { return Reflector.invokeMethod(getNameTagVisibility, dataClass); }
 
-        static String getCollisionRule(Object dataClass){ return Reflector.invokeMethod(getCollisionRule, dataClass); }
+        static String getCollisionRule(Object dataClass) { return Reflector.invokeMethod(getCollisionRule, dataClass); }
 
-        static Object getColor(Object dataClass){ return Reflector.invokeMethod(getColor, dataClass); }
+        static Object getColor(Object dataClass) { return Reflector.invokeMethod(getColor, dataClass); }
 
-        static Object getPrefix(Object dataClass){ return Reflector.invokeMethod(getPrefix, dataClass); }
+        static Object getPrefix(Object dataClass) { return Reflector.invokeMethod(getPrefix, dataClass); }
 
-        static Object getSuffix(Object dataClass){ return Reflector.invokeMethod(getSuffix, dataClass); }
+        static Object getSuffix(Object dataClass) { return Reflector.invokeMethod(getSuffix, dataClass); }
 
         static Object parseNameTagVisibility(String asString) { return Reflector.invokeMethod(nameTagVisibilityValueOf, null, asString); }
 
-        static Object parseTeamPush(String asString){ return Reflector.invokeMethod(teamPushValueOf, null, asString); }
+        static Object parseTeamPush(String asString) { return Reflector.invokeMethod(teamPushValueOf, null, asString); }
     }
 }

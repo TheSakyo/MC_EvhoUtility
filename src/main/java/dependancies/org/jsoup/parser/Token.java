@@ -75,7 +75,7 @@ abstract class Token {
         protected String tagName;
         protected String normalName; // lc version of tag name, for case insensitive tree build
         private String pendingAttributeName; // attribute names are generally caught in one hop, not accumulated
-        private StringBuilder pendingAttributeValue = new StringBuilder(); // but values are accumulated, from e.g. & in hrefs
+        private final StringBuilder pendingAttributeValue = new StringBuilder(); // but values are accumulated, from e.g. & in hrefs
         private String pendingAttributeValueS; // try to get attr vals in one shot, vs Builder
         private boolean hasEmptyAttributeValue = false; // distinguish boolean attribute from empty string value
         private boolean hasPendingAttributeValue = false;
@@ -103,10 +103,10 @@ abstract class Token {
             if (pendingAttributeName != null) {
                 // the tokeniser has skipped whitespace control chars, but trimming could collapse to empty for other control codes, so verify here
                 pendingAttributeName = pendingAttributeName.trim();
-                if (pendingAttributeName.length() > 0) {
+                if (!pendingAttributeName.isEmpty()) {
                     String value;
                     if (hasPendingAttributeValue)
-                        value = pendingAttributeValue.length() > 0 ? pendingAttributeValue.toString() : pendingAttributeValueS;
+                        value = !pendingAttributeValue.isEmpty() ? pendingAttributeValue.toString() : pendingAttributeValueS;
                     else if (hasEmptyAttributeValue)
                         value = "";
                     else
@@ -139,7 +139,7 @@ abstract class Token {
 
         /** Preserves case */
         final String name() { // preserves case, for input into Tag.valueOf (which may drop case)
-            Validate.isFalse(tagName == null || tagName.length() == 0);
+            Validate.isFalse(tagName == null || tagName.isEmpty());
             return tagName;
         }
 
@@ -182,7 +182,7 @@ abstract class Token {
 
         final void appendAttributeValue(String append) {
             ensureAttributeValue();
-            if (pendingAttributeValue.length() == 0) {
+            if (pendingAttributeValue.isEmpty()) {
                 pendingAttributeValueS = append;
             } else {
                 pendingAttributeValue.append(append);
@@ -245,7 +245,7 @@ abstract class Token {
 
         @Override
         public String toString() {
-            if (hasAttributes() && attributes.size() > 0)
+            if (hasAttributes() && !attributes.isEmpty())
                 return "<" + toStringName() + " " + attributes.toString() + ">";
             else
                 return "<" + toStringName() + ">";
@@ -285,9 +285,9 @@ abstract class Token {
             return dataS != null ? dataS : data.toString();
         }
 
-        final Comment append(String append) {
+        Comment append(String append) {
             ensureData();
-            if (data.length() == 0) {
+            if (data.isEmpty()) {
                 dataS = append;
             } else {
                 data.append(append);
@@ -295,7 +295,7 @@ abstract class Token {
             return this;
         }
 
-        final Comment append(char append) {
+        Comment append(char append) {
             ensureData();
             data.append(append);
             return this;

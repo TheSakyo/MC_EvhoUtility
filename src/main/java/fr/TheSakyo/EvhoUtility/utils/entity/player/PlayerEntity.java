@@ -15,10 +15,13 @@ import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import io.netty.buffer.Unpooled;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,11 +29,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.scores.PlayerTeam;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,7 +55,7 @@ public class PlayerEntity extends CraftPlayer {
 
 				/* ------------------------------------------------- */
 
-    private static UtilityMain mainInstance = UtilityMain.getInstance(); // Instance de la 'Class' "Main"
+    private static final UtilityMain mainInstance = UtilityMain.getInstance(); // Instance de la 'Class' "Main"
 
 
 				/* ------------------------------------------------- */
@@ -70,7 +72,7 @@ public class PlayerEntity extends CraftPlayer {
 				/* ------------------------------------------------- */
 
 	/************************************/
-	/* MÉTHODE CONSTRUTEUR DE LA CLASS */
+	/* MÉTHODE CONSTRUCTEUR DE LA CLASS */
 	/***********************************/
 	public PlayerEntity(Player player) {
 
@@ -85,7 +87,7 @@ public class PlayerEntity extends CraftPlayer {
 		if(this.playerCustomName  == null) this.playerCustomName = ColorUtils.format(CustomMethod.ComponentToString(player.customName()));
 	}
 	/************************************/
-	/* MÉTHODE CONSTRUTEUR DE LA CLASS */
+	/* MÉTHODE CONSTRUCTEUR DE LA CLASS */
 	/***********************************/
 
 
@@ -98,7 +100,7 @@ public class PlayerEntity extends CraftPlayer {
 	 *
 	 * @param playerReceiver Le Joueur qui verra les modifications.
 	 *
-	 * @return Une instance {@link PlayerEntity} du Joueur qui recoit les modifications.
+	 * @return Une instance {@link PlayerEntity} du Joueur qui recoil les modifications.
 	 */
 	public PlayerEntity forReceiver(Player playerReceiver) {
 
@@ -148,7 +150,7 @@ public class PlayerEntity extends CraftPlayer {
 				/* ------------------------------------------------- */
 
 	/*********************************************************************************************************************************/
-	/* MÉTHODE POUR RECHARGER LE GRADE DU JOUEUR, SON 'NICKNAME' (NOM CUSTOM), SON SCOREBOARD ET SA TEAM EN FONCTION DES PARAMÉTRES */
+	/* MÉTHODE POUR RECHARGER LE GRADE DU JOUEUR, SON 'NICKNAME' (NOM CUSTOM), SON SCOREBOARD ET SA TEAM EN FONCTION DES PARAMÉTRÉS */
 	/********************************************************************************************************************************/
 
 	/**
@@ -170,12 +172,12 @@ public class PlayerEntity extends CraftPlayer {
 		// On vérifie si 'changeProfil est "Vrai", alors, on essaie de changer le profil du Joueur ou/et son skin //
 		if(changeProfile) {
 
-			// Essait de changer le Profil de Jeux du Joueur en question, si 'updateProfile est "Vrai", Sinon, on retourne une Exception //
-			try { this.changePlayerProfile(updateProfile); } // Essait le changement de profil de jeux
-			catch(Exception e) { e.printStackTrace(); } // Retourne une Exception
-			// Essait de changer le Profil de Jeux du Joueur en question, si 'updateProfile est "Vrai", Sinon, on retourne une Exception //
+			// Essaie de changer le Profil de Jeux du Joueur en question, si 'updateProfile est "Vrai", Sinon, on retourne une Exception //
+			try { this.changePlayerProfile(updateProfile); } // Essaie le changement de profil de jeux
+			catch(Exception e) { e.printStackTrace(System.err); } // Retourne une Exception
+			// Essaie de changer le Profil de Jeux du Joueur en question, si 'updateProfile est "Vrai", Sinon, on retourne une Exception //
 		}
-		// On vérifie si 'changeProfil est "Vrai", alors, on essaie  de changer le profil du Joueur ou/et son skin //
+		// On vérifie si 'changeProfil est "Vrai", alors, on essaie de changer le profil du Joueur ou/et son skin //
 
 		this.updateGroupTeam(); // Recharge la 'Team' du Joueur
 
@@ -183,7 +185,7 @@ public class PlayerEntity extends CraftPlayer {
 	}
 
 	/*********************************************************************************************************************************/
-	/* MÉTHODE POUR RECHARGER LE GRADE DU JOUEUR, SON 'NICKNAME' (NOM CUSTOM), SON SCOREBOARD ET SA TEAM EN FONCTION DES PARAMÉTRES */
+	/* MÉTHODE POUR RECHARGER LE GRADE DU JOUEUR, SON 'NICKNAME' (NOM CUSTOM), SON SCOREBOARD ET SA TEAM EN FONCTION DES PARAMÉTRÉS */
 	/********************************************************************************************************************************/
 
 							/* ---------------------------------------------------*/
@@ -222,12 +224,12 @@ public class PlayerEntity extends CraftPlayer {
 		String nameConverted = CustomMethod.ComponentToString(name);
 
 		// Si la Variable "name" ne se finit pas par le Code Couleur 'RESET' on lui rajoute
-		if(!nameConverted.endsWith(String.valueOf(ChatColor.RESET))) { nameConverted += ChatColor.RESET; }
+		if(!nameConverted.endsWith(String.valueOf(ChatFormatting.RESET))) { nameConverted += ChatFormatting.RESET; }
 
 					/* ----------------------------------------------- */
 
 		// Récupère le Nom Customisé convertit en 'Component' avec la Couleur en 'GRAS' de son Grade en préfix
-		Component newNameWithColorBold = CustomMethod.StringToComponent(ColorUtils.format(gradeColor + ChatColor.BOLD + nameConverted));
+		Component newNameWithColorBold = CustomMethod.StringToComponent(ColorUtils.format(gradeColor + ChatFormatting.BOLD + nameConverted));
 
 		// Récupère le Nom Customisé convertit en 'Component'
 		String newName = ColorUtils.format(nameConverted);
@@ -260,24 +262,24 @@ public class PlayerEntity extends CraftPlayer {
 
 		TeamPlayer.loadTeams(); // Recharge tous les Teams
 
-		// ⬇️ On boucle sur les groupes enregistrer dans des Teams ⬇️ //
+		// ⬇️ On boucle sur les groupes enregistrés dans des Teams ⬇️ //
 		TeamPlayer.groupTeams.keySet().forEach(group -> {
 
 			PlayerTeam groupTeam = TeamPlayer.groupTeams.get(group); // Récupère la team du Groupe (Grade) en question
 
 			// Si le Joueur Connecté est dans une team du Groupe (Grade) en question, on lui enlève alors son Nom de la team.
-			if(groupTeam.getPlayers().contains(this.playerActualName)) groupTeam.getPlayers().remove(this.playerActualName);
+            groupTeam.getPlayers().remove(this.playerActualName);
 			/*if(groupTeam.getPlayers().contains(this.playerCustomName)) groupTeam.getPlayers().add(this.playerCustomName);*/
 
-			sendPacket(ClientboundSetPlayerTeamPacket.createRemovePacket(groupTeam), receiver); // Packets de suppresion de la 'Team'
+			sendPacket(ClientboundSetPlayerTeamPacket.createRemovePacket(groupTeam), receiver); // Packets de suppression de la 'Team'
 			sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(groupTeam, true), receiver); // Packets de mise à jour de la 'Team'
 		});
-		// ⬆️ On boucle sur les groupes enregistrer dans des Teams ⬆️ //
+		// ⬆️ On boucle sur les groupes enregistrés dans des Teams ⬆️ //
 
 									/* --------------------------------------------- */
 
 		User onlineUser = CustomMethod.getLuckPermUserOffline(this.player.getUniqueId()); // Récupère l'Utilisateur LuckPerms en fonction du Groupe (Grade) du Joueur Connecté
-		Group userGroup = mainInstance.luckapi.getGroupManager().getGroup(onlineUser.getCachedData().getMetaData().getPrimaryGroup()); // Récupère le Groupe (Grade) du Joueur en question
+		Group userGroup = mainInstance.luckApi.getGroupManager().getGroup(onlineUser.getCachedData().getMetaData().getPrimaryGroup()); // Récupère le Groupe (Grade) du Joueur en question
 
 
 		// Vérifie si le Groupe (Grade) du joueur est dans une team, si c'est le cas, on ajoute donc le Joueur à la team
@@ -290,7 +292,7 @@ public class PlayerEntity extends CraftPlayer {
 			/*if(!playerTeam.getPlayers().contains(this.playerCustomName)) playerTeam.getPlayers().add(this.playerCustomName);*/
 
 
-			sendPacket(ClientboundSetPlayerTeamPacket.createRemovePacket(playerTeam), receiver); // Packets de suppresion de la 'Team'
+			sendPacket(ClientboundSetPlayerTeamPacket.createRemovePacket(playerTeam), receiver); // Packets de suppression de la 'Team'
 			sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(playerTeam, true), receiver); // Packets de mise à jour de la 'Team'
 		}
 	}
@@ -333,8 +335,8 @@ public class PlayerEntity extends CraftPlayer {
 		/* ⬇️ Récupère les différents 'Packets' du Joueur en question [Voir updatePlayerProfile()] ⬇️ */
 
 		ClientboundRemoveEntitiesPacket destroyPlayer = (ClientboundRemoveEntitiesPacket)playerUpdated.get(0);
-		ClientboundPlayerInfoPacket removeInfoPlayer = (ClientboundPlayerInfoPacket)playerUpdated.get(1);
-		ClientboundPlayerInfoPacket addInfoPlayer = (ClientboundPlayerInfoPacket)playerUpdated.get(2);
+		ClientboundPlayerInfoRemovePacket removeInfoPlayer = (ClientboundPlayerInfoRemovePacket)playerUpdated.get(1);
+		ClientboundPlayerInfoUpdatePacket addInfoPlayer = (ClientboundPlayerInfoUpdatePacket)playerUpdated.get(2);
 		ClientboundRespawnPacket respawnPlayer = (ClientboundRespawnPacket)playerUpdated.get(3);
 		ClientboundTeleportEntityPacket teleportPlayer = (ClientboundTeleportEntityPacket)playerUpdated.get(4);
 		ClientboundAddPlayerPacket createPlayer = (ClientboundAddPlayerPacket)playerUpdated.get(5);
@@ -347,18 +349,18 @@ public class PlayerEntity extends CraftPlayer {
 				/* ------------------------------------------ *//* ------------------------------------------ */
 
 
-		Skin skin = null; // Utile pour récupérer un Skin et le charger au Joueur
+		Skin skin; // Utile pour récupérer un Skin et le charger au Joueur
 
 		// Récupère le Skin du Joueur dans le fichier de configuration 'playerSkin.yml'
-		String skinName = ConfigFile.getString(mainInstance.playerSkinconfig, "SKIN." + this.getActualUUID().toString());
+		String skinName = ConfigFile.getString(mainInstance.playerSkinConfig, "SKIN." + this.getActualUUID().toString());
 
 		/* Si le Nom du Skin éxiste bien dans le fichier de configuration 'playerSkin.yml' et qu'il porte bien le Nom Récupéré :
 		   Alors, on récupère le Skin du Joueur ayant le Nom Customisé. */
-		if((skinName != null && !skinName.isBlank()) && skinName.equalsIgnoreCase(this.playerCustomName)) { skin = Skin.get(ChatColor.stripColor(this.playerCustomName)); }
+		if((skinName != null && !skinName.isBlank()) && skinName.equalsIgnoreCase(this.playerCustomName)) { skin = Skin.get(ChatFormatting.stripFormatting(this.playerCustomName)); }
 
 		/*  Sinon, Si le Nom du Skin éxiste bien dans le fichier de configuration 'playerSkin.yml' et qu'il porte bien le Nom Récupéré :
 			Alors, on récupère le Nom du Skin enregistré en question */
-		else if((skinName != null && !skinName.isBlank()) && !skinName.equalsIgnoreCase(this.playerCustomName)) { skin = Skin.get(ChatColor.stripColor(skinName)); }
+		else if((skinName != null && !skinName.isBlank()) && !skinName.equalsIgnoreCase(this.playerCustomName)) { skin = Skin.get(ChatFormatting.stripFormatting(skinName)); }
 
 		// Sinon, on récupère le Skin du Joueur en question
 		else skin = Skin.get(this.getActualUUID());
@@ -377,7 +379,7 @@ public class PlayerEntity extends CraftPlayer {
 											/* --------------------------------------------------------- */
 
 		// ⬇️ Vérifie si on envoie les packets à tous les joueurs en ligne ou à qu'un seul joueur en ligne ⬇️ //
-		List<UUID> playersUUID = new ArrayList<UUID>();
+		List<UUID> playersUUID = new ArrayList<>();
 
 		if(receiver != null) { playersUUID.add(receiver.getUniqueId()); }
 		else { Bukkit.getServer().getOnlinePlayers().forEach(onlinePlayer -> playersUUID.add(onlinePlayer.getUniqueId())); }
@@ -388,43 +390,43 @@ public class PlayerEntity extends CraftPlayer {
 		// ⬇️ Ajoute aux Joueurs Connectés les différents Informations en 'packet' du Joueur en question ⬇️ //
 		for(UUID onlineUUID : playersUUID) {
 
-			Player online = Bukkit.getServer().getPlayer(onlineUUID); // Récupère le joueur ne question par son UUID.
+			Player online = Bukkit.getServer().getPlayer(onlineUUID); // Récupère le joueur en question par son UUID.
 
 			// Si le Joueur actuel n'est pas le Joueur en question, on peut envoyer au Joueur actuel le 'packet' de déstruction du Joueur en question.
 			if(online != this.player) sendPacket(destroyPlayer, online);
-			sendPacket(removeInfoPlayer, online); // Envoit au Joueur actuel, le 'packet' de Suppresssion des Infos du Joueur en question.
+			sendPacket(removeInfoPlayer, online); // Envoie au Joueur actuel, le 'packet' de Suppression des Infos du Joueur en question.
 
-			sendPacket(respawnPlayer, this.player); // Envoit au Joueur en question le 'packet' de respawn
-			sendPacket(teleportPlayer, this.player); // Envoit au Joueur en question le 'packet' de téléportation
+			sendPacket(respawnPlayer, this.player); // Envoie au Joueur en question le 'packet' de respawn
+			sendPacket(teleportPlayer, this.player); // Envoie au Joueur en question le 'packet' de téléportation
 
 			this.player.getInventory().setContents(inventory); // Récupère l'inventaire du joueur
 
-			sendPacket(addInfoPlayer, online); // Envoit au Joueur actuel, le 'packet' d'Ajout des Infos du Joueur en question.
+			sendPacket(addInfoPlayer, online); // Envoie au Joueur actuel, le 'packet' d'Ajout des Infos du Joueur en question.
 
 			/* ⬇️ On vérifie si le Joueur actuel n'est pas dans la liste des Joueurs ayant l'Option pour cacher les autres Joueurs ;
 				   Puis, on vérifie également si le Joueur actuel n'est pas le Joueur en question : Alors, on peut afficher au Joueur actuel
 				   les packets pour afficher le Joueur en question. ⬇️ */
 			if(!mainInstance.hidePlayers.containsKey(onlineUUID) && online != this.player) {
 
-				sendPacket(createPlayer, online); // Envoit au Joueur actuel, le 'packet' de Création du Joueur en question.
-				sendPacket(rotatePlayer, online); // Envoit au Joueur actuel, le 'packet' de Rotation de Tête du Joueur en question.
-				sendPacket(equipmentPlayer, online); // Envoit au Joueur actuel, le 'packet' d'Équipement du Joueur en question.
+				sendPacket(createPlayer, online); // Envoie au Joueur actuel, le 'packet' de Création du Joueur en question.
+				sendPacket(rotatePlayer, online); // Envoie au Joueur actuel, le 'packet' de Rotation de Tête du Joueur en question.
+				sendPacket(equipmentPlayer, online); // Envoie au Joueur actuel, le 'packet' d'Équipement du Joueur en question.
 			}
 			/* ⬆️ On vérifie si le Joueur actuel n'est pas dans la liste des Joueurs ayant l'Option pour cacher les autres Joueurs ;
 				   Puis, on vérifie également si le Joueur actuel n'est pas le Joueur en question : Alors, on peut afficher au Joueur actuel
 				   les packets pour afficher le Joueur en question. ⬆️ */
 
-			sendPacket(metadataPlayer, online); // Envoit au Joueur actuel, le 'packet' de MétaDonnée du Joueur en question.
+			sendPacket(metadataPlayer, online); // Envoie au Joueur actuel, le 'packet' de MétaDonnée du Joueur en question.
 
 			/* ------------------------------------------ *//* ------------------------------------------ */
 
 			if(changeGameProfile) {
 
 
-				// ⬇️ Essait de remapper le Variable "name" du Profil de Jeux du Joueur récupérant Connecté ⬇️ //
+				// ⬇️ Essaie de remapper le Variable "name" du Profil de Jeux du Joueur récupérant Connecté ⬇️ //
 				Class<?> remappedGameProfile = RemapReflection.remapClassName(GameProfile.class);
 				String name = RemapReflection.remapFieldName(GameProfile.class, "name");
-				// ⬆️ Essait de remapper le Variable "name" du Profil de Jeux du Joueur récupérant Connecté ⬆️ //
+				// ⬆️ Essaie de remapper le Variable "name" du Profil de Jeux du Joueur récupérant Connecté ⬆️ //
 
 				/* ------------------------------------------ */
 
@@ -432,7 +434,7 @@ public class PlayerEntity extends CraftPlayer {
 				new BukkitRunnable() {
 					public void run() {
 
-						// ⬇️ On Essait de changer le Nom du Joueur en question par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬇️ //
+						// ⬇️ On Essaie de changer le Nom du Joueur en question par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬇️ //
 						try {
 
 							// ⬇️ Récupère l'Attribut 'name' du Profil de Jeux du Joueur en question depuis son code source et la remplace ⬇️ //
@@ -441,8 +443,8 @@ public class PlayerEntity extends CraftPlayer {
 							n.set(playerInstance.gameProfile, playerActualName);
 							// ⬆️ Récupère l'Attribut 'name' du Profil de Jeux du Joueur en question depuis son code source et la remplace ⬆️ //
 
-						} catch(NoSuchFieldException | IllegalAccessException e) { e.printStackTrace(); }
-						// ⬆️ On Essait de changer le Nom du Joueur en question par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬆️ //
+						} catch(NoSuchFieldException | IllegalAccessException e) { e.printStackTrace(System.err); }
+						// ⬆️ On Essaie de changer le Nom du Joueur en question par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬆️ //
 					}
 				}.runTaskLater(mainInstance, 1);
 				// ⬆️ Aprés 1 tick, on essaie de remettre le Nom du Joueur en question Par Défaut ⬆️ //
@@ -479,19 +481,19 @@ public class PlayerEntity extends CraftPlayer {
 	 */
 	private List<Object> updatePlayer(final String defaultName, String customName, boolean changePacket, boolean changePlayerProfile) {
 
-		GameProfile playerProfile = null; // Utile pour créer un nouveau Profil de Jeux
+		GameProfile playerProfile; // Utile pour créer un nouveau Profil de Jeux
 
 
 		/* --------------- INITIALISE LES DIFFÉRENTS 'PACKETS' -------------- */
-		ClientboundPlayerInfoPacket removeInfoPlayer = null;
-		ClientboundRemoveEntitiesPacket destroyPlayer = null;
-		ClientboundPlayerInfoPacket addInfoPlayer = null;
-		ClientboundRespawnPacket respawnEntity = null;
-		ClientboundTeleportEntityPacket teleportEntity = null;
-		ClientboundAddPlayerPacket createPlayer = null;
-		ClientboundSetEntityDataPacket metadataPlayer = null;
-		ClientboundRotateHeadPacket rotatePlayer = null;
-		ClientboundSetEquipmentPacket equipmentPlayer = null;
+		ClientboundPlayerInfoRemovePacket removeInfoPlayer = null;
+		ClientboundRemoveEntitiesPacket destroyPlayer;
+		ClientboundPlayerInfoUpdatePacket addInfoPlayer;
+		ClientboundRespawnPacket respawnEntity;
+		ClientboundTeleportEntityPacket teleportEntity;
+		ClientboundAddPlayerPacket createPlayer;
+		ClientboundSetEntityDataPacket metadataPlayer;
+		ClientboundRotateHeadPacket rotatePlayer;
+		ClientboundSetEquipmentPacket equipmentPlayer;
 		/* --------------- INITIALISE LES DIFFÉRENTS 'PACKETS' -------------- */
 
 
@@ -505,7 +507,7 @@ public class PlayerEntity extends CraftPlayer {
 		// ⬇️ On enregistre le 'packet' pour supprimer les Informations du Joueur en question à en question si le paramètre 'changePacket' est "Vrai" ⬇️ //
 		if(changePacket) {
 
-			removeInfoPlayer = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, this.playerInstance); // 'packet' pour Supprimer les Informations du Joueur
+			removeInfoPlayer = new ClientboundPlayerInfoRemovePacket(List.of(this.playerInstance.getUUID())); // 'packet' pour Supprimer les Informations du Joueur
 		}
 		// ⬆️ On enregistre le 'packet' pour supprimer les Informations du Joueur en question à en question si le paramètre 'changePacket' est "Vrai" ⬆️ //
 
@@ -513,22 +515,22 @@ public class PlayerEntity extends CraftPlayer {
 
 		if(changePlayerProfile) {
 
-			// ⬇️ Essait de remapper le Variable "gameProfile" récupérant le Profil de Jeux du Joueur ⬇️ //
+			// ⬇️ Essaie de remapper le Variable "gameProfile" récupérant le Profil de Jeux du Joueur ⬇️ //
 			Class<?> remappedPlayer = RemapReflection.remapClassName(this.playerInstance.getClass().getSuperclass());
 			String gameProfile = RemapReflection.remapFieldName(this.playerInstance.getClass().getSuperclass(), "gameProfile");
-			// ⬆️ Essait de remapper le Variable "gameProfile" récupérant le Profil de Jeux du Joueur ⬆️ //
+			// ⬆️ Essaie de remapper le Variable "gameProfile" récupérant le Profil de Jeux du Joueur ⬆️ //
 
 								/* ------------------------------------------------ */
 
 			// Si, le paramètre 'name' est "NULL", on Créer un Profil de Jeux portant le Nom Par Défaut Définit.
-			if(customName == null) { playerProfile = new GameProfile(this.getActualUUID(), ChatColor.stripColor(defaultName)); }
+			if(customName == null) { playerProfile = new GameProfile(this.getActualUUID(), ChatFormatting.stripFormatting(defaultName)); }
 
 			// Sinon, on Créer un Profil de Jeux portant le Nom Customisé Définit.
-			else { playerProfile = new GameProfile(this.getActualUUID(), ChatColor.stripColor(customName)); }
+			else { playerProfile = new GameProfile(this.getActualUUID(), ChatFormatting.stripFormatting(customName)); }
 
 								/* ------------------------------------------------ */
 
-			// ⬇️ On Essait de changer le Profil de Jeux du Joueur par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬇️ //
+			// ⬇️ On Essaie de changer le Profil de Jeux du Joueur par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬇️ //
 			try {
 
 				// ⬇️ Récupère l'Attribut 'gameProfile' du Joueur depuis son code source et la remplace ⬇️ //
@@ -538,8 +540,8 @@ public class PlayerEntity extends CraftPlayer {
 				// ⬆️ Récupère l'Attribut 'gameProfile' du Joueur depuis son code source et la remplace ⬆️ //
 
 
-			} catch(NoSuchFieldException | IllegalAccessException e) { e.printStackTrace(); }
-			// ⬆️ On Essait de changer le Profil de Jeux du Joueur par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬆️ //
+			} catch(NoSuchFieldException | IllegalAccessException e) { e.printStackTrace(System.err); }
+			// ⬆️ On Essaie de changer le Profil de Jeux du Joueur par celui Customisé, Sinon on Affiche l'Erreur à la Console ⬆️ //
 
 		}
 							/* ----------------------------------------------- */
@@ -552,14 +554,16 @@ public class PlayerEntity extends CraftPlayer {
 		         //~ -- * 'packet' | "Respawn" de l'Entité du Joueur * -- ~//
 				respawnEntity = new ClientboundRespawnPacket(
 
-					this.playerInstance.getLevel().dimensionType(),
-					this.playerInstance.getLevel().dimension(),
-					BiomeManager.obfuscateSeed(this.playerInstance.getLevel().getSeed()),
+					this.playerInstance.getCommandSenderWorld().getMinecraftWorld().dimensionTypeId(),
+					this.playerInstance.getCommandSenderWorld().getMinecraftWorld().dimension(),
+					BiomeManager.obfuscateSeed(this.playerInstance.getCommandSenderWorld().getMinecraftWorld().getSeed()),
 					this.playerInstance.gameMode.getGameModeForPlayer(),
 					this.playerInstance.gameMode.getPreviousGameModeForPlayer(),
-					this.playerInstance.getLevel().isDebug(),
-					this.playerInstance.getLevel().isFlat(),
-					true
+					this.playerInstance.getCommandSenderWorld().getMinecraftWorld().isDebug(),
+					this.playerInstance.getCommandSenderWorld().getMinecraftWorld().isFlat(),
+					(byte)3,
+					this.playerInstance.getLastDeathLocation(),
+					this.playerInstance.getPortalCooldown()
 				);
 				//~ -- * 'packet' | "Respawn" de l'Entité du Joueur * -- ~//
 
@@ -575,7 +579,7 @@ public class PlayerEntity extends CraftPlayer {
 					data.writeDouble(this.playerInstance.getZ());
 					data.writeByte((byte)((int)(this.playerInstance.getYRot() * 256.0F / 360.0F)));
 					data.writeByte((byte)((int)(this.playerInstance.getXRot() * 256.0F / 360.0F)));
-					data.writeBoolean(this.playerInstance.isOnGround());
+					data.writeBoolean(this.playerInstance.onGround());
 					return new ClientboundTeleportEntityPacket(data);
 				});
 				//~ -- * 'packet' | "Respawn" de l'Entité du Joueur * -- ~//
@@ -584,18 +588,17 @@ public class PlayerEntity extends CraftPlayer {
 
 
 				destroyPlayer = new ClientboundRemoveEntitiesPacket(this.playerInstance.getId()); // 'packet' pour Supprimer le Joueur
-				addInfoPlayer = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, this.playerInstance); // 'packet' pour Ajouter des Informations du Joueur
+				addInfoPlayer = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, this.playerInstance); // 'packet' pour Ajouter des Informations du Joueur
 				createPlayer = new ClientboundAddPlayerPacket(this.playerInstance); // 'packet' pour Créer le Joueur
 
 									/* ----------------------------------------------- */
 
 				//~ -- * 'packet' | "MetaData" de l'Entité du Joueur * -- ~//
-				metadataPlayer = PlayerEntity.createDataSerializer((data)-> {
 
-					data.writeVarInt(this.playerInstance.getId());
-					SynchedEntityData.pack(this.playerInstance.getEntityData().getAll(), data);
-					return new ClientboundSetEntityDataPacket(data);
-				});
+				SynchedEntityData synchedEntityData = this.playerInstance.getEntityData();
+				synchedEntityData.set(new EntityDataAccessor<>(17, EntityDataSerializers.BYTE), (byte)127);
+				metadataPlayer = new ClientboundSetEntityDataPacket(this.playerInstance.getId(), synchedEntityData.getNonDefaultValues());
+
 				//~ -- * 'packet' | "MetaData" de l'Entité du Joueur * -- ~//
 
 							/* ----------------------------- */
@@ -613,8 +616,8 @@ public class PlayerEntity extends CraftPlayer {
 
 				//~ -- * 'packet' | Équipement du Joueur * -- ~//
 
-				// Liste 'equipementList' stockant l'Équipement du Joueur sur chaque 'slot' d'Équipement
-				List<Pair<EquipmentSlot, ItemStack>> equipementList = new ArrayList<Pair<EquipmentSlot, ItemStack>>();
+				// Liste 'equipmentList' stockant l'Équipement du Joueur sur chaque 'slot' d'Équipement
+				List<Pair<EquipmentSlot, ItemStack>> equipmentList = new ArrayList<>();
 
 				// ⬇️ Récupère les différents Équipements du Joueur (Casque, Plastron, Jambière & Botte) ⬇️ //
 				org.bukkit.inventory.ItemStack helmet = this.player.getInventory().getHelmet();
@@ -628,18 +631,18 @@ public class PlayerEntity extends CraftPlayer {
 				org.bukkit.inventory.ItemStack offHand = this.player.getInventory().getItemInOffHand();
 				// ⬆️ Récupère les Items du Joueur sur ses mains (Main Principale & Main Secondaire) ⬆️ //
 
-				// ⬇️ Ajoute à la Liste 'equipementList' les différents Équipements du Joueur dans leur 'slot' respective ⬇️ //
-				equipementList.add(new Pair<>(EquipmentSlot.HEAD, CraftItemStack.asNMSCopy(helmet)));
-				equipementList.add(new Pair<>(EquipmentSlot.CHEST, CraftItemStack.asNMSCopy(chesplate)));
-				equipementList.add(new Pair<>(EquipmentSlot.LEGS, CraftItemStack.asNMSCopy(leggings)));
-				equipementList.add(new Pair<>(EquipmentSlot.FEET, CraftItemStack.asNMSCopy(boots)));
+				// ⬇️ Ajoute à la Liste 'equipmentList' les différents Équipements du Joueur dans leur 'slot' respective ⬇️ //
+				equipmentList.add(new Pair<>(EquipmentSlot.HEAD, CraftItemStack.asNMSCopy(helmet)));
+				equipmentList.add(new Pair<>(EquipmentSlot.CHEST, CraftItemStack.asNMSCopy(chesplate)));
+				equipmentList.add(new Pair<>(EquipmentSlot.LEGS, CraftItemStack.asNMSCopy(leggings)));
+				equipmentList.add(new Pair<>(EquipmentSlot.FEET, CraftItemStack.asNMSCopy(boots)));
 
-				equipementList.add(new Pair<>(EquipmentSlot.MAINHAND, CraftItemStack.asNMSCopy(mainHand)));
-				equipementList.add(new Pair<>(EquipmentSlot.OFFHAND, CraftItemStack.asNMSCopy(offHand)));
-				// ⬆️ Ajoute à la Liste 'equipementList' les différents Équipements du Joueur dans leur 'slot' respective ⬆️ //
+				equipmentList.add(new Pair<>(EquipmentSlot.MAINHAND, CraftItemStack.asNMSCopy(mainHand)));
+				equipmentList.add(new Pair<>(EquipmentSlot.OFFHAND, CraftItemStack.asNMSCopy(offHand)));
+				// ⬆️ Ajoute à la Liste 'equipmentList' les différents Équipements du Joueur dans leur 'slot' respective ⬆️ //
 
 				// Créer ensuite le 'Packet'
-				equipmentPlayer = new ClientboundSetEquipmentPacket(this.playerInstance.getId(), equipementList);
+				equipmentPlayer = new ClientboundSetEquipmentPacket(this.playerInstance.getId(), equipmentList);
 
 				//~ -- * 'packet' | Équipement du Joueur * -- ~//
 
@@ -665,7 +668,7 @@ public class PlayerEntity extends CraftPlayer {
 	/**
 	 * Récupère l'UUID d'un Joueur à travers sn Pseudonyme depuis les Serveurs de Mojang.
 	 *
-	 * @param UUID_URL Le lien vers les enregistrements des 'Universally unique identifier' des différents Joueurs de Minecraft.
+	 * @param UUID_URL Le lien vers les enregistrements des 'Universally Unique identifier' des différents Joueurs de Minecraft.
 	 * @param playerName Le Pseudonyme du Joueur en question.
 	 *
 	 * @return L'UUID du Joueur en question depuis les serveurs de Mojang.
@@ -695,8 +698,8 @@ public class PlayerEntity extends CraftPlayer {
 
 		} catch(IOException | URISyntaxException | ParseException | InterruptedException e) {
 
-			mainInstance.console.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Une Erreur est survenue lors de la récupération de l'UUID avec le pseudonyme : "
-											+ ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + playerName);
+			mainInstance.console.sendMessage(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Une Erreur est survenue lors de la récupération de l'UUID avec le pseudonyme : "
+											+ ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + playerName);
 			return null;
 		}
 
@@ -728,13 +731,13 @@ public class PlayerEntity extends CraftPlayer {
 
 			if(response.statusCode() == HttpURLConnection.HTTP_OK) responseParser = new JSONParser().parse(response.body());
 
-			if(((JSONObject)responseParser) == null) throw new NullPointerException("La Session est null !");
+			if(responseParser == null) throw new NullPointerException("La Session est null !");
 			return ((JSONObject)responseParser);
 
 		} catch(IOException | URISyntaxException | ParseException | InterruptedException e) {
 
-			mainInstance.console.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "Une Erreur est survenue lors de la récupération du profil avec l'UUID : "
-											+ ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + uuid.toString());
+			mainInstance.console.sendMessage(ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "Une Erreur est survenue lors de la récupération du profil avec l'UUID : "
+											+ ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + uuid.toString());
 			return null;
 		}
 	}
@@ -742,11 +745,11 @@ public class PlayerEntity extends CraftPlayer {
   /* ----------------------------------------------------------------------------------------------------------------- */
 
 				/* -------------------------------------------------------------------------------------- */
-				/* 		⬆️	UTILE POUR l'ENVOIT DE 'PACKETS' ET QUELQUES FONCTIONNEMENTS UTILES	⬆️		  */
+				/* 		⬆️	UTILE POUR L'ENVOI DE 'PACKETS' ET QUELQUES FONCTIONNEMENTS UTILES	⬆️		  */
 				/* ------------------------------------------------------------------------------------- */
 
 	/**
-	 *  Renvoit une interface fonctionnelle qui peut lever une exception
+	 *  Renvoi une interface fonctionnelle qui peut lever une exception
  	 */
 	@FunctionalInterface
     public interface UnsafeSupplier<T> { T get() throws Exception; }
@@ -775,16 +778,15 @@ public class PlayerEntity extends CraftPlayer {
     public static void unsafe(UnsafeRunnable run) {
 
         try { run.run(); }
-        catch(Exception e) { e.printStackTrace(); }
+        catch(Exception e) { e.printStackTrace(System.err); }
     }
 
 					/* --------------------------------------------- */
 
 	/**
 	 * Crée un {@link FriendlyByteBuf}, le transmet à un rappel et renvoie le résultat du rappel.
-	 *
 	 * Le rappel est une fonction qui prend un {@link FriendlyByteBuf} et renvoie un type générique.
-	 * Le rappel est l'endroit où est écrites les données dans le tampon
+	 * Le rappel est l'endroit où sont écrites les données dans le tampon
 	 *
 	 * @param callback La fonction qui sera appelée pour sérialiser les données.
 	 *
@@ -795,8 +797,10 @@ public class PlayerEntity extends CraftPlayer {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         T result = null;
 
+		/**************************************/
+
         try { result = callback.apply(data); }
-        catch(Exception e) { e.printStackTrace(); }
+        catch(Exception e) { e.printStackTrace(System.err); }
         finally { data.release(); }
         return result;
     }
@@ -853,7 +857,7 @@ public class PlayerEntity extends CraftPlayer {
 			/* ------------------------------------------ */
 
 				/* -------------------------------------------------------------------------------------- */
-				/* 		⬆️	UTILE POUR l'ENVOIT DE 'PACKETS' ET QUELQUES FONCTIONNEMENTS UTILES	⬆️		  */
+				/* 		⬆️	UTILE POUR L'ENVOI DE 'PACKETS' ET QUELQUES FONCTIONNEMENTS UTILES	⬆️		  */
 				/* ------------------------------------------------------------------------------------- */
 
   /* ----------------------------------------------------------------------------------------------------------------- */

@@ -22,6 +22,6 @@ public class Wikipedia {
     }
 
     private static void log(String msg, String... vals) {
-        System.out.println(String.format(msg, (Object[])vals));
+        System.out.printf((msg) + "%n", (Object[])vals);
     }
 }

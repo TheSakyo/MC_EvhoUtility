@@ -92,8 +92,8 @@ public class ModulePlayerKnockback extends Module {
         if(!(damager instanceof final LivingEntity attacker)) return;
         if(!isEnabled(attacker.getWorld())) return;
 
-        final Entity damagee = event.getEntity();
-        if(!(damagee instanceof final Player victim)) return;
+        final Entity entityDamager = event.getEntity();
+        if(!(entityDamager instanceof final Player victim)) return;
 
         if(event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
         if(event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) > 0) return;

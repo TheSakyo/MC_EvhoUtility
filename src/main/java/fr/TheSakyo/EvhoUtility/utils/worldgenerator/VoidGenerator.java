@@ -17,14 +17,10 @@ import org.bukkit.generator.WorldInfo;
 public class VoidGenerator extends ChunkGenerator {
 
     @Override
-    public List<BlockPopulator> getDefaultPopulators(World world) { return Collections.<BlockPopulator>emptyList(); }
+    public List<BlockPopulator> getDefaultPopulators(World world) { return Collections.emptyList(); }
 
     @Override
     public void generateNoise(WorldInfo worldInfo, Random random, int chunkX, int chunkZ, ChunkData chunkData) {}
-
-    /*@Override
-    @NotNull
-    public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int x, int z, @NotNull BiomeGrid biome) { return createChunkData(world); }*/
 
     @Override
     public boolean canSpawn(World world, int x, int z) { return true; }

@@ -27,23 +27,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @param <T> The type of {@link Entity} that will be the true, internal, server understood representation.
+ * @param <T> Le type de {@link Entity} qui sera la véritable représentation interne comprise par le serveur.
  */
 public abstract class CustomEntityType<T extends Entity> {
 
     /**
-     * The {@link JavaPlugin} retrieved through the ClassLoader. This is used to register the listeners and
-     * for handling persistent data on the entities.
+     * Le {@link JavaPlugin} récupéré par le ClassLoader. Il est utilisé pour enregistrer les auditeurs et
+     * pour gérer les données persistantes sur les entités.
      */
     private static JavaPlugin plugin = null;
 
     /**
-     * The {@link NamespacedKey} used for interfacing with {@link PersistentDataContainer}.
+     * La {@link NamespacedKey} utilisée pour l'interface avec {@link PersistentDataContainer}.
      */
     private static NamespacedKey entityKey = null;
 
     /**
-     * The internal registry of {@link CustomEntityType}'s as a {@link ConcurrentHashMap} for safe multi-threaded access.
+     * Le registre interne des {@link CustomEntityType} en tant que {@link ConcurrentHashMap} pour un accès multithreading sûr.
      */
     @NotNull
     private static final Map<String, CustomEntityType<?>> REGISTRY = new ConcurrentHashMap<>();
@@ -67,7 +67,7 @@ public abstract class CustomEntityType<T extends Entity> {
     private final EntityType displayType;
 
     /**
-     * Ni la classe Interne ni la class d'Affichage ne peuvent être des entités qui ne peuvent pas appraître.<br>
+     * Ni la classe Interne ni la class d'Affichage ne peuvent être des entités qui ne peuvent pas apparaître.<br>
      * Vous pouvez vérifier si l'entité que vous utilisez peut apparaître en vérifiant la variable "independent" de '{@link EntityType}', elle doit être 'true/unset'.
      *
      * @param id L'Identifiant à utiliser dans le registre.
@@ -95,7 +95,7 @@ public abstract class CustomEntityType<T extends Entity> {
 
         if(!this.internalType.isSpawnable()) {
 
-            throw new IllegalArgumentException("L'EntityType internet de CustomEntityType[%s]  \"%s\" n'est pas spawnable.".formatted(this.id, internalType));
+            throw new IllegalArgumentException("L'EntityType internet de CustomEntityType[%s]  \"%s\" ne peut pas spawn.".formatted(this.id, internalType));
         }
                                                     /* --------------------------------------------------- */
         if(displayType == null) {
@@ -106,7 +106,7 @@ public abstract class CustomEntityType<T extends Entity> {
     }
 
     /**
-     * Ni la classe Interne ni la class d'Affichage ne peuvent être des entités qui ne peuvent pas appraître.<br>
+     * Ni la classe Interne ni la class d'Affichage ne peuvent être des entités qui ne peuvent pas apparaître.<br>
      * Vous pouvez vérifier si l'entité que vous utilisez peut apparaître en vérifiant la variable "independent" de '{@link EntityType}', elle doit être 'true/unset'.
      *
      * @param id L'Identifiant à utiliser dans le registre.
@@ -195,16 +195,16 @@ public abstract class CustomEntityType<T extends Entity> {
     public void onSpawn(@NotNull T entity) {}
 
     /**
-     * Cette fonction sera appelée chaque fois que ce {@link CustomEntityType} est en train de ce créé.
+     * Cette fonction sera appelée chaque fois que ce {@link CustomEntityType} est en train de se créer.
      *
      * @param entity - L'{@link Entity Entité} qui a apparu.
      */
     public void onPreSpawn(@NotNull T entity) {}
 
     /**
-     * Fait apparaître le {@link CustomEntityType} à l'{@link Location emplacement} donné et permet de pré-spawn {@link Consumer<T>} à être passé.
+     * Fait apparaître le {@link CustomEntityType} à l'{@link Location emplacement} donné et permet de près spawn {@link Consumer<T>} à être passé.
      *
-     * @param location         L'{@link Location Emplacement} à appraître pour l'{@link T entité}.
+     * @param location         L'{@link Location Emplacement} à apparaître pour l'{@link T entité}.
      * @param preSpawnFunction Passe à la fonction world.spawn() qui est exécutée avant que l'{@link Entity entité} ne soit dans le monde.
      *
      * @return L'{@link T Entité}.
@@ -224,7 +224,7 @@ public abstract class CustomEntityType<T extends Entity> {
     /**
      * Fait apparaître le {@link CustomEntityType} l'{@link Location emplacement} donné.
      *
-     * @param location  L'{@link Location Emplacement} à appraître pour l'{@link T entité}.
+     * @param location  L'{@link Location Emplacement} à apparaître pour l'{@link T entité}.
      * @return L'{@link T Entité}.
      */
     @NotNull
@@ -232,12 +232,12 @@ public abstract class CustomEntityType<T extends Entity> {
 
     /**
      * Une fonction de spawn dynamique pour quand vous voulez juste spawn une entité qui ressemble à une autre entité sur le client.<br><br>.
-     * <b>Note:</b> les entités spawnées avec cette fonction ne seront PAS persistantes !<br>
+     * <b>Note:</b> les entités apparûs avec cette fonction ne seront PAS persistantes !<br>
      * Il s'agit d'une fonctionnalité expérimentale, à utiliser à vos propres risques.
      *
      * @param internal Le {@link EntityType type d'entité internet} à utiliser pour cette {@link Entity entité}.
      * @param display  Le {@link EntityType type d'entité d'affichage} que les clients verront.
-     * @param location  L'{@link Location Emplacement} à appraître pour l'{@link Entity entité}.
+     * @param location  L'{@link Location Emplacement} à apparaître pour l'{@link Entity entité}.
      *
      * @return L'{@link Entity Entité} qui est apparu, ou null si l'affichage ou l'interne n'ont pas de classe d'entité.
      */
@@ -252,7 +252,7 @@ public abstract class CustomEntityType<T extends Entity> {
         CustomEntityType<?> type = new CustomEntityType(dynamicID, internal.getEntityClass(), display.getEntityClass()) {};
         register(type);
 
-        return location.getWorld().spawn(location, internal.getEntityClass(), (entity) -> { set(entity, type); });
+        return location.getWorld().spawn(location, internal.getEntityClass(), (entity) -> set(entity, type));
     }
 
     /**
@@ -275,15 +275,11 @@ public abstract class CustomEntityType<T extends Entity> {
      * Elle est également responsable de l'initialisation correcte des {@link Listener auditeurs}.
      *
      * @param type Le {@link CustomEntityType} à enregistrer.
-     *
-     * @return Le {@link CustomEntityType} qui a été surchargé, s'il existe, en raison de doublons d'ID.
      */
-    @Nullable
-    public static CustomEntityType<?> register(CustomEntityType<?> type) {
+    public static void register(CustomEntityType<?> type) {
 
         if(plugin == null) initialize();
-
-        return REGISTRY.put(type.getID(), type);
+        REGISTRY.put(type.getID(), type);
     }
 
     /**

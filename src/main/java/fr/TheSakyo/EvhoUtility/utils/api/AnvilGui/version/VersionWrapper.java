@@ -34,13 +34,13 @@ public interface VersionWrapper {
      *
      * @param player Joueur auquel envoyer le paquet.
      * @param containerId L'Identifiant du conteneur à ouvrir
-     * @param inventoryTitle Titre de l'inventaire à ouvrir (fonctionne uniquement dans Minecraft 1.14 et plus)
+     * @param inventoryTitle Titre de l'inventaire à ouvrir (fonctionne uniquement à Minecraft 1.14 et plus)
      */
     void sendPacketOpenWindow(Player player, int containerId, String inventoryTitle);
 
     
     /**
-     * Envoie PacketPlayOutCloseWindow au joueur avec l'ID du containeur
+     * Envoie PacketPlayOutCloseWindow au joueur avec l'ID du conteneur
      *
      * @param player Joueur auquel envoyer le paquet.
      * @param containerId L'Identifiant du conteneur à fermer

@@ -6,8 +6,8 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import fr.TheSakyo.EvhoUtility.UtilityMain;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -94,7 +94,7 @@ public final class Skin {
      */
     public GameProfile getProfile() {
 
-        return new GameProfile(UUID.randomUUID(), this.skinName + String.valueOf(new Random().nextInt((100 - 1) + 1) - 1));
+        return new GameProfile(UUID.randomUUID(), this.skinName + (new Random().nextInt((100 - 1) + 1) - 1));
     }
 
 
@@ -138,7 +138,7 @@ public final class Skin {
             String id = (String)jsonObject.get("id");
             return get(toRealUUID(id));
 
-        } catch(IOException | ParseException e) { e.printStackTrace(); }
+        } catch(IOException | ParseException e) { e.printStackTrace(System.err); }
 
         return null;
     }
@@ -168,7 +168,7 @@ public final class Skin {
 
             return new Skin((String)jsonObject.get("name"), (String)property.get("value"), (String)property.get("signature"));
 
-        } catch(IOException | ParseException e) { e.printStackTrace(); }
+        } catch(IOException | ParseException e) { e.printStackTrace(System.err); }
 
         return null;
     }
@@ -204,14 +204,14 @@ public final class Skin {
 
                                     /* ------------------------------ */
 
-        skullMeta.displayName(CustomMethod.StringToComponent(ChatColor.YELLOW + "Tête de " + ChatColor.GOLD + target));
+        skullMeta.displayName(CustomMethod.StringToComponent(ChatFormatting.YELLOW + "Tête de " + ChatFormatting.GOLD + target));
 
         if(sender != null) {
 
-            String YI = ChatColor.YELLOW.toString() + ChatColor.ITALIC.toString(); // Couleur Jaune + Italic
-            String GI = ChatColor.GRAY.toString() + ChatColor.ITALIC.toString(); // Couleur Gris + Italic
+            String YI = ChatFormatting.YELLOW.toString() + ChatFormatting.ITALIC.toString(); // Couleur Jaune + Italic
+            String GI = ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString(); // Couleur Gris + Italic
 
-            p.sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous obtenez la tête de " +  YI + target + GI + " !");
+            p.sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous obtenez la tête de " +  YI + target + GI + " !");
         }
 
 		skull.setItemMeta(skullMeta);

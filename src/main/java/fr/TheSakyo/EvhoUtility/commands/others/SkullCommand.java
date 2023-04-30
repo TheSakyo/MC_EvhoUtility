@@ -1,6 +1,7 @@
 package fr.TheSakyo.EvhoUtility.commands.others;
 
 import fr.TheSakyo.EvhoUtility.utils.entity.player.utilities.Skin;
+import net.minecraft.ChatFormatting;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,19 +9,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 
 
 public class SkullCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public SkullCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
-	
-	
+
 	
    /****************************************************/
    /* PARTIE COMMANDE POUR OBTENIR LA TÊTE D'UN JOUEUR */
@@ -33,34 +32,29 @@ public class SkullCommand implements CommandExecutor {
 
 			if(p.hasPermission("evhoutility.skull")) {
 
-				Inventory pinv = p.getInventory();
-				
-				if(args.length == 0) { pinv.addItem(Skin.PlayerHead(p, p, null)); }
+				Inventory pInv = p.getInventory();
 
-				else if(args.length != 0) {
+				/***********************************************/
+
+				if(args.length == 0) { pInv.addItem(Skin.PlayerHead(p, p, null)); }
+				else {
 					
 					if(args.length == 1) {
 						
-						if(p.hasPermission("evhoutility.skull.other")) { pinv.addItem(Skin.PlayerHead(p, p, args[0])); }
-
-						else { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /skull"); }
+						if(p.hasPermission("evhoutility.skull.other")) pInv.addItem(Skin.PlayerHead(p, p, args[0]));
+						else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /skull");
 						
 					} else {
 						
-						if(p.hasPermission("evhoutility.ligthning.other")) {
-							
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas entrer plus d'un argument !");
-						
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /skull"); }
+						if(p.hasPermission("evhoutility.ligthning.other")) p.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas entrer plus d'un argument !");
+						else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /skull");
 					}
 				}
 				
-			} else { p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !"); }
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 
-		} else {
+		} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour obtenir une tête d'un joueur !");
 
-		 sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour obtenir une tête d'un joueur !");
-		}
 		return false;
 	}
 	

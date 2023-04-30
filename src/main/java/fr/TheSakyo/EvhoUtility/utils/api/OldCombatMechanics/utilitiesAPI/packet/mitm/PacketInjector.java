@@ -164,7 +164,7 @@ class PacketInjector extends ChannelDuplexHandler {
             return;
         }
 
-        if (!PacketHelper.isNmsPacket(packet)) {
+        if (PacketHelper.isNmsPacket(packet)) {
 
            // renvoie les paquets non-nms, mais se plaint au moins une fois
             if(!detectedNonNMSPacket) { Messenger.warn("Réception d'un paquet qui n'est pas NMS : %s %s", packet.getClass(), packet); detectedNonNMSPacket = true; }
@@ -200,7 +200,7 @@ class PacketInjector extends ChannelDuplexHandler {
             return;
         }
 
-        if (!PacketHelper.isNmsPacket(packet)) {
+        if (PacketHelper.isNmsPacket(packet)) {
 
             debug("Reçoit un paquet QUI N'EST PAS UN PAQUET :" + packet.getClass() + " " + packet);
             return;

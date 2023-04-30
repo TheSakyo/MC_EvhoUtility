@@ -16,7 +16,7 @@ public class ScoreboardManager {
             /* ---------------------------------------- */
 
     // Variable "Map" Scoreboard par joueur //
-    public static Map<UUID, Scoreboard> scoreboardPlayers = new HashMap<UUID, Scoreboard>();
+    public static Map<UUID, Scoreboard> scoreboardPlayers = new HashMap<>();
     // Variable "Map" Scoreboard par joueur //
 
             /* ---------------------------------------- */
@@ -28,20 +28,11 @@ public class ScoreboardManager {
         board.clearSlot(DisplaySlot.BELOW_NAME);
         board.clearSlot(DisplaySlot.PLAYER_LIST);
 
-        if(board.getEntries() != null) {
+        for(String str : board.getEntries()) { board.resetScores(str); }
 
-            for(String str : board.getEntries()) { board.resetScores(str); }
-        }
+        for(Objective objs : board.getObjectives()) { board.getObjective(objs.getName()).unregister(); }
 
-        if(board.getObjectives() != null) {
-
-            for(Objective objs : board.getObjectives()) { board.getObjective(objs.getName()).unregister(); }
-        }
-
-        if(board.getTeams() != null) {
-
-            for(Team teams : board.getTeams()) board.getTeam(teams.getName()).unregister();
-        }
+        for(Team teams : board.getTeams()) board.getTeam(teams.getName()).unregister();
     }
     // ~~~~ Méthode pour remettre à zéro un Scoreboard ~~~~ //
 
@@ -49,7 +40,7 @@ public class ScoreboardManager {
     // ~~~~ Partie Récupération et/ou Actualisation du Scoreboard ~~~~ //
     public static synchronized Scoreboard getScoreboard(Player p) {
 
-        Scoreboard board = null; // Variable "board" étant 'NULL par défaut, pour récupérer le scoreboard du Joueur
+        Scoreboard board; // Variable "board" étant 'NULL par défaut, pour récupérer le scoreboard du Joueur
 
         //Vérifie si le joueur ne contient aucun Scoreboard, on essaie de lui en créer un
         if(!scoreboardPlayers.containsKey(p.getUniqueId())) {
@@ -99,13 +90,13 @@ public class ScoreboardManager {
 
         try {
 
-            Scoreboard scoreboard = getScoreboard(p); // Essait de récupérer le Scoreboard du Joueur
+            Scoreboard scoreboard = getScoreboard(p); // Essaie de récupérer le Scoreboard du Joueur
 
-            if(reset == true) resetScoreBoard(scoreboard); //Si le paramètre 'reset' est vrai, on rafraichit le Scoreboard
+            if(reset) resetScoreBoard(scoreboard); //Si le paramètre 'reset' est vrai, on rafraichit le Scoreboard
 
             update(p, scoreboard);  //Actualise le Scoreboard du Joueur
 
-        } catch(Exception ignored) {} //S'il y a une exception, on ingore
+        } catch(Exception ignored) {} //S'il y a une exception, on ignore
 
             /* ------------------------------------------------ */
     }

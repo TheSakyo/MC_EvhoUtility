@@ -3,8 +3,6 @@ package fr.TheSakyo.EvhoUtility.PaperMC.nms.craftbukkit;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import fr.TheSakyo.EvhoUtility.ServerVersion;
-import fr.TheSakyo.EvhoUtility.PaperMC.PaperPlugin;
 import fr.TheSakyo.EvhoUtility.PaperMC.nms.NMSUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,13 +28,15 @@ public class NMSCraftPlayer {
 
     craftPlayerClass = NMSUtils.getCraftBukkitClass("entity.CraftPlayer"); // Initialise la 'class' en question
     craftPlayerGetHandle = craftPlayerClass.getMethod("getHandle"); // Initialise la méthode en question
-    playerConnectionField = craftPlayerGetHandle.getReturnType().getField("b"); // Initialise la variable en question
+    playerConnectionField = craftPlayerGetHandle.getReturnType().getField("c"); // Initialise la variable en question
 
-    // ⬇️ Initialise la bonne méthode d'envoi de paquets, en fonction de la version du Serveur ⬇️ //
+    /** // ⬇️ Initialise la bonne méthode d'envoi de paquets, en fonction de la version du Serveur ⬇️ //
     if(PaperPlugin.getServerVersion().isOlderThanOrEqual(ServerVersion.VERSION_1_17_1)) { sendPacketMethod = playerConnectionField.getType().getMethod("sendPacket", Packet.class); }
     else { sendPacketMethod = playerConnectionField.getType().getMethod("a", Packet.class); }
-    // ⬆️ Initialise la bonne méthode d'envoi de paquets, en fonction de la version du Serveur ⬆️ //
+    // ⬆️ Initialise la bonne méthode d'envoi de paquets, en fonction de la version du Serveur ⬆️ // **/
 
+    // Initialise la méthode d'envoi de paquets
+    sendPacketMethod = playerConnectionField.getType().getMethod("a", Packet.class);
   }
 
                             /* ------------------------------------------------------------------ */
@@ -70,25 +70,25 @@ public class NMSCraftPlayer {
 
 
   /**
-   * Envoit un paquet pour un Joueur
+   * Envoie un paquet pour un Joueur
    *
    * @param player Le Joueur en question qui recevra le paquet
    * @param packet Le {@link Packet Paquet} à envoyer
    *
    */
-  public static void sendPacket(Player player, Packet packet) { sendPacket(getPlayerConnection(player), packet); }
+  public static void sendPacket(Player player, Packet<?> packet) { sendPacket(getPlayerConnection(player), packet); }
 
   /**
-   * Envoit un paquet pour un Joueur
+   * Envoie un paquet pour un Joueur
    *
    * @param playerConnection La {@link ServerGamePacketListenerImpl Connection du joueur} en question qui recevra le paquet
    * @param packet Le {@link Packet Paquet} à envoyer
    *
    */
-  public static void sendPacket(ServerGamePacketListenerImpl playerConnection, Packet packet) {
+  public static void sendPacket(ServerGamePacketListenerImpl playerConnection, Packet<?> packet) {
 
     try { sendPacketMethod.invoke(playerConnection, packet); }
-    catch(Exception e) { e.printStackTrace(); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
 

@@ -92,6 +92,5 @@ public class ModuleAttackFrequency extends Module {
 
             if(fromWorld.getUID() != toWorld.getUID()) livingEntity.setMaximumNoDamageTicks(isEnabled(toWorld) ? mobDelay : DEFAULT_DELAY);
         }
-        return;
     }
 }

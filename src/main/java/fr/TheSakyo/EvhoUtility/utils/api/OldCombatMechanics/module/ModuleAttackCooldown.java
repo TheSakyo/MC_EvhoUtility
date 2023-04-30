@@ -105,7 +105,7 @@ public class ModuleAttackCooldown extends Module {
         /**
          * Renvoie la version du mode PvP.
          *
-         * @retrun La Version du mode PvP
+         * @return La Version du mode PvP
          */
         public String getName() { return name; }
 

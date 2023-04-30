@@ -2,6 +2,7 @@ package fr.TheSakyo.EvhoUtility.commands.weathers;
 
 import java.util.*;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,27 +13,26 @@ import org.bukkit.scheduler.BukkitTask;
 import fr.TheSakyo.EvhoUtility.UtilityMain;
 import fr.TheSakyo.EvhoUtility.runnable.pweathers.WeathersRainPlayer;
 import fr.TheSakyo.EvhoUtility.runnable.pweathers.WeathersSunPlayer;
-import org.bukkit.ChatColor;
 
 public class PweatherCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public PweatherCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
 	
 	// Variable Ticks (int) pour définir une boucle pour changer la météo du joueur //
 	
-	public Map<UUID, BukkitTask> SunRun = new HashMap<UUID, BukkitTask>();
+	public Map<UUID, BukkitTask> SunRun = new HashMap<>();
 	
-	public Map<UUID, BukkitTask> RainRun = new HashMap<UUID, BukkitTask>();
+	public Map<UUID, BukkitTask> RainRun = new HashMap<>();
 	
 	// Variable Ticks (int) pour définir une boucle pour changer la météo du joueur //
 	
 	
 	//Variable montrant les différents arguments possibles pour la commande
-	String weathers = ChatColor.GREEN + "sun" + ChatColor.RED + "/" + ChatColor.GREEN + "rain" + ChatColor.RED + "/" + ChatColor.YELLOW + "reset";
+	String weathers = ChatFormatting.GREEN + "sun" + ChatFormatting.RED + "/" + ChatFormatting.GREEN + "rain" + ChatFormatting.RED + "/" + ChatFormatting.YELLOW + "reset";
 	
 	
 	/*****************************************************/
@@ -49,19 +49,19 @@ public class PweatherCommand implements CommandExecutor {
 				
 				if (args.length == 0) {
 					
-					p.sendMessage(main.prefix + ChatColor.RED + "Veuillez essayer /pweather avec les arguments suivant :");
+					p.sendMessage(main.prefix + ChatFormatting.RED + "Veuillez essayer /pweather avec les arguments suivant :");
 					sender.sendMessage(" ");
-				    sender.sendMessage(ChatColor.WHITE + "(" + weathers + ChatColor.WHITE + ")");
+				    sender.sendMessage(ChatFormatting.WHITE + "(" + weathers + ChatFormatting.WHITE + ")");
 					
 					if(p.hasPermission("evhoutility.pweather.other")) {
+
 						p.sendMessage(" ");
-						p.sendMessage(main.prefix + ChatColor.RED + "Vous pouvez également préciser le joueur en second argument !");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Vous pouvez également préciser le joueur en second argument !");
 					}
 					
-				} else if(args.length != 0) {
+				} else {
 					
-					if(args.length == 1) { SetPlayerWeather(p, null, args[0]); }
-					
+					if(args.length == 1) SetPlayerWeather(p, null, args[0]);
 					else if(args.length == 2) {
 						
 						if(p.hasPermission("evhoutility.pweather.other")) {
@@ -69,64 +69,43 @@ public class PweatherCommand implements CommandExecutor {
 							if(Bukkit.getServer().getPlayer(args[1]) != null) {
 								
 								Player target = Bukkit.getServer().getPlayer(args[1]);
-								
 								SetPlayerWeather(p, target, args[0]);
 							
-							} else {
-								
-								p.sendMessage(main.prefix + ChatColor.RED + "Le joueur est introuvable !");
-							}
-							
-						} else {
-							
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises pour attribuer la météo à un joueur !");
-						}
+							} else p.sendMessage(main.prefix + ChatFormatting.RED + "Le joueur est introuvable !");
+
+						} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises pour attribuer la météo à un joueur !");
 						
 					} else {
 						
-						if(p.hasPermission("evhoutility.pweather.other")) {
-							
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas entrer plus de deux arguments !");
-						
-						} else { p.performCommand("pweather"); }
+						if(p.hasPermission("evhoutility.pweather.other")) p.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas entrer plus de deux arguments !");
+						else p.performCommand("pweather");
 					}
 				}
 				
-			} else {
-				
-				p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !");
-			}
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 		
 		} else {
 			
 			if(args.length == 0 || args.length == 1) {
 				
-				sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour attribuer votre propre météo !");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour attribuer votre propre météo !");
 				sender.sendMessage(" ");
-			    sender.sendMessage(main.prefix + ChatColor.GOLD.toString() + ChatColor.UNDERLINE.toString() + "INFO : " + ChatColor.RED + "Vous pouvez sinon préciser le joueur au niveau du second argument !");
+			    sender.sendMessage(main.prefix + ChatFormatting.GOLD.toString() + ChatFormatting.UNDERLINE.toString() + "INFO : " + ChatFormatting.RED + "Vous pouvez sinon préciser le joueur au niveau du second argument !");
 			    sender.sendMessage(" ");
-			    sender.sendMessage(main.prefix + ChatColor.RED + "Veuillez dans ce cas là marquer au niveau du premier argument un des arguments suivants :");
+			    sender.sendMessage(main.prefix + ChatFormatting.RED + "Veuillez dans ce cas là marquer au niveau du premier argument un des arguments suivants :");
 			    sender.sendMessage(" ");
-			    sender.sendMessage(ChatColor.WHITE + "(" + weathers + ChatColor.WHITE + ")");
+			    sender.sendMessage(ChatFormatting.WHITE + "(" + weathers + ChatFormatting.WHITE + ")");
 			
 			} else if(args.length == 2) { 
 				
 				if(Bukkit.getServer().getPlayer(args[1]) != null) {
 					
 					Player target = Bukkit.getServer().getPlayer(args[1]);
-					
 					SetPlayerWeather(sender, target, args[0]);
 				
-				} else {
-					
-					sender.sendMessage(main.prefix + ChatColor.RED + "Le joueur est introuvable !");
-				}
+				} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le joueur est introuvable !");
 				
-			} else {
-				
-				sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas entrer plus de deux arguments !");
-			}
-
+			} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas entrer plus de deux arguments !");
 		}
 		
 		return false;
@@ -143,17 +122,16 @@ public class PweatherCommand implements CommandExecutor {
 	
 	// Méthode rapide, pour remettre à 0 la boucle de la météo précis (en cas de changements de météo) //
 	
-	private void CheckRunnableWeathers(UUID uuid, List<Map<UUID, BukkitTask>> listmap) {
+	private void CheckRunnableWeathers(UUID uuid, List<Map<UUID, BukkitTask>> listMap) {
 		
-		if(listmap == null || listmap != null && listmap.isEmpty()) { return; } 
-		
-		else { 
+		if(listMap != null && !listMap.isEmpty()) {
 			
-			for(Map<UUID, BukkitTask> maps : listmap) {
+			for(Map<UUID, BukkitTask> maps : listMap) {
 			  
-				if(maps.containsKey(uuid)) {
+				if(maps.containsKey(uuid) && !maps.get(uuid).isCancelled()) {
 					
-				  if(!maps.get(uuid).isCancelled()) { maps.get(uuid).cancel(); maps.remove(uuid); }
+				  maps.get(uuid).cancel();
+				  maps.remove(uuid);
 			    }
 			}
 		}
@@ -161,8 +139,7 @@ public class PweatherCommand implements CommandExecutor {
 
 	// Méthode rapide, pour remettre à 0 la boucle de la météo précis (en cas de changements de météo) //
 	
-	
-	
+
 	
 	
 	
@@ -170,7 +147,7 @@ public class PweatherCommand implements CommandExecutor {
 	
 	private void SetPlayerWeather(CommandSender sender, Player target, String args) {
 		
-		List<Map<UUID, BukkitTask>> listmap = Arrays.asList(SunRun, RainRun);
+		List<Map<UUID, BukkitTask>> listMap = Arrays.asList(SunRun, RainRun);
 		
 		if(args == null) {
 			
@@ -178,8 +155,10 @@ public class PweatherCommand implements CommandExecutor {
 			main.console.sendMessage(main.errorArgs);
 			return;
 		}
-		
-		
+
+		/********************************************************************/
+		/********************************************************************/
+
 		if(args.equalsIgnoreCase("sun")) {
 			
 			if(target != null) {
@@ -191,26 +170,29 @@ public class PweatherCommand implements CommandExecutor {
 
 				} else {
 					
-					if(!UtilityMain.playerweathers.contains(target.getUniqueId())) UtilityMain.playerweathers.add(target.getUniqueId());
-					
+					if(!UtilityMain.playerWeathers.contains(target.getUniqueId())) UtilityMain.playerWeathers.add(target.getUniqueId());
+
+					/**************************************************/
+
 					if(sender instanceof Player p) {
 
-						p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo avec un beau temps");
-						target.sendMessage(main.prefix + ChatColor.GOLD + p.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre météo étant le beau temps");
+						p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo avec un beau temps");
+						target.sendMessage(main.prefix + ChatFormatting.GOLD + p.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre météo étant le beau temps");
 						
 					} else { 
 						
-						sender.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo avec un beau temps");
-						target.sendMessage(main.prefix + ChatColor.GOLD + "La Console" + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre météo étant le beau temps");
+						sender.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo avec un beau temps");
+						target.sendMessage(main.prefix + ChatFormatting.GOLD + "La Console" + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre météo étant le beau temps");
 					}
-		
-					resetWeather(target, listmap);
-					
+
+					/**************************************************/
+
+					resetWeather(target, listMap);
 					SunRun.put(target.getUniqueId(), new WeathersSunPlayer(target.getUniqueId()).runTaskTimerAsynchronously(main, 0L, 0L));
 					
 				}
 			
-			} else if(target == null) {
+			} else {
 				
 				if(sender == null) {
 					
@@ -221,12 +203,12 @@ public class PweatherCommand implements CommandExecutor {
 					
 					if(sender instanceof Player p) {
 
-						if(!UtilityMain.playerweathers.contains(p.getUniqueId())) UtilityMain.playerweathers.add(p.getUniqueId());
-						
-						p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour vous la météo étant un beau temps");
-						
-						resetWeather(p, listmap);
-						
+						if(!UtilityMain.playerWeathers.contains(p.getUniqueId())) UtilityMain.playerWeathers.add(p.getUniqueId());
+
+						/**********************************/
+
+						p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour vous la météo étant un beau temps");
+						resetWeather(p, listMap);
 						SunRun.put(p.getUniqueId(), new WeathersSunPlayer(p.getUniqueId()).runTaskTimerAsynchronously(main, 0L, 0L));
 				
 					} else {
@@ -248,25 +230,28 @@ public class PweatherCommand implements CommandExecutor {
 
 				} else { 
 					
-					if(!UtilityMain.playerweathers.contains(target.getUniqueId())) UtilityMain.playerweathers.add(target.getUniqueId());
-					
+					if(!UtilityMain.playerWeathers.contains(target.getUniqueId())) UtilityMain.playerWeathers.add(target.getUniqueId());
+
+					/**************************************************/
+
 					if(sender instanceof Player p) {
 
-						p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo avec un temps pluvieux");
-						target.sendMessage(main.prefix + ChatColor.GOLD + p.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre météo étant un temps pluvieux");
+						p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo avec un temps pluvieux");
+						target.sendMessage(main.prefix + ChatFormatting.GOLD + p.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre météo étant un temps pluvieux");
 						
 					} else { 
 						
-						sender.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo avec un temps pluvieux");
-						target.sendMessage(main.prefix + ChatColor.GOLD + "La Console" + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre météo étant un temps pluvieux");
+						sender.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo avec un temps pluvieux");
+						target.sendMessage(main.prefix + ChatFormatting.GOLD + "La Console" + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre météo étant un temps pluvieux");
 					}
-					
-					resetWeather(target, listmap);
-					
+
+					/**************************************************/
+
+					resetWeather(target, listMap);
 					RainRun.put(target.getUniqueId(), new WeathersRainPlayer(target.getUniqueId()).runTaskTimerAsynchronously(main, 0L, 0L));
 				}
 			
-			} else if(target == null) {
+			} else {
 				
 				if(sender == null) {
 					
@@ -277,12 +262,12 @@ public class PweatherCommand implements CommandExecutor {
 					
 					if(sender instanceof Player p) {
 
-						if(!UtilityMain.playerweathers.contains(p.getUniqueId())) UtilityMain.playerweathers.add(p.getUniqueId());
-						
-						p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour vous la météo étant un temps pluvieux");
-						
-						resetWeather(p, listmap);
-						
+						if(!UtilityMain.playerWeathers.contains(p.getUniqueId())) UtilityMain.playerWeathers.add(p.getUniqueId());
+
+						/**********************************/
+
+						p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour vous la météo étant un temps pluvieux");
+						resetWeather(p, listMap);
 						RainRun.put(p.getUniqueId(), new WeathersRainPlayer(p.getUniqueId()).runTaskTimerAsynchronously(main, 0L, 0L));
 					
 					} else {
@@ -302,19 +287,12 @@ public class PweatherCommand implements CommandExecutor {
 					main.console.sendMessage(main.senderNull);
 					main.console.sendMessage(main.errorSender);
 
-				} else { 
-					
-					if(sender instanceof Player p) {
+				} else {
 
-						p.sendMessage(main.prefix + ChatColor.RED + "Impossible de définir au joueur la météo pluvieux et orageux ; Essayez /pweather rain !");
-						
-					} else { 
-						
-						sender.sendMessage(main.prefix + ChatColor.RED + "Impossible de définir au joueur la météo pluvieux et orageux ; Essayez /pweather rain !");
-					}
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Impossible de définir au joueur la météo pluvieux et orageux ; Essayez /pweather rain !");
 				}
 			
-			} else if(target == null) {
+			} else {
 					
 				if(sender == null) {
 					
@@ -325,7 +303,7 @@ public class PweatherCommand implements CommandExecutor {
 					
 					if(sender instanceof Player p) {
 
-						p.sendMessage(main.prefix + ChatColor.RED + "Impossible de vous définir le temps pluvieux et orageux ; Essayez /pweather rain !");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Impossible de vous définir le temps pluvieux et orageux ; Essayez /pweather rain !");
 					
 					} else {
 						
@@ -347,38 +325,32 @@ public class PweatherCommand implements CommandExecutor {
 
 				} else { 
 					
-					if(!UtilityMain.playerweathers.contains(target.getUniqueId())) {
-						
-						if(sender instanceof Player p) {
+					if(!UtilityMain.playerWeathers.contains(target.getUniqueId())) {
 
-							p.sendMessage(main.prefix + ChatColor.RED + "La météo de " + ChatColor.GOLD + target.getName() + ChatColor.RED + " est déja par défaut");
-							
-						} else {
-							
-							sender.sendMessage(main.prefix + ChatColor.RED + "La météo de " + ChatColor.GOLD + target.getName() + ChatColor.RED + " est déja par défaut");
-						}
+						sender.sendMessage(main.prefix + ChatFormatting.RED + "La météo de " + ChatFormatting.GOLD + target.getName() + ChatFormatting.RED + " est déja par défaut");
 		
 					} else {
 						
-						UtilityMain.playerweathers.remove(target.getUniqueId());
-						
-						resetWeather(target, listmap);
-						
+						UtilityMain.playerWeathers.remove(target.getUniqueId());
+						resetWeather(target, listMap);
+
+						/**********************************/
+
 						if(sender instanceof Player p) {
 
-							p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo par défaut");
-							target.sendMessage(main.prefix + ChatColor.GOLD + p.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre temps étant la météo par défaut");
+							p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo par défaut");
+							target.sendMessage(main.prefix + ChatFormatting.GOLD + p.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre temps étant la météo par défaut");
 							
 						} else { 
 							
-							sender.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour " + ChatColor.GOLD + target.getName() + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " la météo par défaut");
-							target.sendMessage(main.prefix + ChatColor.GOLD + "La Console" + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + " a définit votre temps étant la météo par défaut");
+							sender.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " la météo par défaut");
+							target.sendMessage(main.prefix + ChatFormatting.GOLD + "La Console" + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + " a définit votre temps étant la météo par défaut");
 						}
 					}
 				
 				}
 				
-			} else if(target == null) {
+			} else {
 				
 				if(sender == null) {
 					
@@ -389,17 +361,18 @@ public class PweatherCommand implements CommandExecutor {
 					
 					if(sender instanceof Player p) {
 
-						if(!UtilityMain.playerweathers.contains(p.getUniqueId())) {
+						if(!UtilityMain.playerWeathers.contains(p.getUniqueId())) {
 							
-							p.sendMessage(main.prefix + ChatColor.RED + "Votre météo est déja par défaut");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Votre météo est déja par défaut");
 							
 						} else {
 							
-						    UtilityMain.playerweathers.remove(p.getUniqueId());
-							
-							resetWeather(p, listmap);
-							
-							p.sendMessage(main.prefix + ChatColor.GRAY.toString() + ChatColor.ITALIC.toString() + "Vous avez définit pour vous la météo par défaut");
+						    UtilityMain.playerWeathers.remove(p.getUniqueId());
+							resetWeather(p, listMap);
+
+							/**********************************/
+
+							p.sendMessage(main.prefix + ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString() + "Vous avez définit pour vous la météo par défaut");
 							
 						}
 					
@@ -413,42 +386,31 @@ public class PweatherCommand implements CommandExecutor {
 			}
 		
 		} else {
-			
-			if(target != null) {
-				
-				if(sender == null) {
-					
-					main.console.sendMessage(main.senderNull);
-					main.console.sendMessage(main.errorSender);
+
+			if(sender == null) {
+
+				main.console.sendMessage(main.senderNull);
+				main.console.sendMessage(main.errorSender);
+				return;
+
+			} else {
+
+				if(!(sender instanceof Player) && target == null) {
+
+					sender.sendMessage(main.targetNull);
+					sender.sendMessage(main.errorTarget);
 					return;
-				} 
-				
-			} else if(target == null) {
-				
-				if(sender == null) {
-					
-					main.console.sendMessage(main.senderNull);
-					main.console.sendMessage(main.errorSender);
-					return;
-					
-				} else { 
-					
-					if(!(sender instanceof Player)){
-						
-						sender.sendMessage(main.targetNull);
-						sender.sendMessage(main.errorTarget);
-						return;
-					}	
 				}
 			}
-				
-			if(sender instanceof Player p) { p.performCommand("pweather"); }
-			
+
+			/******************************************/
+
+			if(sender instanceof Player p) p.performCommand("pweather");
 			else {
 				
-				sender.sendMessage(main.prefix + ChatColor.RED + "Veuillez essayez au niveau du premier argument les arguments suivants :"); 
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Veuillez essayez au niveau du premier argument les arguments suivants :"); 
 				sender.sendMessage(" ");
-			    sender.sendMessage(ChatColor.WHITE + "(" + weathers + ChatColor.WHITE + ")");
+			    sender.sendMessage(ChatFormatting.WHITE + "(" + weathers + ChatFormatting.WHITE + ")");
 			}
 			
 		}
@@ -462,10 +424,9 @@ public class PweatherCommand implements CommandExecutor {
 	
 	// Méthode rapide, "reset" la météo du monde au joueur ou a un joueur spécifique //
 	
-	private void resetWeather(Player p, List<Map<UUID, BukkitTask>> listmap) {
+	private void resetWeather(Player p, List<Map<UUID, BukkitTask>> listMap) {
 		
-		CheckRunnableWeathers(p.getUniqueId(), listmap);
-
+		CheckRunnableWeathers(p.getUniqueId(), listMap);
 		p.resetPlayerWeather();
 	}
 

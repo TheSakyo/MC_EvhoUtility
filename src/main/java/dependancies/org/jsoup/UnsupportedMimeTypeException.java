@@ -3,7 +3,7 @@ package dependancies.org.jsoup;
 import java.io.IOException;
 
 /**
- * Signals that a HTTP response returned a mime type that is not supported.
+ * Signals that an HTTP response returned a mime type that is not supported.
  */
 public class UnsupportedMimeTypeException extends IOException {
     private final String mimeType;

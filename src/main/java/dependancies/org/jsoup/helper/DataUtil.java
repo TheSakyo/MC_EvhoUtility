@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -37,8 +38,8 @@ import java.util.zip.GZIPInputStream;
  *
  */
 public final class DataUtil {
-    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:[\"'])?([^\\s,;\"']*)");
-    public static final Charset UTF_8 = Charset.forName("UTF-8"); // Don't use StandardCharsets, as those only appear in Android API 19, and we target 10.
+    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*[\"']?([^\\s,;\"']*)");
+    public static final Charset UTF_8 = StandardCharsets.UTF_8; // Don't use StandardCharsets, as those only appear in Android API 19, and we target 10.
     static final String defaultCharsetName = UTF_8.name(); // used if not found in header or meta charset
     private static final int firstReadBufferSize = 1024 * 5;
     static final int bufferSize = 1024 * 32;
@@ -237,7 +238,7 @@ public final class DataUtil {
     }
 
     private @Nullable static String validateCharset(@Nullable String cs) {
-        if (cs == null || cs.length() == 0) return null;
+        if (cs == null || cs.isEmpty()) return null;
         cs = cs.trim().replaceAll("[\"']", "");
         try {
             if (Charset.isSupported(cs)) return cs;
@@ -262,12 +263,11 @@ public final class DataUtil {
     }
 
     private static @Nullable BomCharset detectCharsetFromBom(final ByteBuffer byteData) {
-    	final Buffer buffer = byteData; // .mark and rewind used to return Buffer, now ByteBuffer, so cast for backward compat
-        buffer.mark();
+        ((Buffer) byteData).mark();
         byte[] bom = new byte[4];
         if (byteData.remaining() >= bom.length) {
             byteData.get(bom);
-            buffer.rewind();
+            ((Buffer) byteData).rewind();
         }
         if (bom[0] == 0x00 && bom[1] == 0x00 && bom[2] == (byte) 0xFE && bom[3] == (byte) 0xFF || // BE
             bom[0] == (byte) 0xFF && bom[1] == (byte) 0xFE && bom[2] == 0x00 && bom[3] == 0x00) { // LE
@@ -282,13 +282,5 @@ public final class DataUtil {
         return null;
     }
 
-    private static class BomCharset {
-        private final String charset;
-        private final boolean offset;
-
-        public BomCharset(String charset, boolean offset) {
-            this.charset = charset;
-            this.offset = offset;
-        }
-    }
+    private record BomCharset(String charset, boolean offset) {}
 }

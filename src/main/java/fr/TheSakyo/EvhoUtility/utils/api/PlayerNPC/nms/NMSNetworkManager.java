@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 
 public class NMSNetworkManager {
 
-  private static Class networkManagerClass; // Variable récupérant la 'class' "networkManager"
   private static Field networkManagerField; // Variable récupérant une variable utile depuis de la 'class' en question
+
   private static Field channel; // Variable récupérant le canal de connexion
 
                             /* ------------------------------------------------------------------ */
@@ -27,16 +27,24 @@ public class NMSNetworkManager {
   public static void load() throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException {
 
     ServerVersion serverVersion = PaperPlugin.getServerVersion(); // Récupère la version du Serveur
-    networkManagerClass = NMSUtils.getMinecraftClass("network.NetworkManager"); // Initialise la 'class' en question
 
-    // Si la version du Serveur est inférieure ou égale à la version "1.18.1", on récupère la bonne class "k" du NMS pour récupérer la 'gestion de channel'
+    // Variable récupérant la 'class' "networkManager"
+    Class<?> networkManagerClass = NMSUtils.getMinecraftClass("network.NetworkManager"); // Initialise la 'class' en question
+
+      /** // Si la version du Serveur est inférieure ou égale à la version "1.18.1", on récupère la bonne class "k" du NMS pour récupérer la 'gestion de channel'
     if(serverVersion.isOlderThanOrEqual(ServerVersion.VERSION_1_18_1)) channel = networkManagerClass.getField("k");
-    else channel = networkManagerClass.getField("m"); // Sinon, on récupère la bonne class "m" du NMS pour récupérer la 'gestion de channel'
-    channel.setAccessible(true); // Définit cette class accésible
+    else channel = networkManagerClass.getField("m"); // Sinon, on récupère la bonne class "m" du NMS pour récupérer la 'gestion de channel' **/
+
+    //On récupère la class "m" pour récupérer la 'gestion de channel'
+    channel = networkManagerClass.getField("m");
+    channel.setAccessible(true); // Définit cette class accessible
 
     // Si la version du Serveur est inférieure ou égale à la version "1.18.2", on récupère la bonne variable "a" du NMS pour récupérer la 'gestion de channel'
-    if(serverVersion.isOlderThanOrEqual(ServerVersion.VERSION_1_18_2)) networkManagerField = ServerGamePacketListenerImpl.class.getField("a");
-    else networkManagerField = ServerGamePacketListenerImpl.class.getField("b"); // Sinon, on récupère la bonne variable "b" du NMS pour récupérer la 'gestion de channel'
+    /** if(serverVersion.isOlderThanOrEqual(ServerVersion.VERSION_1_18_2)) networkManagerField = ServerGamePacketListenerImpl.class.getField("a");
+    else networkManagerField = ServerGamePacketListenerImpl.class.getField("b"); // Sinon, on récupère la bonne variable "b" du NMS pour récupérer la 'gestion de channel' **/
+
+    //On récupère la variable "b" pour récupérer la 'gestion de channel'
+    networkManagerField = ServerGamePacketListenerImpl.class.getField("h");
   }
 
                             /* ------------------------------------------------------------------ */
@@ -57,7 +65,7 @@ public class NMSNetworkManager {
     try { return (Connection)networkManagerField.get(playerConnection); }
     catch(Exception e) {
 
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
     // ⬆️ On essaie de retourner la connexion NMS en question à partir de la connexion de l'entité du Joueur, sinon une exception est envoyée ⬆️ //

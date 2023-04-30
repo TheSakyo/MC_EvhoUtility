@@ -18,9 +18,8 @@ public class MathHelper {
         double realMin = Math.min(min, max);
         double realMax = Math.max(min, max);
 
-        if(value < realMin){ value = realMin; }
-
-        if(value > realMax){ value = realMax; }
+        if(value < realMin) { value = realMin; }
+        if(value > realMax) { value = realMax; }
 
         return value;
     }

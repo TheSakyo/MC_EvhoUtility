@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  A HTML Document.
@@ -75,10 +76,8 @@ public class Document extends Element {
      @see Connection#newRequest()
      */
     public Connection connection() {
-        if (connection == null)
-            return Jsoup.newSession();
-        else
-            return connection;
+
+        return Objects.requireNonNullElseGet(connection, Jsoup::newSession);
     }
 
     /**

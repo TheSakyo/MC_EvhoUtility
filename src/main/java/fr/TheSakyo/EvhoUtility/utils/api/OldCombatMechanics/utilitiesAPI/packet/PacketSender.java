@@ -31,12 +31,12 @@ public class PacketSender {
 
     }
 
-    private PacketSender(){}
+    private PacketSender() {}
 
     /**
      * @return une instance de {@link PacketSender}
      */
-    public static PacketSender getInstance(){
+    public static PacketSender getInstance() {
         return instance;
     }
 
@@ -46,7 +46,7 @@ public class PacketSender {
      * @param packet {@link ImmutablePacket} à envoyer
      * @param player Le joueur à qui l'envoyer
      */
-    public void sendPacket(ImmutablePacket packet, Player player){
+    public void sendPacket(ImmutablePacket packet, Player player) {
         Reflector.invokeMethod(SEND_PACKET, getConnection(player), packet.getNmsPacket());
     }
 
@@ -56,7 +56,7 @@ public class PacketSender {
      * @param player Le joueur pour lequel il faut obtenir la connexion
      * @return La Connexion du Joueur
      */
-    public Object getConnection(Player player){
+    public Object getConnection(Player player) {
         Object handle = Reflector.invokeMethod(GET_HANDLE, player);
 
         return Reflector.getFieldValue(PLAYER_CONNECTION_FIELD, handle);

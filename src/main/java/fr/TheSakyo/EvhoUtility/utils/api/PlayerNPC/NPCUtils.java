@@ -9,12 +9,12 @@ import fr.TheSakyo.EvhoUtility.utils.api.PlayerNPC.nms.NMSNetworkManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.world.InteractionHand;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -67,7 +67,7 @@ public class NPCUtils implements Listener {
         this.plugin = plugin; // Initialise le plugin
 
         this.playerManager = new HashMap<>(); // Initialise le gestionnaire des joueurs pour les NPCs
-        this.globalNPCs = new HashMap<>(); // Initialise les différents NPCs Globaux
+        this.globalNPCs = new HashMap<>(); // Initialise tous les différents NPCs Globaux
         this.pluginManager = new HashMap<>(); // Initialise le gestionnaire de plugins pour les NPCs
         this.debug = false; // Initialise si on est en mode debug ou non
 
@@ -86,10 +86,8 @@ public class NPCUtils implements Listener {
      * Enregistre le gestionnaire de plugins pour les NPCs à partir du Plugin précisé.
      *
      * @param plugin Le plugin en question
-     *
-     * @return Un gestionnaire de plugins
      */
-    public PluginManager registerPlugin(@Nonnull Plugin plugin) {
+    public void registerPlugin(@Nonnull Plugin plugin) {
 
         // ⬇️ Si le plugin est null ou que le gestionnaire de plugins ne contient pas le plugin récupéré, on renvoie une erreur ⬇️ //
         Validate.notNull(plugin, "Impossible d'enregistrer le gestionnaire de plugins à partir d'un plugin nul.");
@@ -99,9 +97,8 @@ public class NPCUtils implements Listener {
         PluginManager pluginManager = new PluginManager(plugin, this); // Enregistre le plugin actuel dans le gestionnaire de plugins pour les NPCs
         this.pluginManager.put(plugin, pluginManager); // Ajoute le plugin dans le gestionnaire de plugins
 
-        // Envoie un message à la consoe disant que la librairie NPC a bien été enregistré
-        Bukkit.getServer().getConsoleSender().sendMessage(this.plugin.prefix  + ChatColor.GREEN + "NPCUtils a bien été enregistré !");
-        return pluginManager; // On retourne le gestionnaire de plugins en question
+        // Envoie un message à la console disant que la librairie NPC a bien été enregistré
+        Bukkit.getServer().getConsoleSender().sendMessage(this.plugin.prefix  + ChatFormatting.GREEN + "NPCUtils a bien été enregistré !");
     }
 
     /**
@@ -122,8 +119,8 @@ public class NPCUtils implements Listener {
 
         onDisable(plugin); // Désactive l'API
 
-        // Envoie un message à la consoe disant que la librairie NPC a bien été enregistré
-        Bukkit.getServer().getConsoleSender().sendMessage(this.plugin.prefix  + ChatColor.GREEN + "NPCUtils a bien été désenregistré !");
+        // Envoie un message à la console disant que la librairie NPC a bien été enregistré
+        Bukkit.getServer().getConsoleSender().sendMessage(this.plugin.prefix  + ChatFormatting.GREEN + "NPCUtils a bien été désenregistré !");
     }
 
     /**
@@ -146,7 +143,7 @@ public class NPCUtils implements Listener {
      *
      * @return Un gestionnaire de plugins
      */
-    public PluginManager getPluginManager(@Nonnull Plugin plugin){
+    public PluginManager getPluginManager(@Nonnull Plugin plugin) {
 
         // ⬇️ Si le plugin est null ou que le gestionnaire de plugins contient le plugin récupéré, on renvoie une erreur ⬇️ //
         Validate.notNull(plugin, "Impossible d'obtenir le gestionnaire de plugin à partir d'un plugin nul.");
@@ -175,7 +172,7 @@ public class NPCUtils implements Listener {
      */
     public NPCPersonal generatePersonalNPC(@Nonnull Player player, @Nonnull Plugin plugin, @Nonnull String code, @Nonnull Location location) {
 
-        // ⬇️ Vérifie si les différents paramètres ne sont pas null ainsi on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬇️ //
+        // ⬇️ Vérifie si les différents paramètres ne sont pas null ainsi, on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬇️ //
         Validate.notNull(plugin, "Vous ne pouvez pas créer un NPC avec un plugin nul.");
         Validate.notNull(player, "Vous ne pouvez pas créer un NPC avec un joueur nul.");
         Validate.notNull(code, "Vous ne pouvez pas créer un NPC avec un code nul.");
@@ -183,7 +180,7 @@ public class NPCUtils implements Listener {
         Validate.notNull(location.getWorld(), "Vous ne pouvez pas créer de NPC avec un monde nul.");
         Validate.isTrue(!code.toLowerCase().startsWith("global_"), "Vous ne pouvez pas créer de NPC avec un tag NPCGlobal.");
         Validate.isTrue(isRegistered(plugin), "Ce plugin n'est pas enregistré sur NPCUtils.");
-        // ⬆️ Vérifie si les différents paramètres ne sont pas null ainsi on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬆️ //
+        // ⬆️ Vérifie si les différents paramètres ne sont pas null ainsi, on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬆️ //
 
         return generatePlayerPersonalNPC(player, plugin, a(plugin, code), location); // Retourne une instance de NPC Personnel
     }
@@ -284,7 +281,7 @@ public class NPCUtils implements Listener {
 
 
     /**
-     * Vérifie si l'identification du NPC en question correspond à un {@link NPCPersonal NPC Personnel} assoocié du Joueur précisé.
+     * Vérifie si l'identification du NPC en question correspond à un {@link NPCPersonal NPC Personnel} associé du Joueur précisé.
      *
      * @param player Le Joueur associé au NPC
      * @param plugin Le Plugin en question
@@ -304,7 +301,7 @@ public class NPCUtils implements Listener {
     }
 
     /**
-     * Supprime un {@link NPCPersonal NPC Personnel} assoocié du Joueur précisé.
+     * Supprime un {@link NPCPersonal NPC Personnel} associé du Joueur précisé.
      *
      * @param player Le Joueur associé au NPC
      * @param plugin Le Plugin en question
@@ -353,14 +350,14 @@ public class NPCUtils implements Listener {
      */
     public NPCGlobal generateGlobalNPC(@Nonnull Plugin plugin, @Nonnull String code, @Nonnull NPCGlobal.Visibility visibility, @Nullable Predicate<Player> visibilityRequirement, @Nonnull Location location) {
 
-        // ⬇️ Vérifie si les différents paramètres ne sont pas null ainsi on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬇️ //
+        // ⬇️ Vérifie si les différents paramètres ne sont pas null ainsi, on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬇️ //
         Validate.notNull(plugin, "Vous ne pouvez pas créer un NPC avec un plugin nul.");
         Validate.notNull(code, "Vous ne pouvez pas créer un NPC avec un joueur nul.");
         Validate.notNull(visibility, "Vous ne pouvez pas créer un NPC avec une visibilité nulle.");
         Validate.notNull(location, "Vous ne pouvez pas créer un NPC avec une localisation nulle.");
         Validate.notNull(location.getWorld(), "Vous ne pouvez pas créer de NPC avec un monde nul.");
         Validate.isTrue(isRegistered(plugin), "Ce plugin n'est pas enregistré sur NPCUtils.");
-        // ⬆️ Vérifie si les différents paramètres ne sont pas null ainsi on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬆️ //
+        // ⬆️ Vérifie si les différents paramètres ne sont pas null ainsi, on vérifie si le plugin est bien enregistrés par la librairie, sinon on renvoie des erreurs ⬆️ //
 
         return generatePlayerGlobalNPC(plugin, a(plugin, code), visibility, visibilityRequirement, location); // Retourne une instance de NPC Global
     }
@@ -486,11 +483,11 @@ public class NPCUtils implements Listener {
         Validate.notNull(npc, "Le NPC n'a pas été trouvé.");
 
         npc.destroy(); // On détruit le NPC
-        globalNPCs.remove(npc.getCode()); // On supprime le NPC en question de la liste des NPC Globlaux
+        globalNPCs.remove(npc.getCode()); // On supprime le NPC en question de la liste des NPC globaux
     }
 
     /**
-     * Supprime un {@link NPC} que se soit un {@link NPCPersonal NPC Personnel} ou un {@link NPCGlobal NPC Global}.
+     * Supprime un {@link NPC} qu'il soit un {@link NPCPersonal NPC Personnel} ou un {@link NPCGlobal NPC Global}.
      *
      * @param npc Le {@link NPC} à supprimer.
      */
@@ -507,21 +504,21 @@ public class NPCUtils implements Listener {
     }
 
     /**
-     * Définit si on active le mode de déboggage ou non.
+     * Définit si on active le mode de débogage ou non.
      *
-     * @param debug Doit-on activer le mode de déboggage ?
+     * @param debug Doit-on activer le mode de débogage ?
      */
     public void setDebug(boolean debug) {
 
-        // Si le mode de déboggaage est déjà égal au mode définit, on ne fait rien
+        // Si le mode de débogage est déjà égal au mode définit, on ne fait rien
         if(this.debug == debug) return;
 
-        this.debug = debug; // Définit le mode de déboggage
+        this.debug = debug; // Définit le mode de débogage
         saveConfig(); // Sauvegarde le fichier de configuration
     }
 
     /**
-     * Vérifie si le mode de déboggage est activé.
+     * Vérifie si le mode de débogage est activé.
      *
      * @return Une valeur Booléenne
      */
@@ -553,12 +550,12 @@ public class NPCUtils implements Listener {
 
         // On construit la chaîne le caractère
         String b = plugin.getName().toLowerCase() + ".";
-        if(code == null) return b; // Si le code d'identification est null on retourne la chaîne de caractère à moitié remplie
+        if(code == null) return b; // Si le code d'identification est null, on retourne la chaîne de caractère à moitié remplie
         return b + code; // Sinon, on retourne la chaîne de caractère demandé
     }
 
     /**
-     * Vérification de l'éxistance du fichier de configuration.
+     * Vérification de l'existence du fichier de configuration.
      *
      * @return Le fichier en question
      */
@@ -585,12 +582,12 @@ public class NPCUtils implements Listener {
      */
     public void loadConfig() {
 
-        File file = checkFileExists(); // On vérifie l'éxistance du fichier de configuration
+        File file = checkFileExists(); // On vérifie l'existence du fichier de configuration
         this.config = YamlConfiguration.loadConfiguration(file); // On recharge ce fichier
 
         HashMap<String, Object> defaults = new HashMap<>(); // On initialise la liste par défaut qui sera écrit dans le fichier de configuration
 
-        defaults.put("debug", this.debug); // On ajoute par défaut le déboggage en question
+        defaults.put("debug", this.debug); // On ajoute par défaut le débogage en question
 
         // On ajoute par défaut le nombre de tick de rotation de tête du NPC lors du suivi du regard d'une entité
         defaults.put("gazeUpdate.ticks", getPluginManager(plugin).updateGazeTicks);
@@ -618,7 +615,7 @@ public class NPCUtils implements Listener {
         }
         // ⬆️ Si la sauvegarde du fichier est activée, on essaie alors de sauvegarde le fichier, sinon, on renvoie une erreur ⬆️ //
 
-        this.debug = config.getBoolean("debug"); // On récupère le mode de déboggage dans le fichier de configuration pour définir le mode déboggage actuel
+        this.debug = config.getBoolean("debug"); // On récupère le mode de débogage dans le fichier de configuration pour définir le mode débogage actuel
 
         // On récupère les ticks pour la disparition du NPC dans le 'tablist' pour la définir sur la donnée associée enregistrée dans le fichier
         getPluginManager(plugin).ticksUntilTabListHide = config.getInt("tabListHide.ticks");
@@ -642,9 +639,9 @@ public class NPCUtils implements Listener {
     public void saveConfig() {
 
         if(config == null) return; // Si le fichier de configuration est null, on ne fait rien
-        File file = checkFileExists(); // On vérifie l'éxistance du fichier de configuration
+        File file = checkFileExists(); // On vérifie l'existence du fichier de configuration
 
-        config.set("debug", this.debug); // On sauvegarde le mode de déboggage actuel dans le fichier de configuration
+        config.set("debug", this.debug); // On sauvegarde le mode de débogage actuel dans le fichier de configuration
 
         // On sauvegarde les ticks de rotation de tête du NPC lors du suivi du regard d'une entité dans le fichier de configuration
         config.set("gazeUpdate.ticks", getPluginManager(plugin).updateGazeTicks);
@@ -697,7 +694,7 @@ public class NPCUtils implements Listener {
 
         // ⬇️ Essaie de sauvegarder les 'NPCs' persistant, si une exception s'oppose, on ignore ⬇️ //
         try { savePersistentNPCs(); }
-        catch(NoClassDefFoundError ignored){}
+        catch(NoClassDefFoundError ignored) {}
         // ⬆️ Essaie de sauvegarder les 'NPCs' persistant, si une exception s'oppose, on ignore ⬆️ //
 
                                      /* --------------------------------------- */
@@ -711,7 +708,7 @@ public class NPCUtils implements Listener {
      *
      * @return Le Plugin Principal
      */
-    private UtilityMain plugin() { return (UtilityMain)plugin; }
+    private UtilityMain plugin() { return plugin; }
 
 
                             /* ------------------------------------------------------------------------ */
@@ -760,13 +757,13 @@ public class NPCUtils implements Listener {
      */
     private void quit(Player player) {
 
-        // ⬇️ Pour tous les NPC Globaux, on les désassocie pour le joueur, s'ils ont dans la liste des joueurs associés ⬇️ //
+        // ⬇️ Pour tous les NPC Globaux, on les dissocie pour le joueur, s'ils ont dans la liste des joueurs associés ⬇️ //
         for(NPCGlobal npcGlobal : getAllGlobalNPCs()) {
 
             if(!npcGlobal.hasPlayer(player)) continue;
             npcGlobal.getPlayers().remove(player);
         }
-        // ⬆️ Pour tous les NPC Globales, on les désassocie pour le joueur, s'ils ont dans la liste des joueurs associés ⬆️ //
+        // ⬆️ Pour tous les NPC Globales, on les dissocie pour le joueur, s'ils ont dans la liste des joueurs associés ⬆️ //
 
         PlayerManager npcPlayerManager = getNPCPlayerManager(player); // On récupère le gestionnaire du joueur
         npcPlayerManager.destroyAll(); // On détruit tous les NPC Personnel associé au Joueur
@@ -776,7 +773,7 @@ public class NPCUtils implements Listener {
                                         /* --------------------------------------------- */
 
     /**
-     * Effectue un évenèment quand le joueur intéragit avec le NPC.
+     * Effectue un évènement quand le joueur intéragit avec le NPC.
      *
      * @param event {@link NPC.Events.Interact} - Évènement quand le Joueur intéragit avec le NPC
      */
@@ -798,7 +795,7 @@ public class NPCUtils implements Listener {
 
 
     /**
-     * Effectue un évenèment quand le joueur change de monde.
+     * Effectue un évènement quand le joueur change de monde.
      *
      * @param event {@link PlayerChangedWorldEvent} - Évènement quand le Joueur change de Monde
      */
@@ -808,13 +805,13 @@ public class NPCUtils implements Listener {
         Player player = event.getPlayer(); // Récupère le Joueur de l'évènement
         World from = event.getFrom(); // Récupère le monde où le Joueur est actuellement
 
-        PlayerManager npcPlayerManager = getNPCPlayerManager(player); // Récupère le gestionaire du Joueur en question
+        PlayerManager npcPlayerManager = getNPCPlayerManager(player); // Récupère le gestionnaire du Joueur en question
         npcPlayerManager.destroyWorld(from); // On détruit les NPCs dans le monde où le Joueur est actuellement
         npcPlayerManager.showWorld(event.getPlayer().getWorld()); // On crée les NPCs dans le nouveau monde où le Joueur va apparaître
     }
 
     /**
-     * Effectue un évenèment quand un plugin se désactive.
+     * Effectue un évènement quand un plugin se désactive.
      *
      * @param event {@link PluginDisableEvent} - Évènement quand un plugin se désactive
      */
@@ -846,11 +843,11 @@ public class NPCUtils implements Listener {
     public static NPCUtils getInstance() { return instance; }
 
     /***
-     * Méthode pour afficher l'erreur d'une exception dans le cas le mode de déboggage est activé.
+     * Méthode pour afficher l'erreur d'une exception dans le cas le mode de débogage est activé.
      *
-     * @param e l'Exception en question à débogger
+     * @param e l'Exception en question à déboguer
      */
-    protected static void printError(Exception e) { if(NPCUtils.getInstance().isDebug()) e.printStackTrace(); }
+    protected static void printError(Exception e) { if(NPCUtils.getInstance().isDebug()) e.printStackTrace(System.err); }
 
                                         /* --------------------------------------------- */
 
@@ -913,7 +910,7 @@ public class NPCUtils implements Listener {
         protected void onDisable() {}
 
         /**
-         * Recharge les NPCs persistant.
+         * Recharge tous les NPCs persistant.
          *
          * @param debug Doit-on informer des informations à la console
          *
@@ -921,9 +918,9 @@ public class NPCUtils implements Listener {
         private void loadPersistentNPCs(boolean debug) {
 
             // Informe à la console qu'il y a un rechargement des NPCs persistant, dans le cas si le débug est vrai
-            if(debug) Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY + "Chargement des NPCs globaux persistants");
+            if(debug) Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY + "Chargement des NPCs globaux persistants");
 
-            // Récupère le récpertoire des NPC Globaux persistant
+            // Récupère le repertoire des NPC Globaux persistant
             File folder = new File("plugins/EvhoUtility/PlayerNPC/persistent/NPCGlobal/" + plugin.getName().toLowerCase() + "/");
             if(!folder.exists()) { folder.mkdirs(); } // Si le répertoire n'éxiste pas, on le crée
 
@@ -945,14 +942,14 @@ public class NPCUtils implements Listener {
                 } catch(Exception e) {
 
                     // Informe à la console qu'il y a une erreur de chargement du NPC Persistant
-                    Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY + "Erreur de chargement du NPC NPCGlobal persistant " + ChatColor.RED + f.getName());
+                    Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY + "Erreur de chargement du NPC NPCGlobal persistant " + ChatFormatting.RED + f.getName());
                     printError(e); // Détail l'erreur de l'exception
                 }
             }
-            //  Pour tous les fichiers dans le répertoire en question, on récupère donc le NPC Globale en question depuis son gestionnaire et on recharge ce fichier  //
+            //  Pour tous les fichiers dans le répertoire en question, on récupère donc le NPC Globale en question depuis son gestionnaire et on recharge ce fichier //
 
             // Si le répertoire en question est vide et que le débug est vrai, on informe à la console qu'aucun NPC n'a été trouvé
-            if(empty && debug) Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY +  "Aucun NPC persistant trouvé");
+            if(empty && debug) Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY +  "Aucun NPC persistant trouvé");
         }
 
         /**
@@ -1008,7 +1005,7 @@ public class NPCUtils implements Listener {
 
             // On construit la chaîne le caractère
             String b = plugin.getName().toLowerCase() + ".";
-            if(simpleCode == null) return b; // Si le code d'identification est null on retourne la chaîne de caractère à moitié remplie
+            if(simpleCode == null) return b; // Si le code d'identification est null, on retourne la chaîne de caractère à moitié remplie
             return b + simpleCode; // Sinon, on retourne la chaîne de caractère demandé
         }
 
@@ -1118,7 +1115,7 @@ public class NPCUtils implements Listener {
                                         /* --------------------------------------------- */
 
         /**
-         * Effectue un évenèment quand le joueur se déplace.
+         * Effectue un évènement quand le joueur se déplace.
          *
          * @param event {@link PlayerMoveEvent} - Évènement au déplacement du Joueur
          */
@@ -1190,7 +1187,7 @@ public class NPCUtils implements Listener {
          *
          * @return Une instance de la {@link SkinUpdateFrequency fréquence de mise à jour du Skin} du NPC
          */
-        public static SkinUpdateFrequency deserialize(Map<String, Object> map){ return new SkinUpdateFrequency((Integer) map.get("value"), TimeUnit.valueOf((String) map.get("timeUnit"))); }
+        public static SkinUpdateFrequency deserialize(Map<String, Object> map) { return new SkinUpdateFrequency((Integer) map.get("value"), TimeUnit.valueOf((String) map.get("timeUnit"))); }
     }
 
                                         /* --------------------------------------------- */
@@ -1276,7 +1273,7 @@ public class NPCUtils implements Listener {
         }
 
         /**
-         * affiche les NPCs associé au Joueur en question étant dans un monde demandé.
+         * Affiche les NPCs associé au Joueur en question étant dans un monde demandé.
          *
          * @param world Le monde en question
          */
@@ -1295,7 +1292,7 @@ public class NPCUtils implements Listener {
          *
          * @param npc Le {@link NPCPersonal NPC Personnel} en question
          * @param from Le Monde actuel du NPC
-         * @param from Le nouveau Monde du NPC
+         * @param to Le nouveau Monde du NPC
          *
          */
         protected void changeWorld(NPCPersonal npc, World from, World to) {
@@ -1320,7 +1317,7 @@ public class NPCUtils implements Listener {
 
             Set<NPCPersonal> destroy = new HashSet<>(npcs.values()); // Initialise une liste récupérant tous les enregistrements des NPCs associé au Joueur
             destroy.stream().filter(NPCPersonal::isCreated).forEach(NPCPersonal::destroy); // On vérifie alors si chaque NPC est créé, donc on les détruit
-            npcs.clear(); // Ensuite, on supprime la liste des enregitrements des NPCs associé au Joueur
+            npcs.clear(); // Ensuite, on supprime la liste des retirements des NPCs associé au Joueur
         }
 
         /**
@@ -1411,8 +1408,8 @@ public class NPCUtils implements Listener {
          */
         protected static class PacketReader {
 
-            private HashMap<NPC, Long> lastClick; // Variable récupérant les dernières cliques effectuées
-            private PlayerManager npcPlayerManager; // Variable récupérant le gestionnaire des Joueurs pour les NPCs
+            private final HashMap<NPC, Long> lastClick; // Variable récupérant les dernières cliques effectuées
+            private final PlayerManager npcPlayerManager; // Variable récupérant le gestionnaire des Joueurs pour les NPCs
             private Channel channel; // Variable récupérant le canal de la connexion du joueur
 
             /**
@@ -1439,7 +1436,7 @@ public class NPCUtils implements Listener {
                 if(channel.pipeline() == null) return; // Si le pipeline du canal est null, on ne fait rien
                 if(channel.pipeline().get("PacketInjector") != null) return; // Si 'PacketInjector' récupérer dans le canal n'est pas null, on ne fait rien
 
-                // ⬇️ On enregistre 'PacketInjector' sur le canal pour décoder chaque paquet envoyé par le joueur, ensuite on lit le paquet en question ⬇️ //
+                // ⬇️ On enregistre 'PacketInjector' sur le canal pour décoder chaque paquet envoyé par le joueur, ensuite, on lit le paquet en question ⬇️ //
                 channel.pipeline().addAfter("decoder", "PacketInjector", new MessageToMessageDecoder<ServerboundInteractPacket>() {
 
                     @Override
@@ -1449,7 +1446,7 @@ public class NPCUtils implements Listener {
                         readPacket(packet);
                     }
                 });
-                 // ⬆️ On enregistre 'PacketInjector' sur le canal pour décoder chaque paquet envoyé par le joueur, ensuite on lit le paquet en question ⬆️ //
+                 // ⬆️ On enregistre 'PacketInjector' sur le canal pour décoder chaque paquet envoyé par le joueur, ensuite, on lit le paquet en question ⬆️ //
             }
 
             /**
@@ -1539,7 +1536,7 @@ public class NPCUtils implements Listener {
              *
              * @return La {@link NPCUtils librairie NPC} associé
              */
-            protected NPCUtils getNPCLib(){ return npcPlayerManager.getNPCLib(); }
+            protected NPCUtils getNPCLib() { return npcPlayerManager.getNPCLib(); }
 
         }
 

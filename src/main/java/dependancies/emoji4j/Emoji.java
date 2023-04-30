@@ -1,6 +1,5 @@
 package dependancies.emoji4j;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -41,7 +40,6 @@ public class Emoji extends AbstractEmoji {
 	/**
 	 * Définit le caractère emoji unicode
 	 *
-	 * @return Définit le caractère emoji unicode
 	 */
 	public void setEmoji(String emoji) {
 

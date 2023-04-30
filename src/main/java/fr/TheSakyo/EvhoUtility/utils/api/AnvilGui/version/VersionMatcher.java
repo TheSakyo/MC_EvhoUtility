@@ -23,7 +23,7 @@ public class VersionMatcher {
     /**
      * Tous les {@link VersionWrapper}s disponibles
      */
-    private final List<Class<? extends VersionWrapper>> version = List.of(Wrapper1_19_R1.class);
+    private final List<Class<? extends VersionWrapper>> version = List.of(Wrapper1_20_R1.class);
 
     
     

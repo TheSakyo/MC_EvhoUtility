@@ -36,7 +36,7 @@ final class Tokeniser {
     private Token emitPending; // the token we are about to emit on next read
     private boolean isEmitPending = false;
     private String charsString = null; // characters pending an emit. Will fall to charsBuilder if more than one
-    private StringBuilder charsBuilder = new StringBuilder(1024); // buffers characters to output as one token, if more than one emit per read
+    private final StringBuilder charsBuilder = new StringBuilder(1024); // buffers characters to output as one token, if more than one emit per read
     StringBuilder dataBuffer = new StringBuilder(1024); // buffers data looking for </script>
 
     Token.Tag tagPending; // tag we are building up
@@ -59,7 +59,7 @@ final class Tokeniser {
 
         // if emit is pending, a non-character token was found: return any chars in buffer, and leave token for next read:
         final StringBuilder cb = this.charsBuilder;
-        if (cb.length() != 0) {
+        if (!cb.isEmpty()) {
             String str = cb.toString();
             cb.delete(0, cb.length());
             charsString = null;
@@ -97,7 +97,7 @@ final class Tokeniser {
             charsString = str;
         }
         else {
-            if (charsBuilder.length() == 0) { // switching to string builder as more than one emit before read
+            if (charsBuilder.isEmpty()) { // switching to string builder as more than one emit before read
                 charsBuilder.append(charsString);
             }
             charsBuilder.append(str);
@@ -110,7 +110,7 @@ final class Tokeniser {
             charsString = str.toString();
         }
         else {
-            if (charsBuilder.length() == 0) {
+            if (charsBuilder.isEmpty()) {
                 charsBuilder.append(charsString);
             }
             charsBuilder.append(str);
@@ -122,7 +122,7 @@ final class Tokeniser {
             charsString = String.valueOf(c);
         }
         else {
-            if (charsBuilder.length() == 0) {
+            if (charsBuilder.isEmpty()) {
                 charsBuilder.append(charsString);
             }
             charsBuilder.append(c);
@@ -165,7 +165,7 @@ final class Tokeniser {
         if (reader.matchConsume("#")) { // numbered
             boolean isHexMode = reader.matchConsumeIgnoreCase("X");
             String numRef = isHexMode ? reader.consumeHexSequence() : reader.consumeDigitSequence();
-            if (numRef.length() == 0) { // didn't match anything
+            if (numRef.isEmpty()) { // didn't match anything
                 characterReferenceError("numeric reference with no numerals");
                 reader.rewindToMark();
                 return null;

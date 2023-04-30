@@ -680,10 +680,6 @@ enum TokeniserState {
                 case '"':
                     t.transition(AttributeValue_doubleQuoted);
                     break;
-                case '&':
-                    r.unconsume();
-                    t.transition(AttributeValue_unquoted);
-                    break;
                 case '\'':
                     t.transition(AttributeValue_singleQuoted);
                     break;
@@ -718,7 +714,7 @@ enum TokeniserState {
     AttributeValue_doubleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeAttributeQuoted(false);
-            if (value.length() > 0)
+            if (!value.isEmpty())
                 t.tagPending.appendAttributeValue(value);
             else
                 t.tagPending.setEmptyAttributeValue();
@@ -749,7 +745,7 @@ enum TokeniserState {
     AttributeValue_singleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeAttributeQuoted(true);
-            if (value.length() > 0)
+            if (!value.isEmpty())
                 t.tagPending.appendAttributeValue(value);
             else
                 t.tagPending.setEmptyAttributeValue();
@@ -780,7 +776,7 @@ enum TokeniserState {
     AttributeValue_unquoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeToAnySorted(attributeValueUnquoted);
-            if (value.length() > 0)
+            if (!value.isEmpty())
                 t.tagPending.appendAttributeValue(value);
 
             char c = r.consume();
@@ -1515,11 +1511,7 @@ enum TokeniserState {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
             switch (c) {
-                case '>':
-                    t.emitDoctypePending();
-                    t.transition(Data);
-                    break;
-                case eof:
+                case '>', eof:
                     t.emitDoctypePending();
                     t.transition(Data);
                     break;

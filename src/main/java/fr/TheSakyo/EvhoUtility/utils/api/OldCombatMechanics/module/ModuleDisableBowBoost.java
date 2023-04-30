@@ -17,12 +17,12 @@ public class ModuleDisableBowBoost extends Module {
     public ModuleDisableBowBoost(UtilityMain plugin) { super(plugin, "disable-bow-boost"); }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onProjectileHit(EntityDamageByEntityEvent e){
+    public void onProjectileHit(EntityDamageByEntityEvent e) {
 
         if(!(e.getEntity() instanceof Player player)) return;
         if(!(e.getDamager() instanceof Arrow arrow)) return;
 
-         if(!isEnabled(player.getWorld())) return;
+        if(!isEnabled(player.getWorld())) return;
 
         ProjectileSource shooter = arrow.getShooter();
         if(shooter instanceof Player shootingPlayer) {

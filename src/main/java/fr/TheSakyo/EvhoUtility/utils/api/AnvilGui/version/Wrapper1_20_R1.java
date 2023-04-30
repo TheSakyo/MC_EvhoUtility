@@ -10,15 +10,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
-public class Wrapper1_19_R1 implements VersionWrapper {
+public class Wrapper1_20_R1 implements VersionWrapper {
 
     private int getRealNextContainerId(Player player) { return toNMS(player).nextContainerCounter(); }
 
@@ -55,7 +55,7 @@ public class Wrapper1_19_R1 implements VersionWrapper {
      * {@inheritDoc}
      */
     @Override
-    public void setActiveContainerDefault(Player player) { (toNMS(player)).containerMenu = (AbstractContainerMenu)(toNMS(player)).inventoryMenu; }
+    public void setActiveContainerDefault(Player player) { (toNMS(player)).containerMenu = (toNMS(player)).inventoryMenu; }
 
 
     /**
@@ -102,13 +102,13 @@ public class Wrapper1_19_R1 implements VersionWrapper {
 
 
     /**
-     * Modifications à ContainerAnvil qui font que vous n'avez pas besoin d'avoir de l'xp pour utiliser cette enclume.
+     * Modifications à ContainerAnvil qui font que vous n'avez pas besoin d'avoir de l'expérience pour utiliser cette enclume.
      */
     private class AnvilContainer extends AnvilMenu {
 
         public AnvilContainer(Player player, String guiTitle) {
 
-            super(Wrapper1_19_R1.this.getRealNextContainerId(player), ((CraftPlayer) player).getHandle().getInventory(), ContainerLevelAccess.create(((CraftWorld)player.getWorld()).getHandle(), new BlockPos(0, 0, 0)));
+            super(Wrapper1_20_R1.this.getRealNextContainerId(player), ((CraftPlayer) player).getHandle().getInventory(), ContainerLevelAccess.create(((CraftWorld)player.getWorld()).getHandle(), new BlockPos(0, 0, 0)));
             this.checkReachable = false;
             setTitle(CraftChatMessage.fromString(guiTitle)[0]);
         }

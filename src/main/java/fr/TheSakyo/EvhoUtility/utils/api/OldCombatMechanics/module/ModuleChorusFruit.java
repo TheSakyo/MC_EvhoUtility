@@ -82,16 +82,10 @@ public class ModuleChorusFruit extends Module {
         // Pas sûr que cela puisse se produire, mais il est marqué comme @Nullable.
         Location toLocation = e.getTo();
 
-        if(toLocation == null) {
-
-            debug("La cible de téléportation est nulle", player);
-            return;
-        }
-
-        final int maxheight = toLocation.getWorld().getMaxHeight();
+        final int maxHeight = toLocation.getWorld().getMaxHeight();
 
         e.setTo(player.getLocation().add(ThreadLocalRandom.current().nextDouble(-distance, distance),
-                clamp(ThreadLocalRandom.current().nextDouble(-distance, distance), 0, maxheight - 1), ThreadLocalRandom.current().nextDouble(-distance, distance)));
+                clamp(ThreadLocalRandom.current().nextDouble(-distance, distance), 0, maxHeight - 1), ThreadLocalRandom.current().nextDouble(-distance, distance)));
     }
 
     private double clamp(double x, double min, double max) { return Math.max(Math.min(x, max), min); }

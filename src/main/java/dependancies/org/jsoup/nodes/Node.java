@@ -73,7 +73,7 @@ public abstract class Node implements Cloneable {
             return EmptyString;
 
         String val = attributes().getIgnoreCase(attributeKey);
-        if (val.length() > 0)
+        if (!val.isEmpty())
             return val;
         else if (attributeKey.startsWith("abs:"))
             return absUrl(attributeKey.substring("abs:".length()));
@@ -111,7 +111,7 @@ public abstract class Node implements Cloneable {
 
         if (attributeKey.startsWith("abs:")) {
             String key = attributeKey.substring("abs:".length());
-            if (attributes().hasKeyIgnoreCase(key) && !absUrl(key).equals(""))
+            if (attributes().hasKeyIgnoreCase(key) && !absUrl(key).isEmpty())
                 return true;
         }
         return attributes().hasKeyIgnoreCase(attributeKey);
@@ -390,7 +390,7 @@ public abstract class Node implements Cloneable {
         deepest.addChildren(this); // side effect of tricking wrapChildren to lose first
 
         // remainder (unbalanced wrap, like <div></div><p></p> -- The <p> is remainder
-        if (wrapChildren.size() > 0) {
+        if (!wrapChildren.isEmpty()) {
             //noinspection ForLoopReplaceableByForEach (beacause it allocates an Iterator which is wasteful here)
             for (int i = 0; i < wrapChildren.size(); i++) {
                 Node remainder = wrapChildren.get(i);
@@ -424,7 +424,7 @@ public abstract class Node implements Cloneable {
     public @Nullable Node unwrap() {
         Validate.notNull(parentNode);
         final List<Node> childNodes = ensureChildNodes();
-        Node firstChild = childNodes.size() > 0 ? childNodes.get(0) : null;
+        Node firstChild = !childNodes.isEmpty() ? childNodes.get(0) : null;
         parentNode.addChildren(siblingIndex, this.childNodesAsArray());
         this.remove();
 
@@ -433,7 +433,7 @@ public abstract class Node implements Cloneable {
 
     private Element getDeepChild(Element el) {
         List<Element> children = el.children();
-        if (children.size() > 0)
+        if (!children.isEmpty())
             return getDeepChild(children.get(0));
         else
             return el;
@@ -763,32 +763,29 @@ public abstract class Node implements Cloneable {
         return clone;
     }
 
-    private static class OuterHtmlVisitor implements NodeVisitor {
-        private final Appendable accum;
-        private final Document.OutputSettings out;
+    private record OuterHtmlVisitor(Appendable accum, Document.OutputSettings out) implements NodeVisitor {
+            private OuterHtmlVisitor(Appendable accum, Document.OutputSettings out) {
+                this.accum = accum;
+                this.out = out;
+                out.prepareEncoder();
+            }
 
-        OuterHtmlVisitor(Appendable accum, Document.OutputSettings out) {
-            this.accum = accum;
-            this.out = out;
-            out.prepareEncoder();
-        }
+            public void head(Node node, int depth) {
+                try {
+                    node.outerHtmlHead(accum, depth, out);
+                } catch (IOException exception) {
+                    throw new SerializationException(exception);
+                }
+            }
 
-        public void head(Node node, int depth) {
-            try {
-				node.outerHtmlHead(accum, depth, out);
-			} catch (IOException exception) {
-				throw new SerializationException(exception);
-			}
-        }
-
-        public void tail(Node node, int depth) {
-            if (!node.nodeName().equals("#text")) { // saves a void hit.
-				try {
-					node.outerHtmlTail(accum, depth, out);
-				} catch (IOException exception) {
-					throw new SerializationException(exception);
-				}
+            public void tail(Node node, int depth) {
+                if (!node.nodeName().equals("#text")) { // saves a void hit.
+                    try {
+                        node.outerHtmlTail(accum, depth, out);
+                    } catch (IOException exception) {
+                        throw new SerializationException(exception);
+                    }
+                }
             }
         }
-    }
 }

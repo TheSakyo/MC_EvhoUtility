@@ -19,9 +19,9 @@ import java.util.*;
 /*******************************************************************************************************/
 public class ZoneManager {
 
-    private static UtilityMain mainInstance = UtilityMain.getInstance(); /* Récupère la class "Main" */
+    private static final UtilityMain mainInstance = UtilityMain.getInstance(); /* Récupère la class "Main" */
 
-    public static Map<UUID, Location> previousLocation = new HashMap<UUID, Location>(); // Récupèrera la localisation précédente du joueur (utile pour l'évènement quand le joueur entre ou sort d'une région)
+    public static Map<UUID, Location> previousLocation = new HashMap<>(); // Récupèrera la localisation précédente du joueur (utile pour l'évènement quand le joueur entre ou sort d'une région)
 
     /************************************************************/
     /* MÉTHODE PERMETTANT D'ACTUALISER UNE ZONE DANS LE SERVEUR */
@@ -77,10 +77,8 @@ public class ZoneManager {
     public static void create(String zoneName) {
 
         resetGroupsForZone(zoneName, true);
-        ConfigFile.createSection(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase());
-        ConfigFile.saveConfig(mainInstance.zoneconfig);
-
-        return;
+        ConfigFile.createSection(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase());
+        ConfigFile.saveConfig(mainInstance.zoneConfig);
     }
     /*****************************************/
     /* MÉTHODE PERMETTANT DE CRÉER UNE ZONE */
@@ -88,17 +86,15 @@ public class ZoneManager {
 
 
     /*********************************************/
-    /* MÉTHODE PERMETTANT DE SUPPPRIMER UNE ZONE */
+    /* MÉTHODE PERMETTANT DE SUPPRIMER UNE ZONE */
     /********************************************/
     public static void delete(String zoneName) {
 
-        ConfigFile.removeKey(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase());
-        ConfigFile.saveConfig(mainInstance.zoneconfig);
-
-        return;
+        ConfigFile.removeKey(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase());
+        ConfigFile.saveConfig(mainInstance.zoneConfig);
     }
     /*********************************************/
-    /* MÉTHODE PERMETTANT DE SUPPPRIMER UNE ZONE */
+    /* MÉTHODE PERMETTANT DE SUPPRIMER UNE ZONE */
     /********************************************/
 
 
@@ -130,11 +126,7 @@ public class ZoneManager {
     /*********************************************/
     /* MÉTHODE VÉRIFIANT SI LA ZONE EXISTE BIEN */
     /********************************************/
-    public static boolean isExist(String zoneName) {
-
-        if(ConfigFile.getConfigurationSection(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase()) != null) return true;
-        return false;
-    }
+    public static boolean isExist(String zoneName) { return ConfigFile.getConfigurationSection(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase()) != null; }
     /*********************************************/
     /* MÉTHODE VÉRIFIANT SI LA ZONE EXISTE BIEN */
     /********************************************/
@@ -157,11 +149,7 @@ public class ZoneManager {
     /**************************************************/
     /* MÉTHODE VÉRIFIANT SI LA ZONE A BIEN UNE RÉGION */
     /**************************************************/
-    public static boolean hasRegion(String zoneName) {
-
-        if(getFirstPos(zoneName) != null && getSecondPos(zoneName) != null && getWorld(zoneName) != null) { return true; }
-        return false;
-    }
+    public static boolean hasRegion(String zoneName) { return getFirstPos(zoneName) != null && getSecondPos(zoneName) != null && getWorld(zoneName) != null; }
     /**************************************************/
     /* MÉTHODE VÉRIFIANT SI LA ZONE A BIEN UNE RÉGION */
     /**************************************************/
@@ -174,16 +162,16 @@ public class ZoneManager {
 
         boolean isOK = false;
 
-        ConfigurationSection groupSection = ConfigFile.getConfigurationSection(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups");
+        ConfigurationSection groupSection = ConfigFile.getConfigurationSection(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".groups");
 
-        GroupManager groupManager = mainInstance.luckapi.getGroupManager();
+        GroupManager groupManager = mainInstance.luckApi.getGroupManager();
         groupManager.loadAllGroups();
 
         for(Group group : groupManager.getLoadedGroups()) {
 
-            if(ConfigFile.getBoolean(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName()) == true) {
+            if(ConfigFile.getBoolean(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName())) {
 
-                if(group.getName().equalsIgnoreCase("default") || mainInstance.formatgrade.isPlayerInGroup(p, group.getName())) isOK = true; break;
+                if(group.getName().equalsIgnoreCase("default") || mainInstance.formatGrade.isPlayerInGroup(p, group.getName())) isOK = true; break;
             }
         }
         return isOK;
@@ -194,72 +182,73 @@ public class ZoneManager {
 
 
     /*************************************************************************************************/
-    /* MÉTHODE PERMETTANT DE RÉINITAILISER LES ACCÉS A LA ZONE A TOUS LES GRADES OU DE LES RECHARGER */
+    /* MÉTHODE PERMETTANT DE RÉINITIALISER LES ACCÈS A LA ZONE A TOUS LES GRADES OU DE LES RECHARGER */
     /*************************************************************************************************/
     public static void resetGroupsForZone(String zoneName, boolean resetAll) {
 
         if(isExist(zoneName)) {
 
-            GroupManager groupManager = mainInstance.luckapi.getGroupManager();
+            GroupManager groupManager = mainInstance.luckApi.getGroupManager();
             groupManager.loadAllGroups();
 
             for(Group loadedGroup : groupManager.getLoadedGroups()) {
 
                 String Path = "ZONE." + zoneName.toUpperCase() + ".groups." + loadedGroup.getName();
 
-                if(resetAll) { ConfigFile.set(mainInstance.zoneconfig, Path, false); }
+                if(resetAll) { ConfigFile.set(mainInstance.zoneConfig, Path, false); }
                 else {
 
-                    if(!ConfigFile.contains(mainInstance.zoneconfig, Path)) { ConfigFile.set(mainInstance.zoneconfig, Path, false); }
+                    if(!ConfigFile.contains(mainInstance.zoneConfig, Path)) { ConfigFile.set(mainInstance.zoneConfig, Path, false); }
                 }
             }
                     /* -------------------------------------- */
 
-            Set<String> keysGroupsZoneSectionCfg = ConfigFile.getConfigurationSection(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups").getKeys(false);
+            Set<String> keysGroupsZoneSectionCfg = ConfigFile.getConfigurationSection(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".groups").getKeys(false);
 
-            if(keysGroupsZoneSectionCfg != null && !keysGroupsZoneSectionCfg.isEmpty()) {
+            if(!keysGroupsZoneSectionCfg.isEmpty()) {
 
                 for(String key : keysGroupsZoneSectionCfg) {
 
                     String Path = "ZONE." + zoneName.toUpperCase() + ".groups." + key;
 
                     Group group = groupManager.getGroup(key);
-                    if(group == null) { ConfigFile.removeKey(mainInstance.zoneconfig, Path); }
+                    if(group == null) { ConfigFile.removeKey(mainInstance.zoneConfig, Path); }
                 }
             }
-            ConfigFile.saveConfig(mainInstance.zoneconfig);
+            ConfigFile.saveConfig(mainInstance.zoneConfig);
         }
-        return;
     }
     /*************************************************************************************************/
-    /* MÉTHODE PERMETTANT DE RÉINITAILISER LES ACCÉS A LA ZONE A TOUS LES GRADES OU DE LES RECHARGER */
+    /* MÉTHODE PERMETTANT DE RÉINITIALISER LES ACCÈS A LA ZONE A TOUS LES GRADES OU DE LES RECHARGER */
     /*************************************************************************************************/
 
 
     /******************************************************************/
-    /* MÉTHODE RÉCUPÉRANT UNE LISTE DES GRADES AYANT ACCÉS A LA ZONE */
+    /* MÉTHODE RÉCUPÉRANT UNE LISTE DES GRADES AYANT ACCÈS A LA ZONE */
     /*****************************************************************/
     public static List<Group> getGroupsForZone(String zoneName) {
 
-        List<Group> groupList = new ArrayList<Group>();
+        List<Group> groupList = new ArrayList<>();
+
+        /*****************************/
 
         if(isExist(zoneName)) {
 
-            GroupManager groupManager = mainInstance.luckapi.getGroupManager();
+            GroupManager groupManager = mainInstance.luckApi.getGroupManager();
             groupManager.loadAllGroups();
 
             for(Group loadedGroup : groupManager.getLoadedGroups()) {
 
                 String Path = "ZONE." + zoneName.toUpperCase() + ".groups." + loadedGroup.getName();
 
-                 if(ConfigFile.getBoolean(mainInstance.zoneconfig, Path) == true) { groupList.add(loadedGroup); }
+                 if(ConfigFile.getBoolean(mainInstance.zoneConfig, Path)) { groupList.add(loadedGroup); }
             }
         }
 
         return groupList;
     }
     /******************************************************************/
-    /* MÉTHODE RÉCUPÉRANT UNE LISTE DES GRADES AYANT ACCÉS A LA ZONE */
+    /* MÉTHODE RÉCUPÉRANT UNE LISTE DES GRADES AYANT ACCÈS A LA ZONE */
     /*****************************************************************/
 
 
@@ -270,16 +259,13 @@ public class ZoneManager {
 
         if(isExist(zoneName)) {
 
-            GroupManager groupManager = mainInstance.luckapi.getGroupManager();
+            GroupManager groupManager = mainInstance.luckApi.getGroupManager();
             Group group = groupManager.getGroup(groupName);
 
-            if(group.getName() != null) {
-
-                ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName(), true);
-                ConfigFile.saveConfig(mainInstance.zoneconfig);
-            }
+            group.getName();
+            ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName(), true);
+            ConfigFile.saveConfig(mainInstance.zoneConfig);
         }
-        return;
     }
     /*************************************************************************/
     /* MÉTHODE PERMETTANT D'AJOUTER UN GROUPE EN PARTICULIER DANS LA RÉGION  */
@@ -293,16 +279,13 @@ public class ZoneManager {
 
         if(isExist(zoneName)) {
 
-            GroupManager groupManager = mainInstance.luckapi.getGroupManager();
+            GroupManager groupManager = mainInstance.luckApi.getGroupManager();
             Group group = groupManager.getGroup(groupName);
 
-            if(group.getName() != null) {
-
-                ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName(), false);
-                ConfigFile.saveConfig(mainInstance.zoneconfig);
-            }
+            group.getName();
+            ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".groups." + group.getName(), false);
+            ConfigFile.saveConfig(mainInstance.zoneConfig);
         }
-        return;
     }
     /****************************************************************************/
     /* MÉTHODE PERMETTANT DE SUPPRIMER UN GROUPE EN PARTICULIER DANS LA RÉGION */
@@ -314,9 +297,9 @@ public class ZoneManager {
     /*************************************************************/
     public static List<Double> getFirstPos(String zoneName) {
 
-        String XValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.x");
-        String YValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.y");
-        String ZValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.z");
+        String XValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.x");
+        String YValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.y");
+        String ZValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.z");
 
         if(CustomMethod.isDouble(XValue) && CustomMethod.isDouble(YValue) && CustomMethod.isDouble(ZValue)) {
 
@@ -335,13 +318,11 @@ public class ZoneManager {
     /**********************************************************/
     public static void setFirstPos(String zoneName, double x, double y, double z) {
 
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.x", String.valueOf(x));
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.y", String.valueOf(y));
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.z", String.valueOf(z));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.x", String.valueOf(x));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.y", String.valueOf(y));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".firstposition.z", String.valueOf(z));
 
-        ConfigFile.saveConfig(mainInstance.zoneconfig);
-
-        return;
+        ConfigFile.saveConfig(mainInstance.zoneConfig);
     }
     /************************************************************/
     /* MÉTHODE PERMETTANT DE DÉFINIR LA PREMIÈRE POSITION ZONE */
@@ -353,9 +334,9 @@ public class ZoneManager {
     /*************************************************************/
     public static List<Double> getSecondPos(String zoneName) {
 
-        String XValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.x");
-        String YValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.y");
-        String ZValue = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.z");
+        String XValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.x");
+        String YValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.y");
+        String ZValue = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.z");
 
         if(CustomMethod.isDouble(XValue) && CustomMethod.isDouble(YValue) && CustomMethod.isDouble(ZValue)) {
 
@@ -374,13 +355,11 @@ public class ZoneManager {
     /**********************************************************/
     public static void setSecondPos(String zoneName, double x, double y, double z) {
 
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.x", String.valueOf(x));
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.y", String.valueOf(y));
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.z", String.valueOf(z));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.x", String.valueOf(x));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.y", String.valueOf(y));
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".secondposition.z", String.valueOf(z));
 
-        ConfigFile.saveConfig(mainInstance.zoneconfig);
-
-        return;
+        ConfigFile.saveConfig(mainInstance.zoneConfig);
     }
     /************************************************************/
     /* MÉTHODE PERMETTANT DE DÉFINIR LA DEUXIÈME POSITION ZONE */
@@ -392,7 +371,7 @@ public class ZoneManager {
     /*************************************************/
     public static World getWorld(String zoneName) {
 
-        String worldName = ConfigFile.getString(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".world");
+        String worldName = ConfigFile.getString(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".world");
         if(worldName == null) { worldName = " "; }
 
         return Bukkit.getServer().getWorld(worldName);
@@ -407,9 +386,9 @@ public class ZoneManager {
     /****************************************************/
     public static void setWorld(String zoneName, String WorldName) {
 
-        ConfigFile.set(mainInstance.zoneconfig, "ZONE." + zoneName.toUpperCase() + ".world", WorldName);
+        ConfigFile.set(mainInstance.zoneConfig, "ZONE." + zoneName.toUpperCase() + ".world", WorldName);
 
-        ConfigFile.saveConfig(mainInstance.zoneconfig);
+        ConfigFile.saveConfig(mainInstance.zoneConfig);
     }
     /*****************************************************/
     /* MÉTHODE PERMETTANT DE DÉFINIR LE MONDE DE LA ZONE */

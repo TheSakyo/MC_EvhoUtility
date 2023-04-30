@@ -62,9 +62,13 @@ public class ReflectionUtils {
 
     /*/ ########################################## FIELDS ########################### /*/
 
-    public String getpackageNameVersion() { return packageName; }
+    public String getPackageNameVersion() { return packageName; }
+
+    /***************************************/
 
     public String getVersion() { return version; }
+
+    /***************************************/
 
     public SaveField getField(String name , Class<?> clazz) {
 
@@ -75,10 +79,12 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
+
+    /***************************************/
 
     public SaveField getDeclaredField(Class<?> clazz) {
 
@@ -89,7 +95,7 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -106,7 +112,7 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -121,7 +127,7 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -135,7 +141,7 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -157,10 +163,9 @@ public class ReflectionUtils {
     private Object getEntityPlayer(Player p) {
 
         try { return getCraftBukkitClass("entity.CraftPlayer").getMethod("getHandle").invoke(p); }
-
         catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -169,15 +174,15 @@ public class ReflectionUtils {
 
         try {
 
-            Class<?> chatSerelizer = getCraftBukkitClass("util.CraftChatMessage");
+            Class<?> chatSerializer = getCraftBukkitClass("util.CraftChatMessage");
 
-            Method mSerelize = chatSerelizer.getMethod("fromString", String.class);
+            Method mSerializer = chatSerializer.getMethod("fromString", String.class);
 
-            return ((Object[])mSerelize.invoke(null, s))[0];
+            return ((Object[])mSerializer.invoke(null, s))[0];
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -186,21 +191,21 @@ public class ReflectionUtils {
 
         try {
 
-            Class<?> chatSerelizer = getCraftBukkitClass("util.CraftChatMessage");
+            Class<?> chatSerializer = getCraftBukkitClass("util.CraftChatMessage");
 
-            Method mSerelize = chatSerelizer.getMethod("fromComponent", this.getNMSClass("IChatBaseComponent"));
+            Method mSerializer = chatSerializer.getMethod("fromComponent", this.getNMSClass("IChatBaseComponent"));
 
-            return (String) mSerelize.invoke(null, component);
+            return (String) mSerializer.invoke(null, component);
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
 
     }
 
-    public Object getEnumGamemode(Player p) {
+    public Object getEnumGameMode(Player p) {
 
         try {
 
@@ -215,7 +220,7 @@ public class ReflectionUtils {
 
         } catch(Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -230,7 +235,7 @@ public class ReflectionUtils {
 
         } catch (Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return -1;
         }
     }
@@ -247,7 +252,7 @@ public class ReflectionUtils {
             Method sendPacket = nmsCon.getClass().getMethod("sendPacket", getNMSClass("Packet"));
             sendPacket.invoke(nmsCon,packet);
 
-        } catch (Exception e) { if(ignoreException != true) e.printStackTrace(); }
+        } catch (Exception e) { if(!ignoreException) e.printStackTrace(System.err); }
     }
 
     public int getID(Entity e) {
@@ -260,18 +265,17 @@ public class ReflectionUtils {
 
         } catch (Exception ex) {
 
-            ex.printStackTrace();
+            ex.printStackTrace(System.err);
             return -1;
         }
     }
 
     public Object getEntity(Entity entity) {
 
-        try { return getCraftBukkitClass("entity.CraftEntity").getMethod("getHandle").invoke(entity);
+        try { return getCraftBukkitClass("entity.CraftEntity").getMethod("getHandle").invoke(entity); }
+        catch (Exception e) {
 
-        } catch (Exception e) {
-
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -279,10 +283,9 @@ public class ReflectionUtils {
     public Object getWorldServer(World w) {
 
         try { return getCraftBukkitClass("CraftWorld").getMethod("getHandle").invoke(w); }
-
         catch (Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }
@@ -290,10 +293,9 @@ public class ReflectionUtils {
     public Object getObjectNMSItemStack(ItemStack item) {
 
         try { return getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null,item); }
-
         catch (Exception e) {
 
-            if(ignoreException != true) e.printStackTrace();
+            if(!ignoreException) e.printStackTrace(System.err);
             return null;
         }
     }

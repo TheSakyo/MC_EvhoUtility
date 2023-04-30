@@ -9,16 +9,21 @@ public class SaveMethod {
 
     private Method m;
 
+    /*******************************************************************/
+
     public SaveMethod(Method m) {
 
-        try { m.setAccessible(true); this.m = m;
-        } catch (Exception e) { e.printStackTrace(); }
+        try { m.setAccessible(true); this.m = m; }
+        catch(Exception e) { e.printStackTrace(System.err); }
     }
+
+    /*******************************************************************/
+    /*******************************************************************/
 
     public Object invoke(Object instance , Boolean stackTrace , Object... args) {
 
-        try { return m.invoke(instance, args);
-        } catch (Exception e) { if(stackTrace) e.printStackTrace(); }
+        try { return m.invoke(instance, args); }
+        catch(Exception e) { if(stackTrace) e.printStackTrace(System.err); }
         return null;
     }
 }

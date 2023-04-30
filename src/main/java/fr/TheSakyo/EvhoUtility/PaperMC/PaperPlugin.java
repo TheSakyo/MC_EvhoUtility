@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import fr.TheSakyo.EvhoUtility.ServerVersion;
 import fr.TheSakyo.EvhoUtility.PaperMC.nms.NMSUtils;
 import fr.TheSakyo.EvhoUtility.utils.api.Metrics;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,11 +19,9 @@ public abstract class PaperPlugin extends JavaPlugin {
 
   public static ServerVersion serverVersion; // Variable pour récupérer la version du Serveur
 
-  private int bStatsResourceID; // Variable récupérant l'identifiant de la ressource bStats (pour le fonctionnement des NPCs)
-
   private Metrics metrics; // Variable récupérant la class 'Metrics'
 
-  private List<ServerVersion> supportedVersions; // Variable afficheant les versions du Serveur supportées
+  private final List<ServerVersion> supportedVersions; // Variable affichant les versions du Serveur supportées
 
 
   /*************************/
@@ -35,8 +33,7 @@ public abstract class PaperPlugin extends JavaPlugin {
     this.supportedVersions = new ArrayList<>(); // Récupèrera les versions supportées
     this.supportedVersions.addAll(List.of(serverVersion)); // Ajoute toutes les versions supportées sur le Serveur
 
-    PaperPlugin.serverVersion = ServerVersion.getVersion(Bukkit.getServer().getBukkitVersion()); // Définit la version du Serveur
-
+    PaperPlugin.serverVersion = ServerVersion.getVersion(Bukkit.getServer().getBukkitVersion()); // Définit la version du Serveur*
     getLogger().log(Level.INFO, "Votre serveur utilise la version Bukkit : " + Bukkit.getServer().getBukkitVersion()); // Affiche la version du Serveur en question dans la console
   }
 
@@ -55,7 +52,7 @@ public abstract class PaperPlugin extends JavaPlugin {
    */
   public void onEnable() {
 
-    plugin = (Plugin)this; // Récupère le plugin en question
+    plugin = this; // Récupère le plugin en question
 
     boolean unsafeByPass = false;
     String minecraftVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
@@ -77,9 +74,9 @@ public abstract class PaperPlugin extends JavaPlugin {
       if(!unsafeByPass) {
 
         vs = new StringBuilder(vs.toString().replaceFirst(", ", "")); // Supprime la première virgule de la chaîne de caractère construit plus haut
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Cette version du serveur (" + minecraftVersion + ") n'est pas supporté par ce plugin (" + getDescription().getName() + " v" + getDescription().getVersion() + ")");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "versions du serveur supportées : " + vs);
-        Bukkit.getServer().getPluginManager().disablePlugin((Plugin)this);
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatFormatting.RED + "Cette version du serveur (" + minecraftVersion + ") n'est pas supporté par ce plugin (" + getPluginMeta().getName() + " v" + getPluginMeta().getVersion() + ")");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatFormatting.RED + "versions du serveur supportées : " + vs);
+        Bukkit.getServer().getPluginManager().disablePlugin(this);
         return;
       }
       // ⬆️ Si aucune des versions, ont été trouvées, on envoie un message d'erreur à la console et on annule l'activation du Plugin ⬆️ //
@@ -88,29 +85,29 @@ public abstract class PaperPlugin extends JavaPlugin {
 
                                                                     /* ----------------------------------------------------------------------- */
 
-    // ⬇️ Si une des versions supportées a pu trouver une versioon Minecraft compatible avec le Serveur, on affiche un Message disant que le plugin s'active bien, mais peut avoir des erreurs ⬇️  //
+    // ⬇️ Si une des versions supportées a pu trouver une version Minecraft compatible avec le Serveur, on affiche un Message disant que le plugin s'active bien, mais peut avoir des erreurs ⬇️ //
     if(unsafeByPass) {
 
-      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "Cette compilation Bukkit (" + Bukkit.getBukkitVersion() + ") n'est pas supporté, mais la version du serveur Minecraft (" + minecraftVersion + ") est supporté dans une autre compilation.");
-      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "Autorisation " + getDescription().getName() + " v" + getDescription().getVersion() + " Quoi qu'il en soit, des erreurs peuvent apparaître.");
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatFormatting.YELLOW + "Cette compilation Bukkit (" + Bukkit.getBukkitVersion() + ") n'est pas supporté, mais la version du serveur Minecraft (" + minecraftVersion + ") est supporté dans une autre compilation.");
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatFormatting.YELLOW + "Autorisation " + getPluginMeta().getName() + " v" + getPluginMeta().getVersion() + " Quoi qu'il en soit, des erreurs peuvent apparaître.");
     }
-    // ⬆️ Si une des versions supportées a pu trouver une versioon Minecraft compatible avec le Serveur, on affiche un Message disant que le plugin s'active bien, mais peut avoir des erreurs ⬆️ //
+    // ⬆️ Si une des versions supportées a pu trouver une version Minecraft compatible avec le Serveur, on affiche un Message disant que le plugin s'active bien, mais peut avoir des erreurs ⬆️ //
 
                                                                         /* ----------------------------------------------------------------------- */
 
-    // ⬇️ On essaie de charger les 'class' du NMS customisée et appele la méthode d'activation dépendant de UtilityMain, sinon, on affiche une erreur sur la console et on désactive le plugin ⬇️ //
+    // ⬇️ On essaie de charger les 'class' du NMS customisée et appel la méthode d'activation dépendant de UtilityMain, sinon, on affiche une erreur sur la console et on désactive le plugin ⬇️ //
     try {
 
-      NMSUtils.load(); // Charge les 'class' NMS customisée
+      NMSUtils.load(); // Charge tous les 'class' NMS customisée
       enable(); // Autre Méthode d'activation du Plugin dépendant de UtilityMain
 
     } catch(Exception e) {
 
-      Bukkit.getServer().getConsoleSender().sendMessage("Une erreur s'est produite lors de l'activation du plugin " + getDescription().getName() + " v" + getDescription().getVersion());
-      e.printStackTrace(); // Affiche le détail de l'erreur dans la console
-      Bukkit.getServer().getPluginManager().disablePlugin((Plugin)this); // Désactive le Plugin en question
+      Bukkit.getServer().getConsoleSender().sendMessage("Une erreur s'est produite lors de l'activation du plugin " + getPluginMeta().getName() + " v" + getPluginMeta().getVersion());
+      e.printStackTrace(System.err); // Affiche le détail de l'erreur dans la console
+      Bukkit.getServer().getPluginManager().disablePlugin(this); // Désactive le Plugin en question
     }
-    // ⬆️ On essaie de charger les 'class' du NMS customisée et appele la méthode d'activation dépendant de UtilityMain, sinon, on affiche une erreur sur la console et on désactive le plugin ⬆️  //
+    // ⬆️ On essaie de charger les 'class' du NMS customisée et appel la méthode d'activation dépendant de UtilityMain, sinon, on affiche une erreur sur la console et on désactive le plugin ⬆️ //
 
   }
 
@@ -119,10 +116,10 @@ public abstract class PaperPlugin extends JavaPlugin {
    */
   public void onDisable() {
 
-    // ⬇️ On essaie d'appeler la méthode de désactivation dépendant de UtilityMain, sinon, on fait rien ⬇️ //
+    // ⬇️ On essaie d'appeler la méthode de désactivation dépendant de UtilityMain, sinon, on ne fait rien ⬇️ //
     try { disable(); }
     catch(Exception ignored) {}
-    // ⬆️ On essaie d'appeler la méthode de désactivation dépendant de UtilityMain, sinon, on fait rien ⬆️ //
+    // ⬆️ On essaie d'appeler la méthode de désactivation dépendant de UtilityMain, sinon, on ne fait rien ⬆️ //
   }
 
   /**************************************************/
@@ -136,8 +133,8 @@ public abstract class PaperPlugin extends JavaPlugin {
    */
   public void setupMetrics(int bStatsResourceID) {
 
-    this.bStatsResourceID = bStatsResourceID;
-    this.metrics = new Metrics(this, bStatsResourceID);
+      // Variable récupérant l'identifiant de la ressource bStats (pour le fonctionnement des NPCs)
+      this.metrics = new Metrics(this, bStatsResourceID);
   }
 
   /**

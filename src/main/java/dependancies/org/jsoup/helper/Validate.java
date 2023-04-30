@@ -91,7 +91,7 @@ public final class Validate {
      * @param string the string to test
      */
     public static void notEmpty(@Nullable String string) {
-        if (string == null || string.length() == 0)
+        if (string == null || string.isEmpty())
             throw new IllegalArgumentException("String must not be empty");
     }
 
@@ -101,7 +101,7 @@ public final class Validate {
      * @param msg message to output if validation fails
      */
     public static void notEmpty(@Nullable String string, String msg) {
-        if (string == null || string.length() == 0)
+        if (string == null || string.isEmpty())
             throw new IllegalArgumentException(msg);
     }
 

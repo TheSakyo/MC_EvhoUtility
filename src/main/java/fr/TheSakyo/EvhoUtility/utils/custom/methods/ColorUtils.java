@@ -1,16 +1,15 @@
 package fr.TheSakyo.EvhoUtility.utils.custom.methods;
 
+import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.ChatFormatting;
-import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.awt.Color;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 /**
@@ -25,12 +24,30 @@ public class ColorUtils {
     /*********************************************************/
 
     /**
-     * Remplace tous les caractères ayant un '&' par le caractère de code de couleur Minecraft '§' - {@link ChatColor}.
+     * Remplace tous les caractères ayant un '&' par le caractère de code de couleur Minecraft '§' - {@link ChatFormatting}.
      *
      * @param msg Message à formater.
-     * @return Le message formaté avec les codes couleurs Minecraft {@link ChatColor}.
+     * @return Le message formaté avec les codes couleurs Minecraft {@link ChatFormatting}.
      */
-    public static String format(String msg) { return ChatColor.translateAlternateColorCodes('&', msg); }
+    public static String format(String msg) {
+
+        Preconditions.checkArgument(msg != null, "Cannot translate null text");
+        char[] b = msg.toCharArray();
+
+        /********************************************/
+
+        for(int i = 0; i < b.length - 1; ++i) {
+
+            if(b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx".indexOf(b[i + 1]) > -1) {
+                b[i] = 167;
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+
+        /********************************************/
+
+        return new String(b);
+    }
 
     /*********************************************************/
     /* TOUTE PETITE MÉTHODE POUR TRADUIRE LES CODES COULEURS */
@@ -39,106 +56,103 @@ public class ColorUtils {
                           /* --------------------------------------------------------- */
 
     /****************************************************************************************************/
-    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATCOLOR' DEPUIS UNE CHAÎNE DE CARACTÈRE */
+    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATFORMATTING' DEPUIS UNE CHAÎNE DE CARACTÈRE */
     /***************************************************************************************************/
 
     /**
-     * Il renvoie le dernier code couleur de {@link ChatColor} depuis une chaîne de caractère
+     * Il renvoie le dernier code couleur de {@link ChatFormatting} depuis une chaîne de caractère
      *
      * @param input La chaîne dans laquelle rechercher le dernier code couleur.
-     * @param forcedecoration force ou pas la vérification des codes couleurs de décoration.
+     * @param forceDecoration force ou pas la vérification des codes couleurs de décoration.
      *
-     * @return Le dernier code couleur de {@link ChatColor} de la chaîne de caractère.
+     * @return Le dernier code couleur de {@link ChatFormatting} de la chaîne de caractère.
      */
-    public static ChatColor getLastChatColorByString(String input, boolean forcedecoration) {
+    public static ChatFormatting getLastChatFormattingByString(String input, boolean forceDecoration) {
 
         List<String> colorDecorations = List.of("§k", "§m", "§o", "§l", "§n"); // Listes des codes couleurs de décoration
 
-        // On définit une variable 'lastColors' récupèrant la chaîne de caractère des dernières récupéré par 'ChatColor'.
-        String lastColors = ChatColor.getLastColors(format(input));
-
-        // On définit une variable 'getlastColor' qui permettra de récupérer la dernière couleur 'ChatColor' à partir de la chaîne de caractère récupéré 'lastColors'.
-        String getlastColor = lastColors;
+        // On définit une variable 'lastColors' récupèrent la chaîne de caractère des dernières récupéré par 'ChatFormatting'.
+        String lastColors = getLastColors(format(input));
 
                           /* --------------------------------------------------------- */
 
-        // On boucle sur la liste des codes couleus de décoration, pour les supprimer de la variable 'getlastColor'
-        for(String decoration : colorDecorations) getlastColor = getlastColor.replaceAll(decoration, "");
+        // On boucle sur la liste des codes couleurs de décoration, pour les supprimer de la variable 'lastColors'
+        for(String decoration : colorDecorations) lastColors = lastColors.replaceAll(decoration, "");
 
                           /* --------------------------------------------------------- */
 
-        // Si 'forcedecoration' est vrai, on change la variable 'getLastColor', pour vérifier par la suite directement la variable 'lastColors'
-        if(forcedecoration) getlastColor = "";
+        // Si 'forceDecoration' est vrai, on change la variable 'getLastColor', pour vérifier par la suite directement la variable 'lastColors'
+        if(forceDecoration) lastColors = "";
 
         // ⬇️ On vérifie le dernier code couleur de 'getLastColor' ⬇️ //
-        if(getlastColor.endsWith("§0")) return ChatColor.BLACK;
-        else if(getlastColor.endsWith("§2")) return ChatColor.DARK_GREEN;
-        else if(getlastColor.endsWith("§4")) return ChatColor.DARK_RED;
-        else if(getlastColor.endsWith("§6")) return ChatColor.GOLD;
-        else if(getlastColor.endsWith("§8")) return ChatColor.DARK_GRAY;
-        else if(getlastColor.endsWith("§a")) return ChatColor.GREEN;
-        else if(getlastColor.endsWith("§c")) return ChatColor.RED;
-        else if(getlastColor.endsWith("§e")) return ChatColor.YELLOW;
-        else if(getlastColor.endsWith("§1")) return ChatColor.DARK_BLUE;
-        else if(getlastColor.endsWith("§3")) return ChatColor.DARK_AQUA;
-        else if(getlastColor.endsWith("§5")) return ChatColor.DARK_PURPLE;
-        else if(getlastColor.endsWith("§7")) return ChatColor.GRAY;
-        else if(getlastColor.endsWith("§9")) return ChatColor.BLUE;
-        else if(getlastColor.endsWith("§b")) return ChatColor.AQUA;
-        else if(getlastColor.endsWith("§d")) return ChatColor.LIGHT_PURPLE;
-        else if(getlastColor.endsWith("§f")) return ChatColor.WHITE;
-        else if(getlastColor.endsWith("§r")) return ChatColor.RESET;
+        if(lastColors.endsWith("§0")) return ChatFormatting.BLACK;
+        else if(lastColors.endsWith("§2")) return ChatFormatting.DARK_GREEN;
+        else if(lastColors.endsWith("§4")) return ChatFormatting.DARK_RED;
+        else if(lastColors.endsWith("§6")) return ChatFormatting.GOLD;
+        else if(lastColors.endsWith("§8")) return ChatFormatting.DARK_GRAY;
+        else if(lastColors.endsWith("§a")) return ChatFormatting.GREEN;
+        else if(lastColors.endsWith("§c")) return ChatFormatting.RED;
+        else if(lastColors.endsWith("§e")) return ChatFormatting.YELLOW;
+        else if(lastColors.endsWith("§1")) return ChatFormatting.DARK_BLUE;
+        else if(lastColors.endsWith("§3")) return ChatFormatting.DARK_AQUA;
+        else if(lastColors.endsWith("§5")) return ChatFormatting.DARK_PURPLE;
+        else if(lastColors.endsWith("§7")) return ChatFormatting.GRAY;
+        else if(lastColors.endsWith("§9")) return ChatFormatting.BLUE;
+        else if(lastColors.endsWith("§b")) return ChatFormatting.AQUA;
+        else if(lastColors.endsWith("§d")) return ChatFormatting.LIGHT_PURPLE;
+        else if(lastColors.endsWith("§f")) return ChatFormatting.WHITE;
+        else if(lastColors.endsWith("§r")) return ChatFormatting.RESET;
         else {
 
             // ⬇️ Si on n'a rien trouvé, On vérifie le dernier code couleur de 'lastColors' qui eux contiennent les codes couleurs de décoration ⬇️ //
-            if(lastColors.endsWith("§k")) return ChatColor.MAGIC;
-            else if(lastColors.endsWith("§m")) return ChatColor.STRIKETHROUGH;
-            else if(lastColors.endsWith("§o")) return ChatColor.ITALIC;
-            else if(lastColors.endsWith("§l")) return ChatColor.BOLD;
-            else if(lastColors.endsWith("§n")) return ChatColor.UNDERLINE;
-            else return ChatColor.RESET;
+            if(lastColors.endsWith("§k")) return ChatFormatting.OBFUSCATED;
+            else if(lastColors.endsWith("§m")) return ChatFormatting.STRIKETHROUGH;
+            else if(lastColors.endsWith("§o")) return ChatFormatting.ITALIC;
+            else if(lastColors.endsWith("§l")) return ChatFormatting.BOLD;
+            else if(lastColors.endsWith("§n")) return ChatFormatting.UNDERLINE;
+            else return ChatFormatting.RESET;
             // ⬆️ Si on n'a rien trouvé, On vérifie le dernier code couleur de 'lastColors' qui eux contiennent les codes couleurs de décoration ⬆️ //
         }
         // ⬆️ On vérifie le dernier code couleur de 'getLastColor' ⬆️ //
     }
 
     /****************************************************************************************************/
-    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATCOLOR' DEPUIS UNE CHAÎNE DE CARACTÈRE */
+    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATFORMATTING' DEPUIS UNE CHAÎNE DE CARACTÈRE */
     /***************************************************************************************************/
 
                           /* --------------------------------------------------------- */
 
     /****************************************************************************************************/
-    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATCOLOR' DEPUIS UNE CHAÎNE DE CARACTÈRE */
+    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATFORMATTING' DEPUIS UNE CHAÎNE DE CARACTÈRE */
     /***************************************************************************************************/
 
     /**
-     * Il renvoie le dernier code couleur de {@link ChatColor} depuis une chaîne de caractère
+     * Il renvoie le dernier code couleur de {@link ChatFormatting} depuis une chaîne de caractère
      *
      * @param input La chaîne dans laquelle rechercher le dernier code couleur.
      *
-     * @return Le dernier code couleur de {@link ChatColor} de la chaîne de caractère.
+     * @return Le dernier code couleur de {@link ChatFormatting} de la chaîne de caractère.
      */
-    public static ChatColor getLastChatColorByString(String input) { return getLastChatColorByString(input, false); }
+    public static ChatFormatting getLastChatFormattingByString(String input) { return getLastChatFormattingByString(input, false); }
 
     /****************************************************************************************************/
-    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATCOLOR' DEPUIS UNE CHAÎNE DE CARACTÈRE */
+    /* PETITE MÉTHODE POUR RÉCUPÉRER LE DERNIER CODE COULEUR 'CHATFORMATTING' DEPUIS UNE CHAÎNE DE CARACTÈRE */
     /***************************************************************************************************/
 
             /* ---------------------------------------------------------------------------------------------------- */
             /* ---------------------------------------------------------------------------------------------------- */
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATCOLOR' PAR LES COULEURS 'NamedTextColor' */
-    /********************************************************************************************/
+    /*************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATFORMATTING' PAR LES COULEURS 'NamedTextColor' */
+    /************************************************************************************************/
 
     /**
-     * Convertie les couleurs de {@link ChatColor} par des couleurs {@link NamedTextColor}.
+     * Convertie les couleurs de {@link ChatFormatting} par des couleurs {@link NamedTextColor}.
      *
-     * @param color La {@link ChatColor couleur} à convertir.
+     * @param color La {@link ChatFormatting couleur} à convertir.
      * @return Une énumération de {@link NamedTextColor}.
      */
-    public static NamedTextColor convertNamedTextColor(ChatColor color) {
+    public static NamedTextColor convertNamedTextColor(ChatFormatting color) {
 
         return switch(color) {
 
@@ -162,72 +176,27 @@ public class ColorUtils {
         };
     }
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATCOLOR' PAR LES COULEURS 'NamedTextColor' */
-    /********************************************************************************************/
+    /*************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATFORMATTING' PAR LES COULEURS 'NamedTextColor' */
+    /************************************************************************************************/
 
                           /* --------------------------------------------------------- */
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATCOLOR' PAR LES COULEURS 'ChatFormatting' */
-    /********************************************************************************************/
+    /*******************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'CHATFORMATTING' PAR LES DÉCORATIONS 'TextDecoration' */
+    /*******************************************************************************************************/
 
     /**
-     * Convertie les couleurs de {@link ChatColor} par des couleurs {@link ChatFormatting}.
+     * Convertie les couleurs de {@link ChatFormatting} par des décorations de {@link TextDecoration}.
      *
-     * @param color La {@link ChatColor couleur} à convertir.
-     * @return Une énumération de {@link ChatFormatting}.
-     */
-    public static ChatFormatting convertChatFormattingColor(ChatColor color) {
-
-        return switch(color) {
-
-            case WHITE -> ChatFormatting.WHITE;
-            case BLACK -> ChatFormatting.BLACK;
-            case GRAY -> ChatFormatting.GRAY;
-            case AQUA -> ChatFormatting.AQUA;
-            case RED -> ChatFormatting.RED;
-            case BLUE -> ChatFormatting.BLUE;
-            case GREEN -> ChatFormatting.GREEN;
-            case YELLOW -> ChatFormatting.YELLOW;
-            case GOLD -> ChatFormatting.GOLD;
-            case LIGHT_PURPLE -> ChatFormatting.LIGHT_PURPLE;
-            case DARK_AQUA -> ChatFormatting.DARK_AQUA;
-            case DARK_RED -> ChatFormatting.DARK_RED;
-            case DARK_BLUE -> ChatFormatting.DARK_BLUE;
-            case DARK_GRAY -> ChatFormatting.DARK_GRAY;
-            case DARK_GREEN -> ChatFormatting.DARK_GREEN;
-            case DARK_PURPLE -> ChatFormatting.DARK_PURPLE;
-            case MAGIC -> ChatFormatting.OBFUSCATED;
-            case STRIKETHROUGH -> ChatFormatting.STRIKETHROUGH;
-            case UNDERLINE -> ChatFormatting.UNDERLINE;
-            case BOLD -> ChatFormatting.BOLD;
-            case ITALIC -> ChatFormatting.ITALIC;
-            default -> ChatFormatting.RESET;
-        };
-    }
-
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'CHATCOLOR' PAR LES COULEURS 'ChatFormatting' */
-    /********************************************************************************************/
-
-                          /* --------------------------------------------------------- */
-
-    /**************************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'CHATCOLOR' PAR LES DÉCORATIONS 'TextDecoration' */
-    /**************************************************************************************************/
-
-    /**
-     * Convertie les couleurs de {@link ChatColor} par des décorations de {@link TextDecoration}.
-     *
-     * @param color La {@link ChatColor couleur} à convertir.
+     * @param color La {@link ChatFormatting couleur} à convertir.
      * @return Une énumération de {@link TextDecoration}.
      */
-    public static TextDecoration convertTextDecoration(ChatColor color) {
+    public static TextDecoration convertTextDecoration(ChatFormatting color) {
 
         return switch(color) {
 
-            case MAGIC -> TextDecoration.OBFUSCATED;
+            case OBFUSCATED -> TextDecoration.OBFUSCATED;
             case STRIKETHROUGH -> TextDecoration.STRIKETHROUGH;
             case UNDERLINE -> TextDecoration.UNDERLINED;
             case BOLD -> TextDecoration.BOLD;
@@ -236,122 +205,130 @@ public class ColorUtils {
         };
     }
 
-    /**************************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'CHATCOLOR' PAR LES DÉCORATIONS 'TextDecoration' */
-    /**************************************************************************************************/
+    /*******************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'CHATFORMATTING' PAR LES DÉCORATIONS 'TextDecoration' */
+    /*******************************************************************************************************/
 
             /* ---------------------------------------------------------------------------------------------------- */
             /* ---------------------------------------------------------------------------------------------------- */
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'NamedTextColor' PAR LES COULEURS 'CHATCOLOR' */
-    /********************************************************************************************/
+    /**************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'NamedTextColor' PAR LES COULEURS 'CHATFORMATTING' */
+    /************************************************************************************************/
 
     /**
-     * Convertie les couleurs de {@link NamedTextColor} par des couleurs {@link ChatColor}.
+     * Convertie les couleurs de {@link NamedTextColor} par des couleurs {@link ChatFormatting}.
      *
      * @param color La {@link NamedTextColor couleur} à convertir.
-     * @return Une énumération de {@link ChatColor}.
+     * @return Une énumération de {@link ChatFormatting}.
      */
-    public static ChatColor NamedTextColorToChatColor(NamedTextColor color) {
+    public static ChatFormatting NamedTextColorToChatFormatting(NamedTextColor color) {
 
-        if(color == NamedTextColor.WHITE) return ChatColor.WHITE;
-        else if(color == NamedTextColor.BLACK) return ChatColor.BLACK;
-        else if(color == NamedTextColor.GRAY) return ChatColor.GRAY;
-        else if(color == NamedTextColor.AQUA) return ChatColor.AQUA;
-        else if(color == NamedTextColor.RED) return ChatColor.RED;
-        else if(color == NamedTextColor.BLUE) return ChatColor.BLUE;
-        else if(color == NamedTextColor.GREEN) return ChatColor.GREEN;
-        else if(color == NamedTextColor.YELLOW) return ChatColor.YELLOW;
-        else if(color == NamedTextColor.GOLD) return ChatColor.GOLD;
-        else if(color == NamedTextColor.LIGHT_PURPLE) return ChatColor.LIGHT_PURPLE;
-        else if(color == NamedTextColor.DARK_AQUA) return ChatColor.DARK_AQUA;
-        else if(color == NamedTextColor.DARK_RED) return ChatColor.DARK_RED;
-        else if(color == NamedTextColor.DARK_BLUE) return ChatColor.DARK_BLUE;
-        else if(color == NamedTextColor.DARK_GRAY) return ChatColor.DARK_GRAY;
-        else if(color == NamedTextColor.DARK_GREEN) return ChatColor.DARK_GREEN;
-        else if(color == NamedTextColor.DARK_PURPLE) return ChatColor.DARK_PURPLE;
-        else return ChatColor.RESET;
+        if(color == NamedTextColor.WHITE) return ChatFormatting.WHITE;
+        else if(color == NamedTextColor.BLACK) return ChatFormatting.BLACK;
+        else if(color == NamedTextColor.GRAY) return ChatFormatting.GRAY;
+        else if(color == NamedTextColor.AQUA) return ChatFormatting.AQUA;
+        else if(color == NamedTextColor.RED) return ChatFormatting.RED;
+        else if(color == NamedTextColor.BLUE) return ChatFormatting.BLUE;
+        else if(color == NamedTextColor.GREEN) return ChatFormatting.GREEN;
+        else if(color == NamedTextColor.YELLOW) return ChatFormatting.YELLOW;
+        else if(color == NamedTextColor.GOLD) return ChatFormatting.GOLD;
+        else if(color == NamedTextColor.LIGHT_PURPLE) return ChatFormatting.LIGHT_PURPLE;
+        else if(color == NamedTextColor.DARK_AQUA) return ChatFormatting.DARK_AQUA;
+        else if(color == NamedTextColor.DARK_RED) return ChatFormatting.DARK_RED;
+        else if(color == NamedTextColor.DARK_BLUE) return ChatFormatting.DARK_BLUE;
+        else if(color == NamedTextColor.DARK_GRAY) return ChatFormatting.DARK_GRAY;
+        else if(color == NamedTextColor.DARK_GREEN) return ChatFormatting.DARK_GREEN;
+        else if(color == NamedTextColor.DARK_PURPLE) return ChatFormatting.DARK_PURPLE;
+        else return ChatFormatting.RESET;
     }
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'NamedTextColor' PAR LES COULEURS 'CHATCOLOR' */
-    /********************************************************************************************/
+    /**************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'NamedTextColor' PAR LES COULEURS 'CHATFORMATTING' */
+    /************************************************************************************************/
 
                           /* --------------------------------------------------------- */
 
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'ChatFormatting' PAR LES COULEURS 'CHATCOLOR' */
-    /********************************************************************************************/
+    /********************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'TextDecoration' PAR LES DÉCORATIONS 'CHATFORMATTING' */
+    /******************************************************************************************************/
 
     /**
-     * Convertie les couleurs de {@link ChatFormatting} par des couleurs {@link ChatColor}.
-     *
-     * @param color La {@link ChatFormatting couleur} à convertir.
-     * @return Une énumération de {@link ChatColor}.
-     */
-    public static ChatColor ChatFormattingColorToChatColor(ChatFormatting color) {
-
-        if(color == ChatFormatting.WHITE) return ChatColor.WHITE;
-        else if(color == ChatFormatting.BLACK) return ChatColor.BLACK;
-        else if(color == ChatFormatting.GRAY) return ChatColor.GRAY;
-        else if(color == ChatFormatting.AQUA) return ChatColor.AQUA;
-        else if(color == ChatFormatting.RED) return ChatColor.RED;
-        else if(color == ChatFormatting.BLUE) return ChatColor.BLUE;
-        else if(color == ChatFormatting.GREEN) return ChatColor.GREEN;
-        else if(color == ChatFormatting.YELLOW) return ChatColor.YELLOW;
-        else if(color == ChatFormatting.GOLD) return ChatColor.GOLD;
-        else if(color == ChatFormatting.LIGHT_PURPLE) return ChatColor.LIGHT_PURPLE;
-        else if(color == ChatFormatting.DARK_AQUA) return ChatColor.DARK_AQUA;
-        else if(color == ChatFormatting.DARK_RED) return ChatColor.DARK_RED;
-        else if(color == ChatFormatting.DARK_BLUE) return ChatColor.DARK_BLUE;
-        else if(color == ChatFormatting.DARK_GRAY) return ChatColor.DARK_GRAY;
-        else if(color == ChatFormatting.DARK_GREEN) return ChatColor.DARK_GREEN;
-        else if(color == ChatFormatting.DARK_PURPLE) return ChatColor.DARK_PURPLE;
-        else if(color == ChatFormatting.OBFUSCATED) return ChatColor.MAGIC;
-        else if(color == ChatFormatting.STRIKETHROUGH) return ChatColor.STRIKETHROUGH;
-        else if(color == ChatFormatting.UNDERLINE) return ChatColor.UNDERLINE;
-        else if(color == ChatFormatting.BOLD) return ChatColor.BOLD;
-        else if(color == ChatFormatting.ITALIC) return ChatColor.ITALIC;
-        else return ChatColor.RESET;
-    }
-
-    /********************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES COULEURS 'ChatFormatting' PAR LES COULEURS 'CHATCOLOR' */
-    /********************************************************************************************/
-
-                          /* --------------------------------------------------------- */
-
-    /**************************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'TextDecoration' PAR LES DÉCORATIONS 'CHATCOLOR' */
-    /**************************************************************************************************/
-
-    /**
-     * Convertie les décorations de {@link TextDecoration} par des couleurs {@link ChatColor}.
+     * Convertie les décorations de {@link TextDecoration} par des couleurs {@link ChatFormatting}.
      *
      * @param color La {@link TextDecoration décoration} à convertir.
-     * @return Une énumération de {@link ChatColor}.
+     * @return Une énumération de {@link ChatFormatting}.
      */
-    public static ChatColor TextDecorationToChatColor(TextDecoration color) {
+    public static ChatFormatting TextDecorationToChatFormatting(TextDecoration color) {
 
         return switch(color) {
 
-            case OBFUSCATED -> ChatColor.MAGIC;
-            case STRIKETHROUGH -> ChatColor.STRIKETHROUGH;
-            case UNDERLINED -> ChatColor.UNDERLINE;
-            case BOLD -> ChatColor.BOLD;
-            case ITALIC -> ChatColor.ITALIC;
+            case OBFUSCATED -> ChatFormatting.OBFUSCATED;
+            case STRIKETHROUGH -> ChatFormatting.STRIKETHROUGH;
+            case UNDERLINED -> ChatFormatting.UNDERLINE;
+            case BOLD -> ChatFormatting.BOLD;
+            case ITALIC -> ChatFormatting.ITALIC;
         };
     }
 
-    /**************************************************************************************************/
-    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'TextDecoration' PAR LES DÉCORATIONS 'CHATCOLOR' */
-    /**************************************************************************************************/
+    /********************************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR LES DÉCORATIONS 'TextDecoration' PAR LES DÉCORATIONS 'CHATFORMATTING' */
+    /******************************************************************************************************/
+
+                            /* --------------------------------------------------------- */
+
+    /***********************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR UNE CHAîNE DE CARACTÈRE EN COULEURS DE CHAT 'CHATFORMATTING' */
+    /**********************************************************************************************/
+
+    public static ChatFormatting convertChatFormatting(Color color) { return convertChatFormatting( "#" + String.format("%08x", color.getRGB()).substring( 2 )); }
+
+    public static ChatFormatting convertChatFormatting(String string)  {
+
+        Preconditions.checkArgument( string != null, "string cannot be null" );
+
+        /********************************************/
+
+        if(string.startsWith("#") && string.length() == 7) {
+
+            int rgb;
+
+            /******************************/
+
+            try { rgb = Integer.parseInt(string.substring(1), 16); }
+            catch(NumberFormatException ex) { throw new IllegalArgumentException( "Illegal hex string " + string ); }
+
+            /******************************/
+
+            StringBuilder magic = new StringBuilder(ChatFormatting.PREFIX_CODE + "x");
+            for(char c : string.substring(1).toCharArray()) { magic.append(ChatFormatting.PREFIX_CODE).append(c); }
+
+            /******************************/
+
+            ChatFormatting chatFormattingByName = ChatFormatting.getByName(string);
+            ChatFormatting chatFormattingByColor = ChatFormatting.getByHexValue(rgb);
+            ChatFormatting chatFormattingByCode = ChatFormatting.getByCode(magic.toString().replace("§", "").charAt(0));
+
+            if(chatFormattingByCode != null) return chatFormattingByCode;
+            else if(chatFormattingByColor != null) return chatFormattingByColor;
+            else if(chatFormattingByName != null) return chatFormattingByName;
+        }
+
+        /********************************************/
+
+        ChatFormatting defined = ChatFormatting.getByName(string.toUpperCase(Locale.ROOT));
+        if(defined != null) { return defined; }
+
+        /********************************************/
+
+        throw new IllegalArgumentException( "Could not parse ChatColor " + string );
+    }
+    /***********************************************************************************************/
+    /* PETITE MÉTHODE POUR CONVERTIR UNE CHAîNE DE CARACTÈRE EN COULEURS DE CHAT 'CHATFORMATTING' */
+    /**********************************************************************************************/
 
             /* ---------------------------------------------------------------------------------------------------- */
             /* ---------------------------------------------------------------------------------------------------- */
-
-    private static final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}"); // Variable récupérant un patronage de couleur
 
     /**
      * Obtient la couleur la plus courante à partir d'une {@link Map}.
@@ -360,15 +337,19 @@ public class ColorUtils {
      *
      * @return La couleur la plus courante
      */
-    public static Color getMostCommonColour(Map map) {
+    public static Color getMostCommonColour(Map<Integer, Integer> map) {
 
-        List<?> list = new LinkedList(map.entrySet());
-        if(list.size() == 0) return null;
+        List<Map.Entry<Integer, Integer>> list = new LinkedList<>(map.entrySet());
+        if(list.isEmpty()) return null;
 
-        list.sort(new Comparator() { public int compare(Object o1, Object o2) { return ((Comparable)((Map.Entry)o1).getValue()).compareTo(((Map.Entry)o2).getValue()); } });
-        Map.Entry me = (Map.Entry)list.get(list.size() - 1);
+        /********************************************/
 
-        int[] rgb = getRGB(((Integer)me.getKey()).intValue());
+        list.sort(Map.Entry.comparingByValue());
+        Map.Entry<Integer, Integer> me = list.get(list.size() - 1);
+
+        /********************************************/
+
+        int[] rgb = getRGB(me.getKey());
         return new Color(rgb[0], rgb[1], rgb[2]);
     }
 
@@ -408,13 +389,17 @@ public class ColorUtils {
 
         if(msg == null) return null;
 
+        /********************************************/
+
         Matcher match = pattern.matcher(msg);
         while(match.find()) {
 
             String color = msg.substring(match.start(), match.end());
-            msg = msg.replace(color, "" + net.md_5.bungee.api.ChatColor.of(color));
+            msg = msg.replace(color, "" + convertChatFormatting(color));
             match = pattern.matcher(msg);
         }
+
+        /********************************************/
 
         return msg;
     }
@@ -431,13 +416,96 @@ public class ColorUtils {
         if(rgbArr[0] < 150 && rgbArr[1] < 150 && rgbArr[2] < 150) return true;
         if(rgbArr[0] > 220 && rgbArr[1] > 200) return true;
 
+        /********************************************/
+
         int rgDiff = rgbArr[0] - rgbArr[1];
         int rbDiff = rgbArr[0] - rgbArr[2];
         int tolerance = 10;
-        if((rgDiff > tolerance || rgDiff < -tolerance) && (rbDiff > tolerance || rbDiff < -tolerance)) return false;
-
-        return true;
+        return (rgDiff <= tolerance && rgDiff >= -tolerance) || (rbDiff <= tolerance && rbDiff >= -tolerance);
     }
 
                     /* ---------------------------------------------------------------------------------------------------- */
+                    /* ---------------------------------------------------------------------------------------------------- */
+
+    public static @NotNull String getLastColors(@NotNull String input) {
+
+        Preconditions.checkArgument(true, "Cannot get last colors from null text");
+        StringBuilder result = new StringBuilder();
+        int length = input.length();
+
+        /*******************************************/
+
+        for(int index = length - 1; index > -1; --index) {
+
+            char section = input.charAt(index);
+
+            /**********************/
+
+            if(section == 167 && index < length - 1) {
+
+                String hexColor = getHexColor(input, index);
+                if(hexColor != null) {
+
+                    result.insert(0, hexColor);
+                    break;
+                }
+
+                /*******************************/
+
+                char c = input.charAt(index + 1);
+                ChatFormatting color = ChatFormatting.getByCode(c);
+
+                /*******************************/
+
+                if(color != null) {
+
+                    String var10000 = color.toString();
+                    result.insert(0, var10000);
+                    if(color.isColor() || color.equals(ChatFormatting.RESET)) break;
+                }
+            }
+        }
+
+        /*******************************************/
+
+        return result.toString();
+    }
+
+    /* -------------------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------------------- */
+
+    public static @Nullable String getHexColor(@NotNull String input, int index) {
+
+        if(index < 12) return null;
+        else if(input.charAt(index - 11) == 'x' && input.charAt(index - 12) == 167) {
+
+            int i;
+            for(i = index - 10; i <= index; i += 2) {
+
+                if(input.charAt(i) != 167) { return null; }
+            }
+
+            /*******************************/
+
+            for(i = index - 9; i <= index + 1; i += 2) {
+
+                char toCheck = input.charAt(i);
+                if(toCheck < '0' || toCheck > 'f') { return null; }
+                if(toCheck > '9' && toCheck < 'A') { return null; }
+                if(toCheck > 'F' && toCheck < 'a') { return null; }
+            }
+
+            /*******************************/
+
+            return input.substring(index - 12, index + 2);
+
+        } else return null;
+    }
+
+
+                    /* ---------------------------------------------------------------------------------------------------- */
+                    /* ---------------------------------------------------------------------------------------------------- */
+                    /* ---------------------------------------------------------------------------------------------------- */
+
+    private static final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}"); // Variable récupérant un patronage de couleur
 }

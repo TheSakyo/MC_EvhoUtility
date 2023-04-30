@@ -38,17 +38,17 @@ public abstract class Module implements Listener {
     /**
      * Vérifie si le module est activé dans le monde donné.
      *
-     * @param world Le monde a vérifié. Null pour vérifier si le module est désactivé dans le monde.
+     * @param world Le monde qu'il faut vérifier. Null pour vérifier si le module est désactivé dans le monde.
      * @return Vrai si le module est activé dans ce monde.
      */
-    public boolean isEnabled(World world){ return Config.moduleEnabled(configName, world); }
+    public boolean isEnabled(World world) { return Config.moduleEnabled(configName, world); }
 
     /**
      * Vérifie si ce module est globalement activé/désactivé.
      *
-     * @retourne Vrai si ce module est globalement activé.
+     * @return Vrai si ce module est globalement activé.
      */
-    public boolean isEnabled(){ return isEnabled(null); }
+    public boolean isEnabled() { return isEnabled(null); }
 
     /**
      * Vérifie si un paramètre donné de ce module est activé.
@@ -86,7 +86,7 @@ public abstract class Module implements Listener {
      */
     protected void debug(String text, CommandSender sender) {
 
-        if(Config.debugEnabled()){ Messenger.send(sender, "&8&l[&fDEBUG&8&l][&f" + moduleName + "&8&l]&7 " + text); }
+        if(Config.debugEnabled()) { Messenger.send(sender, "&8&l[&fDEBUG&8&l][&f" + moduleName + "&8&l]&7 " + text); }
     }
 
     @Override
@@ -101,5 +101,5 @@ public abstract class Module implements Listener {
      *
      * @return Le nom du module, par exemple ModuleDisableAttackCooldown.
      */
-    public String getModuleName(){ return moduleName; }
+    public String getModuleName() { return moduleName; }
 }

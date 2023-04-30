@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,14 +20,13 @@ public class TaskRenderImage extends BukkitRunnable {
 	
 	// Variables Utiles //
 	
-	private Player player;
+	private final Player player;
 	
-	private String path;
+	private final String path;
 	
-	private String name;
+	private final String name;
 	
 	// Variables Utiles //
-	
 	
 	
 	// Constructeur de la class "TaskRenderImage //
@@ -40,8 +39,7 @@ public class TaskRenderImage extends BukkitRunnable {
 	// Constructeur de la class "TaskRenderImage //
 
 
-	
-	
+
    /********************************/
    /* CRÉER LE RENDU DE L'IMAGEMAP */
    /********************************/
@@ -50,7 +48,7 @@ public class TaskRenderImage extends BukkitRunnable {
 	@Override
 	public void run() {
 		
-		// Essait de crÉer le rendu de "l'imagemap", sinon rien ne se passe //
+		// Essaie de crÉer le rendu de "l'imagemap", sinon rien ne se passe //
 		try {
 			
 			final BufferedImage image = ImageHelper.getImage(path, player);  //Variable "image" qui récupère l'image du lien ou du fichier définit par le joueur
@@ -63,40 +61,35 @@ public class TaskRenderImage extends BukkitRunnable {
     		
     		map.setScale(MapView.Scale.FAR); //Définit l'échelle de la map
     		
-    		map.setUnlimitedTracking(false); //Supprime les joueurs afficher dans la map
+    		map.setUnlimitedTracking(false); //Supprime les joueurs affichés dans la map
     		
     		map.addRenderer(new ImageMapRenderer(ImageUtils.scale(image, 128, 128))); //Ajoute le rendu redimensionné de la variable "image"
 			
     		ItemStack item = new ItemStack(Material.FILLED_MAP); //Créer un item de map (pour le donner ensuite au joueur)
-			MapMeta meta = (MapMeta) item.getItemMeta(); //Récupère les données de l'item créer
+			MapMeta meta = (MapMeta) item.getItemMeta(); //Récupère les données de l'item créé
 			meta.setMapId(map.getId()); //Donne l'id de la map créer comme id de l'item
-			meta.setLore(List.of(ChatColor.AQUA + "ImageMap Importée")); //Ajoute une petite description
-			item.setItemMeta(meta); //Définit les nouvelles donées créer à l'item créer
+			meta.setLore(List.of(ChatFormatting.AQUA + "ImageMap Importée")); //Ajoute une petite description
+			item.setItemMeta(meta); //Définit les nouvelles données créées à l'item créé
 			
 			player.getInventory().addItem(item); //Donne l'item au joueur
 			
-			final ImageMap imageMap = new ImageMap(UUID.randomUUID(), name, path, map.getId(), item); //Création de "l'imagemap" avec les différentes informations créer si dessus
+			final ImageMap imageMap = new ImageMap(UUID.randomUUID(), name, path, map.getId(), item); //Création de "l'imagemap" avec les différentes informations créées si dessus
 			
 			final ImageMapYML ImageMapYML = new ImageMapYML(imageMap.getName()); //Créer un fichier de configuration ayant le nom de "l'imagemap"
 			
-			ImageMapYML.write(imageMap, item); //Ecrit les informations de "l'imagemap" dans le fichier de configuration créé
+			ImageMapYML.write(imageMap, item); // Écrit les informations de "l'imagemap" dans le fichier de configuration créé
 			
-			UtilityMain.getInstance().mapmanager.addImageMap(name, imageMap); //Ajoute "l'imagemap" a la class "ImageMapManager"
+			UtilityMain.getInstance().mapManager.addImageMap(name, imageMap); //Ajoute "l'imagemap" a la class "ImageMapManager"
 			
-			// Message de succés au joueur //
-			if(ImageHelper.isURL(path)) {
-				
-				player.sendMessage(UtilityMain.getInstance().prefix + ChatColor.GREEN + "Importation de l'image " + ChatColor.GOLD + name + ChatColor.GREEN + " avec l'URL suivant : " + ChatColor.AQUA.toString() + ChatColor.ITALIC.toString() + path);
+			// Message de succès au joueur //
 
-			} else {
-				
-				player.sendMessage(UtilityMain.getInstance().prefix + ChatColor.GREEN + "Importation de l'image " + ChatColor.GOLD + name + ChatColor.GREEN + " avec le chemin suivant : " + ChatColor.AQUA.toString() + ChatColor.ITALIC.toString() + "/utils/maps/images/" + path);
-			}
+			if(ImageHelper.isURL(path)) player.sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GREEN + "Importation de l'image " + ChatFormatting.GOLD + name + ChatFormatting.GREEN + " avec l'URL suivant : " + ChatFormatting.AQUA.toString() + ChatFormatting.ITALIC.toString() + path);
+			else player.sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GREEN + "Importation de l'image " + ChatFormatting.GOLD + name + ChatFormatting.GREEN + " avec le chemin suivant : " + ChatFormatting.AQUA.toString() + ChatFormatting.ITALIC.toString() + "/utils/maps/images/" + path);
+
+			// Message de succès au joueur //
 			
-			// Message de succés au joueur //
-			
-		} catch (IOException e) { return; }
-		// Essait de créer le rendu de "l'imagemap", sinon rien ne se passe //
+		} catch(IOException ignored) {}
+		// Essaie de créer le rendu de "l'imagemap", sinon rien ne se passe //
 	}
 	
    /********************************/

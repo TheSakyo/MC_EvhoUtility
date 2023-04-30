@@ -1,6 +1,6 @@
 package fr.TheSakyo.EvhoUtility.proxy.commands;
 
-import org.bukkit.ChatColor;
+import net.minecraft.ChatFormatting;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,15 +11,14 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 public class ProxyCMDCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public ProxyCMDCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	 
 	
-	
-	
+    
 	/**********************************************************************************************/
-	/* PARTIE COMMANDE POUR RÉCUPERER UNE AUTRE COMMANDE BUNGEECORD (UTILISE UN CANAL CUSTOMISÉE) */
+	/* PARTIE COMMANDE POUR RÉCUPÉRER UNE AUTRE COMMANDE BUNGEECORD (UTILISE UN CANAL CUSTOMISÉE) */
 	/**********************************************************************************************/
 	
     @Override
@@ -29,19 +28,17 @@ public class ProxyCMDCommand implements CommandExecutor {
             
             if(args.length < 1) {
             	
-                p.sendMessage(main.prefix + ChatColor.RED + "Essayez /proxycmd <command> ou /proxycommand <command>");
+                p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /proxycmd <command> ou /proxycommand <command>");
                 return true;
             }
 
             String command = wrapArguments(args);
 
-            if(main.useproxycmd.containsKey(p.getUniqueId())) main.useproxycmd.replace(p.getUniqueId(), true);
-            else main.useproxycmd.put(p.getUniqueId(), true);
+            if(main.useProxyCMD.containsKey(p.getUniqueId())) main.useProxyCMD.replace(p.getUniqueId(), true);
+            else main.useProxyCMD.put(p.getUniqueId(), true);
 
             if(command.startsWith("/")) { main.sendToBungee("Command", command.replace("/", "")); }
-
             else if(command.startsWith("\\")) { main.sendToBungee("Command", command.replace("\\", "")); }
-
             else { main.sendToBungee("Command", command); }
     		
     		return true;
@@ -49,8 +46,7 @@ public class ProxyCMDCommand implements CommandExecutor {
         
         if(sender instanceof CommandSender) {
         	
-        	sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour éxécuter une commande vers le Serveur Proxy !");
-    		
+        	sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour exécuter une commande vers le Serveur Proxy !");
     		return true;
         }
         
@@ -58,7 +54,7 @@ public class ProxyCMDCommand implements CommandExecutor {
     }
     
     /**********************************************************************************************/
-	/* PARTIE COMMANDE POUR RÉCUPERER UNE AUTRE COMMANDE BUNGEECORD (UTILISE UN CANAL CUSTOMISÉE) */
+	/* PARTIE COMMANDE POUR RÉCUPÉRER UNE AUTRE COMMANDE BUNGEECORD (UTILISE UN CANAL CUSTOMISÉE) */
 	/**********************************************************************************************/
     
     
@@ -69,8 +65,7 @@ public class ProxyCMDCommand implements CommandExecutor {
     private String wrapArguments(String[] args) {
 
         StringBuilder builder = new StringBuilder();
-
-        for(int i = 0; i < args.length; i++) { builder.append(args[i] + " "); }
+        for(String arg : args) { builder.append(arg).append(" "); }
 
         return builder.toString().trim();
     }

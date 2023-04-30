@@ -8,7 +8,6 @@ package fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.potion
 public class GenericPotionDurations {
 
     private final int base, II, extended;
-
     public GenericPotionDurations(int base, int II, int extended) {
 
         this.base = base;

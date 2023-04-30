@@ -11,13 +11,13 @@ import java.util.List;
 public class ModuleLoader {
 
     private static EventRegistry eventRegistry;
-    private static List<Module> modules = new ArrayList<>();
+    private static final List<Module> modules = new ArrayList<>();
 
     public static void initialise(UtilityMain plugin) { ModuleLoader.eventRegistry = new EventRegistry(plugin); }
 
     public static void toggleModules() { modules.forEach(module -> setState(module, module.isEnabled())); }
 
-    private static void setState(Module module, boolean state){
+    private static void setState(Module module, boolean state) {
 
         if(state) {
 

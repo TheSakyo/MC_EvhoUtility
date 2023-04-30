@@ -8,12 +8,12 @@ import java.lang.reflect.Field;
 
 public class PreV13ParticlePacket extends ParticlePacket {
 
-    protected PreV13ParticlePacket(ImmutablePacket packet){
+    protected PreV13ParticlePacket(ImmutablePacket packet) {
         super(packet);
     }
 
     @Override
-    public String getParticleName(){
+    public String getParticleName() {
         return PacketAccess.getParticleName(getNmsPacket());
     }
 

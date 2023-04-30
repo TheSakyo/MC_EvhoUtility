@@ -36,13 +36,13 @@ public class NPCGlobal extends NPC {
     protected final HashMap<Player, NPCPersonal> players; // Variable récupérant le Joueur associé à son NPC
     private final HashMap<UUID, NPC.Attributes> customAttributes; // Variable récupérant les Attributs customisés d'un NPC
     private Visibility visibility; // Variable récupérant la visibilité du NPC
-    private Predicate<Player> visibilityRequirement; // Variable récupérant l'éxigence de la visiilité du Joueur
+    private Predicate<Player> visibilityRequirement; // Variable récupérant l'éxigence de la visibilité du Joueur
     private Entity nearestEntity, nearestPlayer; // Variable récupérant l'Entité ou le Joueur le plus proche
     private Long lastNearestEntityUpdate, lastNearestPlayerUpdate; // Variable récupérant la dernière mise à jour de l'Entité ou du Joueur le plus proche
     private boolean autoCreate, autoShow; // Variable vérifiant l'auto création et l'auto affichage du NPC
     private boolean ownPlayerSkin; // Variable vérifiant si le NPC obtient un Skin par Joueur associé ou non
     private boolean resetCustomAttributes; // Variable vérifiant si le NPC doit réinitialiser ses attributs customisés
-    private List<String> selectedPlayers; // Variable récupérant les Joueurs séléctionnées
+    private List<String> selectedPlayers; // Variable récupérant les Joueurs sélectionnés
     protected boolean persistent; // Variable vérifiant la persistance du NPC
     private String customName; // Variable récupérant un nom customisé pour le NPC
     protected PersistentManager persistentManager; // Variable récupérant la gestion de persistance du NPC
@@ -56,9 +56,9 @@ public class NPCGlobal extends NPC {
      * @param visibility  La {@link Visibility Visibilité} du NPC
      * @param visibilityRequirement L'Éxigence du Joueur pour la visibilité du NPC
      * @param world  Le monde
-     * @param x      La coordonée x
-     * @param y      La coordonée y
-     * @param z      La coordonée z
+     * @param x      La coordonnée x
+     * @param y      La coordonnée y
+     * @param z      La coordonnée z
      * @param yaw    La rotation 'yaw'
      * @param pitch  La rotation 'pitch'
      */
@@ -69,15 +69,15 @@ public class NPCGlobal extends NPC {
         // Si la visibilité du NPC est null, on envoie une erreur
         Validate.notNull(visibility, "Impossible de générer l'instance NPCGlobal NPC, la visibilité ne peut pas être nulle.");
 
-        this.players = new HashMap<>(); // Initialise les joueurs
-        this.customAttributes = new HashMap<>(); // Initialise les attributs customisés
+        this.players = new HashMap<>(); // Initialise tous les joueurs
+        this.customAttributes = new HashMap<>(); // Initialise tous les attributs customisés
         this.visibility = visibility; // Initialise la visibilité
-        this.visibilityRequirement = visibilityRequirement; // Initialise les éxigences de la visibilité
+        this.visibilityRequirement = visibilityRequirement; // Initialise tous les éxigences de la visibilité
         this.autoCreate = true; // Initialise l'auto création du NPC
         this.autoShow = true; // Initialise l'affichage automatique du NPC pour les Joueurs
         this.resetCustomAttributes = false; // Initialise la réinitialisation des attributs customisés
         this.persistent = false; // Initialise la persistance du NPC
-        this.selectedPlayers = new ArrayList<>(); // Initialise les Joueurs sélectionnés
+        this.selectedPlayers = new ArrayList<>(); // Initialise tous les Joueurs sélectionnés
 
         np(null); // Initialise le Joueur le plus proche du NPC
         ne(null); // Initialise l'Entité le plus proche du NPC
@@ -101,7 +101,7 @@ public class NPCGlobal extends NPC {
 
     // ÉNUMÉRATION DE LA VISIBILITÉ DU NPC //
 
-    public enum Visibility { EVERYONE, SELECTED_PLAYERS; }
+    public enum Visibility { EVERYONE, SELECTED_PLAYERS }
 
     // ÉNUMÉRATION DE LA VISIBILITÉ DU NPC //
 
@@ -133,12 +133,13 @@ public class NPCGlobal extends NPC {
      * Vérifie la visibilité du NPC pour les joueurs.
      *
      */
+    @SuppressWarnings("unchecked")
     private void checkVisiblePlayers() {
 
         Set<Player> playerSet = new HashSet<>(players.keySet());
-        playerSet.stream().filter(x-> !meetsVisibilityRequirement(x)).forEach(this::removePlayer);
+        playerSet.stream().filter(this::meetsVisibilityRequirement).forEach(this::removePlayer);
 
-        if(visibility.equals(Visibility.EVERYONE)) addPlayers((Collection<Player>) Bukkit.getServer().getOnlinePlayers());
+        if(visibility.equals(Visibility.EVERYONE)) addPlayers((Collection<Player>)Bukkit.getServer().getOnlinePlayers());
         else if(visibility.equals(Visibility.SELECTED_PLAYERS)) Bukkit.getServer().getOnlinePlayers().stream().filter(x-> !players.containsKey(x) && selectedPlayers.contains(x.getName())).forEach(this::addPlayer);
     }
 
@@ -149,17 +150,17 @@ public class NPCGlobal extends NPC {
     public Visibility getVisibility() { return visibility; }
 
     /**
-     * Vérifie si le Joueur demandé répond à l'éxigence pour la visiblité du NPC.
+     * Vérifie si le Joueur demandé répond à l'éxigence pour la visibility du NPC.
      *
-     * @param player Le Joueur a vérifié
+     * @param player Le Joueur qu'il faut vérifier.
      *
      * @return Une valeur Booléenne
      */
     public boolean meetsVisibilityRequirement(@Nonnull Player player) {
 
         Validate.notNull(player, "Impossible de vérifier un joueur nul.");
-        if(visibilityRequirement == null) return true;
-        return visibilityRequirement.test(player);
+        if(visibilityRequirement == null) return false;
+        return !visibilityRequirement.test(player);
     }
 
     /**
@@ -214,7 +215,7 @@ public class NPCGlobal extends NPC {
         if(players.containsKey(player)) return; // Si le Joueur est déjà ajouté, on ne fait rien
 
         // Si on n'ignore pas l'éxigence de visibilité et que le Joueur ne répond pas à l'éxigence demandé, on ne fait rien
-        if(!ignoreVisibilityRequirement && !meetsVisibilityRequirement(player)) return;
+        if(!ignoreVisibilityRequirement && meetsVisibilityRequirement(player)) return;
 
         // On génère un NPC Personnel pour le Joueur
         NPCPersonal npcPersonal = getNPCUtils().generatePlayerPersonalNPC(player, getPlugin(), getPlugin().getName().toLowerCase() + "." + "global_" + getSimpleCode(), getLocation());
@@ -222,10 +223,10 @@ public class NPCGlobal extends NPC {
         npcPersonal.npcGlobal = this; // On définit son instance NPC Globale au NPC en question
         players.put(player, npcPersonal); // On ajoute ensuite le NPC Personnel généré au Joueur en question
 
-        // Si dans la liste des joueurs sélectionnée, on ne trouve pas le nom du Joueur on l'ajoute
+        // Si dans la liste des joueurs sélectionnée, on ne trouve pas le nom du Joueur, on l'ajoute
         if(!selectedPlayers.contains(player.getName())) selectedPlayers.add(player.getName());
 
-        // Si dans la liste des attributs customisés, on ne trouve pas l'UUID du Joueur on l'ajoute
+        // Si dans la liste des attributs customisés, on ne trouve pas l'UUID du Joueur, on l'ajoute
         if(!customAttributes.containsKey(player.getUniqueId())) customAttributes.put(player.getUniqueId(), new Attributes(null));
 
         updateAttributes(player); // On recharge les attributs pour le Joueur
@@ -261,8 +262,8 @@ public class NPCGlobal extends NPC {
         // Si on a accepté la réinitialisation des attributs customisés du NPC, on enlève alors les attributs customisés pour le Joueur
         if(resetCustomAttributes) customAttributes.remove(player.getUniqueId());
 
-        // Si le joueur est parmis les Joueurs sélectionner du NPC, on lui enlève
-        if(selectedPlayers.contains(player.getName())) selectedPlayers.remove(player.getName());
+        // Si le joueur est promise les Joueurs sélectionner du NPC, on lui enlève
+        selectedPlayers.remove(player.getName());
 
         players.remove(player); // On ajoute ensuite le NPC Personnel généré au Joueur en question
         getNPCUtils().removePersonalNPC(personalNPC); // On Supprime ensuite le NPC Personnel du Joueur en question
@@ -271,7 +272,7 @@ public class NPCGlobal extends NPC {
     /**
      * Vérifie si le Joueur est associé au NPC en question.
      *
-     * @param player Le Joueur a vérifié
+     * @param player Le Joueur qu'il faut vérifier.
      *
      * @return Une valeur Booléenne
      */
@@ -323,7 +324,7 @@ public class NPCGlobal extends NPC {
     /**
      * Pour tous les Joueurs actifs, on effectue une action consacrée à leur NPC.
      *
-     * @param action L'Action a affectué
+     * @param action L'Action a effectuer.
      */
     protected void forEachActivePlayer(BiConsumer<Player, NPCPersonal> action) { players.keySet().stream().filter(this::isActive).forEach(x-> action.accept(x, getPersonal(x))); }
 
@@ -337,7 +338,7 @@ public class NPCGlobal extends NPC {
     /**
      * Vérifie si le joueur demandé est actif.
      *
-     * @param player Le Joueur a vérifié
+     * @param player Le Joueur qu'il faut vérifier.
      *
      * @return Une valeur Booléenne
      */
@@ -346,10 +347,10 @@ public class NPCGlobal extends NPC {
         if(!player.isOnline()) return false; // Si le Joueur est hors-ligne, on retourne faux
         if(!hasPlayer(player)) return false; // Si le Joueur ne fait pas partie des Joueurs associés au NPC, on retourne faux
 
-        NPCPersonal personalNPC = getPersonal(player); // On Récupère le NPC Personnel du Joueur en question
-        if(!personalNPC.isCreated()) return false; // Si le NPC Personnel du Joueur en question n'est pas créé, on retourne faux
+        /**********************************/
 
-        return true; // Sinon, on retourne vrai
+        NPCPersonal personalNPC = getPersonal(player); // On Récupère le NPC Personnel du Joueur en question
+        return personalNPC.isCreated(); // Renvoie une valeur booléenne vérifiant NPC Personnel du Joueur en question est créé ou non
     }
 
     /**
@@ -484,23 +485,23 @@ public class NPCGlobal extends NPC {
     public void setAutoShow(boolean autoShow) { this.autoShow = autoShow; }
 
     /**
-     * Vérifie si le NPC est persitant.
+     * Vérifie si le NPC est persistant.
      *
      * @return Une valeur Booléenne
      */
     public boolean isPersistent() { return persistent; }
 
     /**
-     * Vérifie si le NPC peut être persitant.
+     * Vérifie si le NPC peut-être persistant.
      *
      * @return Une valeur Booléenne
      */
     public boolean canBePersistent() { return getPlugin().equals(UtilityMain.getInstance()); }
 
     /**
-     * Définit si le NPC soit persitant.
+     * Définit si le NPC soit persistant.
      *
-     * @param persistent Le NPC doit-il être persitant ?
+     * @param persistent Le NPC doit-il être persistant ?
      *
      */
     public void setPersistent(boolean persistent) {
@@ -685,7 +686,7 @@ public class NPCGlobal extends NPC {
      *
      * @param player Le Joueur dont il est question
      */
-    public void resetCustomLineSpacing(Player player){ getCustomAttributes(player).lineSpacing = null; }
+    public void resetCustomLineSpacing(Player player) { getCustomAttributes(player).lineSpacing = null; }
 
     /**
      * Définit un Alignement de Texte Customisé de l'affichage du Texte du NPC pour un Joueur.
@@ -763,7 +764,7 @@ public class NPCGlobal extends NPC {
     public void resetCustomOnFire(Player player) { getCustomAttributes(player).onFire = null; }
 
    /**
-     * Réinitialise tous les Attributs Cutomisés du NPC pour un Joueur.
+     * Réinitialise tous les Attributs Customises du NPC pour un Joueur.
      *
      * @param player Le Joueur qen question
      */
@@ -789,6 +790,7 @@ public class NPCGlobal extends NPC {
      *
      * @param player Le Joueur en question
      */
+    @SuppressWarnings("unchecked")
     private void updateAttributes(Player player) {
 
         NPCPersonal npcPersonal = getPersonal(player); // Récupère le NPC Personnel du Joueur
@@ -800,61 +802,61 @@ public class NPCGlobal extends NPC {
         // Si le NPC contient un Skin pour chaque Joueur, mais que le Nom de son Skin ne correspondant pas au Nom du Joueur ou alors est null, on redéfinit son Skin en forçant la mise à jour du NPC
         if(ownPlayerSkin && (npcPersonal.getSkin().getPlayerName() == null || !npcPersonal.getSkin().getPlayerName().equals(player.getName()))) npcPersonal.setSkin(player, skin -> npcPersonal.forceUpdate());
 
-        // Sinon, on définit au NPC le Skin récupéré depuis ses Attibuts ou Attributs Customisés
+        // Sinon, on définit au NPC le Skin récupéré depuis ses Attributs ou Attributs Customisés
         else npcPersonal.setSkin(cA.skin != null ? cA.skin : A.skin);
 
-        // Définit les Parties du Skin visibles du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit les Parties du Skin visibles du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setSkinParts(cA.skinParts != null ? cA.skinParts : A.skinParts);
 
-        // Définit les Collisions du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit les Collisions du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setCollidable(cA.collidable != null ? cA.collidable : A.collidable);
 
-        // Définit le Texte à afficher par le NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit le Texte à afficher par le NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setText(cA.text != null ? cA.text : A.text);
 
-        // Définit la Distance avant de Cacher le NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit la Distance avant de Cacher le NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setHideDistance(cA.hideDistance != null ? cA.hideDistance : A.hideDistance);
 
-        // Définit la Surbrillance du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit la Surbrillance du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setGlowing(cA.glowing != null ? cA.glowing : A.glowing);
 
-        // Définit la Couleur de Surbrillance du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit la Couleur de Surbrillance du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setGlowingColor(cA.glowingColor != null ? cA.glowingColor : A.glowingColor);
 
-        // Définit le Type de Suivie du Regard du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit le Type de Suivie du Regard du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setGazeTrackingType(cA.gazeTrackingType != null ? cA.gazeTrackingType : A.gazeTrackingType);
 
-        // Définit les Équipements du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit les Équipements du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setSlots((HashMap<EquipmentSlot, ItemStack>)(cA.slots != null ? cA.slots : A.slots).clone());
 
-        // Définit le Nom Customisé du NPC dans le 'tablist' depuis ses Attibuts ou Attributs Customisés
+        // Définit le Nom Customisé du NPC dans le 'tablist' depuis ses Attributs ou Attributs Customisés
         npcPersonal.setCustomTabListName(cA.customTabListName != null ? cA.customTabListName : A.customTabListName);
 
-        // Définit l'Affichage du NPC dans le 'tablist' depuis ses Attibuts ou Attributs Customisés
+        // Définit l'Affichage du NPC dans le 'tablist' depuis ses Attributs ou Attributs Customisés
         npcPersonal.setShowOnTabList(cA.showOnTabList != null ? cA.showOnTabList : A.showOnTabList);
 
-        // Définit la Posture du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit la Posture du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setPose(cA.pose != null ? cA.pose : A.pose);
 
-        // Définit le Champ de Vision vue par les Joueurs du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit le Champ de Vision vue par les Joueurs du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setLineSpacing(cA.lineSpacing != null ? cA.lineSpacing : A.lineSpacing);
 
-        // Définit l'Alignement du Texte affiché par le NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit l'Alignement du Texte affiché par le NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setTextAlignment((cA.textAlignment != null ? cA.textAlignment : A.textAlignment).clone());
 
-        // Définit le Temps d'Intéraction du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit le Temps d'Intéraction du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setInteractCooldown(cA.interactCooldown != null ? cA.interactCooldown : A.interactCooldown);
 
-        // Définit l'Opacité du Texte affiché par le NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit l'Opacité du Texte affiché par le NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setTextOpacity(cA.textOpacity != null ? cA.textOpacity : A.textOpacity);
 
-        // Définit l'Opacité de chaques Lignes afficheant du Texte par le NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit l'Opacité de chaques Lignes affichant du Texte par le NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setLinesOpacity((HashMap<Integer, Hologram.Opacity>) (cA.linesOpacity != null ? cA.linesOpacity : A.linesOpacity).clone());
 
-        // Définit la Vitesse de Déplacement du NPC depuis ses Attibuts ou Attributs Customisés
+        // Définit la Vitesse de Déplacement du NPC depuis ses Attributs ou Attributs Customisés
         npcPersonal.setMoveSpeed(cA.moveSpeed != null ? cA.moveSpeed : A.moveSpeed);
 
-        // Définit le NPC étant en Feu ou non depuis ses Attibuts ou Attributs Customisés
+        // Définit le NPC étant en Feu ou non depuis ses Attributs ou Attributs Customisés
         npcPersonal.setOnFire(cA.onFire != null ? cA.onFire : A.onFire);
     }
 
@@ -912,7 +914,7 @@ public class NPCGlobal extends NPC {
     public void destroy() {
 
         Set<Player> playerSet = new HashSet<>(players.keySet()); // Récupère tous les Joueurs
-        playerSet.forEach((player) -> getNPCUtils().removePersonalNPC(getPersonal(player))); // On leur supprime à chacun leur NPC Personnel
+        playerSet.forEach((player) -> getNPCUtils().removePersonalNPC(getPersonal(player))); // On les supprime à chacun leur NPC Personnel
     }
 
     /**
@@ -965,16 +967,16 @@ public class NPCGlobal extends NPC {
         if(npcTeleportEvent.isCancelled()) return; // Si l'évènement a été annulé, alors on ne téléporte pas le NPC
 
         super.setWorld(world); // On change l'attribut du monde du NPC
-        super.setX(x); // On change l'attribut la coordonée 'X' du NPC
-        super.setY(y); // On change l'attribut la coordonée 'Y' du NPC
-        super.setZ(z); // On change l'attribut la coordonée 'Z' du NPC
+        super.setX(x); // On change l'attribut la coordonnée 'X' du NPC
+        super.setY(y); // On change l'attribut la coordonnée 'Y' du NPC
+        super.setZ(z); // On change l'attribut la coordonnée 'Z' du NPC
 
         super.setYaw(yaw); // On change l'attribut de la rotation 'yaw' du NPC
         super.setDefaultYAW(yaw); // On change l'attribut de la rotation 'yaw' par défaut du NPC
         super.setPitch(pitch); // On change l'attribut de la rotation 'pitch' du NPC
         super.setDefaultPITCH(yaw); // On change l'attribut de la rotation 'yaw' par défaut du NPC
 
-        forEachActivePlayer((player, npc)-> npc.teleport(world, x, y, z, yaw, pitch));  // Effectue le téléportement pour tous les Joueurs actifs associés au NPC
+        forEachActivePlayer((player, npc)-> npc.teleport(world, x, y, z, yaw, pitch));  // On effectue le téléporte ment pour tous les Joueurs actifs associés au NPC
     }
 
     /**
@@ -991,11 +993,11 @@ public class NPCGlobal extends NPC {
      *
      * @param yaw La rotation 'yaw' dans laquelle le NPC va se tourner
      * @param pitch La rotation 'pitch' dans laquelle le NPC va se tourner
-     * @param forcelook Doit-on forçer la rotation par défaut du NPC ?
+     * @param forceLook Doit-on forçer la rotation par défaut du NPC ?
      *
      */
     @Override
-    public void lookAt(float yaw, float pitch, boolean forcelook) {
+    public void lookAt(float yaw, float pitch, boolean forceLook) {
 
         super.setYaw(yaw); // Définit rotation 'yaw' dans laquelle le NPC va se tourner
         super.setPitch(pitch); // Définit rotation 'pitch' dans laquelle le NPC va se tourner
@@ -1006,8 +1008,8 @@ public class NPCGlobal extends NPC {
             super.setDefaultPITCH(pitch); // Définit rotation 'yaw' par défaut dans laquelle le NPC va se tourner
         }
 
-        // si on a demandé de forcçer la rotation par défaut du NPC, alors on le fait
-        if(forcelook) {
+        // si on a demandé de forcer la rotation par défaut du NPC, alors on le fait
+        if(forceLook) {
 
             super.setDefaultYAW(yaw); // Définit rotation 'yaw' par défaut dans laquelle le NPC va se tourner
             super.setDefaultPITCH(pitch); // Définit rotation 'yaw' par défaut dans laquelle le NPC va se tourner
@@ -1028,12 +1030,12 @@ public class NPCGlobal extends NPC {
      * Le NPC va jouer une {@link Animation Animation} pour un Joueur.
      *
      * @param player Le joueur qui verra l'{@link Animation}
-     * @param animation L'Animation a joué
+     * @param animation L'Animation a joué.
      */
     public void playAnimation(Player player, Animation animation) { getPersonal(player).playAnimation(animation); }
 
     /**
-     * Le NPC va recevoir un dégat :).<br/><br/>
+     * Le NPC va recevoir un dégât :).<br/><br/>
      *
      * Une {@link Animation Animation} est jouée :<br/> {@code Animation.TAKE_DAMAGE}<br/><br/>
      * Un Son est jouée :<br/> {@code Sound.ENTITY_PLAYER_ATTACK_WEAK}
@@ -1059,9 +1061,9 @@ public class NPCGlobal extends NPC {
         // Si les coordonnées récupérées sont supérieures à 8 blocs, on affiche une erreur
         Validate.isTrue(Math.abs(moveX) < 8 && Math.abs(moveY) < 8 && Math.abs(moveZ) < 8, "Les NPC ne peuvent pas se déplacer de 8 blocs ou plus à la fois, utilisez la téléportation à la place.");
 
-        // On crée un évènement de mouvemen pour le NPC
+        // On crée un évènement de mouvement pour le NPC
         NPC.Events.Move npcMoveEvent = new NPC.Events.Move(this, new Location(super.getWorld(), super.getX() + moveX, super.getY() + moveY, super.getZ() + moveZ));
-        if(npcMoveEvent.isCancelled()) return; // Si l'èvènement a été annulé, le NPC se déplacera pas
+        if(npcMoveEvent.isCancelled()) return; // Si l'évènement a été annulé, le NPC se déplacera pas
 
         super.setX(super.getX() + moveX); // Définit la nouvelle coordonnée 'X' au NPC
         super.setY(super.getY() + moveY); // Définit la nouvelle coordonnée 'Y' au NPC
@@ -1250,7 +1252,7 @@ public class NPCGlobal extends NPC {
      */
     public static class PersistentManager {
 
-        private static HashMap<Plugin, HashMap<String, PersistentManager>> PERSISTENT_DATA; // Variable récupérant les données de persistance
+        private static final HashMap<Plugin, HashMap<String, PersistentManager>> PERSISTENT_DATA; // Variable récupérant les données de persistance
 
         /**
          * On initialise les données de persistance.
@@ -1271,7 +1273,7 @@ public class NPCGlobal extends NPC {
 
             // On vérifie si la donnée de persistance par rapport au plugin contient bien l'identifiant en question, alors on retourne le gestionnaire de persistance
             if(PERSISTENT_DATA.get(plugin).containsKey(id)) return PERSISTENT_DATA.get(plugin).get(id);
-            else return new PersistentManager(plugin, id); // Sinon, on crée un nouveau gestionnaire de persitance
+            else return new PersistentManager(plugin, id); // Sinon, on crée un nouveau gestionnaire de persistence
         }
 
         /**
@@ -1299,7 +1301,7 @@ public class NPCGlobal extends NPC {
         private static void checkExistPlugin(Plugin plugin) { if(!PERSISTENT_DATA.containsKey(plugin)) PERSISTENT_DATA.put(plugin, new HashMap<>()); }
 
         /**
-         * Définit une action pour toutes les données globales persitantes du NPC.
+         * Définit une action pour toutes les données globales persistantes du NPC.
          *
          * @param action L'Action à faire
          *
@@ -1307,16 +1309,16 @@ public class NPCGlobal extends NPC {
         protected static void forEachGlobalPersistent(Consumer<NPCGlobal> action) { PERSISTENT_DATA.forEach((x, y) -> forEachGlobalPersistent(x, action)); }
 
         /**
-         * Définit une action pour toutes les données globales persitantes du NPC associé au plugin spécifié.
+         * Définit une action pour toutes les données globales persistantes du NPC associé au plugin spécifié.
          *
-         * @param action Le Plugin associé
+         * @param plugin Le Plugin associé
          * @param action l'Action à faire
          *
          */
         protected static void forEachGlobalPersistent(Plugin plugin, Consumer<NPCGlobal> action) { PERSISTENT_DATA.get(plugin).values().stream().filter(x-> x.npcGlobal != null).forEach(x -> action.accept(x.npcGlobal)); }
 
         /**
-         * Définit une action pour toutes les données persitantes du NPC.
+         * Définit une action pour toutes les données persistantes du NPC.
          *
          * @param action L'Action à faire
          *
@@ -1324,9 +1326,9 @@ public class NPCGlobal extends NPC {
         protected static void forEachPersistentManager(Consumer<NPCGlobal.PersistentManager> action) { PERSISTENT_DATA.forEach((x, y) -> forEachPersistentManager(x, action)); }
 
         /**
-         * Définit une action pour toutes les données persitantes du NPC associé au plugin spécifié.
+         * Définit une action pour toutes les données persistantes du NPC associé au plugin spécifié.
          *
-         * @param action Le Plugin associé
+         * @param plugin Le Plugin associé
          * @param action l'Action à faire
          *
          */
@@ -1334,12 +1336,12 @@ public class NPCGlobal extends NPC {
 
                                                          /* -------------------------------------------------------------------- */
 
-        private Plugin plugin; // Variable récupérant le plugin associé
-        private String id; // Variable récupérant l'identifiant du gestionnaire persistant
+        private final Plugin plugin; // Variable récupérant le plugin associé
+        private final String id; // Variable récupérant l'identifiant du gestionnaire persistant
         private NPCGlobal npcGlobal;  // Variable récupérant le NPC Global associé.
-        private File file;  // Variable récupérant le fichier associé au gestionnaire
+        private final File file;  // Variable récupérant le fichier associé au gestionnaire
         private FileConfiguration config; // Variable récupérant le fichier de configuration associé au fichier
-        private LastUpdate lastUpdate; // Variable récupérant la dernière mise à jour
+        private final LastUpdate lastUpdate; // Variable récupérant la dernière mise à jour
 
         protected PersistentManager(Plugin plugin, String simpleID) {
 
@@ -1349,7 +1351,7 @@ public class NPCGlobal extends NPC {
             this.lastUpdate = new LastUpdate(); // On initialise la dernière mise à jour
 
 
-            setPersistentData(plugin, id, this); // On définit la donnéer persistante en fonction du gestionnaire persistant instancié
+            setPersistentData(plugin, id, this); // On définit la donnée persistante en fonction du gestionnaire persistant instancié
         }
 
         /**
@@ -1357,7 +1359,7 @@ public class NPCGlobal extends NPC {
          */
         public void load() {
 
-            checkFileExists(); // Vérifie l'éxistance du fichier de configuration
+            checkFileExists(); // Vérifie l'existence du fichier de configuration
 
             this.config = YamlConfiguration.loadConfiguration(file); // On récupère le fichier de configuration
             if(npcGlobal != null) NPCUtils.getInstance().removeGlobalNPC(npcGlobal); // Si le NPC Global est pas null, on le supprime
@@ -1385,7 +1387,7 @@ public class NPCGlobal extends NPC {
                 String signature = config.getString("skin.custom.signature"); // Récupère la signature du Skin customisé
 
                 // Si la taille de la signature est inférieure à '684' ou égal à '0', on redéfinit la texture et la signature par le Skin Steve de Base
-                if(signature.length() < 684 || texture.length() == 0) { texture = Skin.STEVE.getTexture(); signature = Skin.STEVE.getSignature(); }
+                if(signature.length() < 684 || texture.isEmpty()) { texture = Skin.STEVE.getTexture(); signature = Skin.STEVE.getSignature(); }
                 npcGlobal.setSkin(texture, signature); // Ajoute le Skin au NPC
             }
             // ⬆️ Vérifie si le fichier de configuration contient un Skin customisé, alors on récupère au NPC son Skin customisé ⬆️ //
@@ -1399,7 +1401,7 @@ public class NPCGlobal extends NPC {
                 List<String> lines = config.getStringList("hologram.text"); // Récupère toutes les lignes du texte
 
                 // ⬇️ Pour toutes les lignes du texte, on vérifie le code couleur de chaque mot et attribut le texte au NPC ⬇️ //
-                if(lines != null && lines.size() > 0) {
+                if(!lines.isEmpty()) {
 
                     List<String> coloredLines = new ArrayList<>(); // Liste récupérant les couleurs dans une ligne
                     lines.forEach(x-> coloredLines.add(x.replaceAll("&", "§"))); // On récupère le texte en convertissant les codes couleurs
@@ -1415,9 +1417,9 @@ public class NPCGlobal extends NPC {
             // ⬇️ Si le fichier de configuration contient une opacité de chaques lignes, pour toutes les lignes, on l'ajoute donc au NPC ⬇️ //
             if(config.getConfigurationSection("hologram.linesOpacity") != null) {
 
-                for(String line : config.getConfigurationSection("hologram.linesOpacity").getKeys(false)) npcGlobal.setLineOpacity(Integer.valueOf(line), Hologram.Opacity.valueOf(config.getString("hologram.linesOpacity." + line)));
+                for(String line : config.getConfigurationSection("hologram.linesOpacity").getKeys(false)) npcGlobal.setLineOpacity(Integer.parseInt(line), Hologram.Opacity.valueOf(config.getString("hologram.linesOpacity." + line)));
             }
-            //  ⬆️ Si le fichier de configuration contient une opacité de chaques lignes, pour toutes les lignes, on l'ajoute donc au NPC  ⬆️ //
+            //  ⬆️ Si le fichier de configuration contient une opacité de chaques lignes, pour toutes les lignes, on l'ajoute donc au NPC ⬆️ //
 
             // Si le fichier de configuration contient une visibilité que des Joueurs sélectionnés associés au NPC, alors on définit cette visibilité au NPC
             if(config.contains("visibility.selectedPlayers") && npcGlobal.getVisibility().equals(Visibility.SELECTED_PLAYERS)) npcGlobal.selectedPlayers = config.getStringList("visibility.selectedPlayers");
@@ -1428,7 +1430,7 @@ public class NPCGlobal extends NPC {
              // Si le fichier de configuration contient que le NPC peut avoir un Skin par Joueurs associés, alors on le définit au NPC
             if(config.contains("skin.ownPlayer")) npcGlobal.setOwnPlayerSkin(config.getBoolean("skin.ownPlayer"));
 
-            // Pour toutes les parties de Skin visibles du NPC, si le fichier de configuration contient une en particulère, on l'informe au NPC
+            // Pour toutes les parties de Skin visibles du NPC, si le fichier de configuration contient une en particulière, on l'informe au NPC
             Arrays.stream(Skin.Part.values()).filter(x-> config.contains("skin.parts." + x.name().toLowerCase())).forEach(x-> npcGlobal.getSkinParts().setVisible(x, config.getBoolean("skin.parts." + x.name().toLowerCase())));
 
             // Si le fichier de configuration contient une couleur de surbrillance spécifique pour le NPC, on la définit au NPC
@@ -1483,12 +1485,12 @@ public class NPCGlobal extends NPC {
             // Pour tous les équipements du NPC, si on obtient à partir du fichier de configuration un item en particulier, on le définit au NPC
             Arrays.stream(EquipmentSlot.values()).filter(x-> config.contains("slots." + x.name().toLowerCase())).forEach(x-> npcGlobal.setItem(x, config.getItemStack("slots." + x.name().toLowerCase())));
 
-            // ⬇️ Si le fichier de configuration conctient des données customisé pour le NPC, on lui ajoute au NPC ⬇️ //
+            // ⬇️ Si le fichier de configuration contient des données customisées pour le NPC, on lui ajoute au NPC ⬇️ //
             if(config.getConfigurationSection("customData") != null) {
 
                 for(String keys : config.getConfigurationSection("customData").getKeys(false)) npcGlobal.setCustomData(keys, config.getString("customData." + keys));
             }
-            // ⬆️ Si le fichier de configuration conctient des données customisé pour le NPC, on lui ajoute au NPC ⬆️ //
+            // ⬆️ Si le fichier de configuration contient des données customisées pour le NPC, on lui ajoute au NPC ⬆️ //
 
             // ⬇️ Si le fichier de configuration contient des actions d'intéraction pour le NPC, on ajoute donc ses actions d'intéraction au NPC ⬇️ //
             if(config.getConfigurationSection("interact.actions") != null) {
@@ -1502,7 +1504,7 @@ public class NPCGlobal extends NPC {
                     // On récupère le type de cliqué actuel dans le fichier de configuration
                     Interact.ClickType clickType = Interact.ClickType.valueOf(config.getString("interact.actions." + keys + ".click"));
 
-                    // Si le type d'action actuel est un message à énvoyé, on récupère le message et ajoute l'action en question au NPC
+                    // Si le type d'action actuel est un message à envoyé, on récupère le message et ajoute l'action en question au NPC
                     if(actionType.equals(Interact.Actions.Type.SEND_MESSAGE)) {
 
                         List<String> message = config.getStringList("interact.actions." + keys + ".messages");
@@ -1511,7 +1513,7 @@ public class NPCGlobal extends NPC {
                         for(int i = 0; i < message.size(); i++) messages[i] = message.get(i).replaceAll("&", "§"); // Récupère le Message
                         npcGlobal.addMessageClickAction(clickType, messages); // Ajoute d'envoi du message par le tchat au NPC
 
-                    // Sinon, si le type d'action actuel est un message à énvoyé dans la barre d'action, on récupère le message et ajoute l'action en question au NPC
+                    // Sinon, si le type d'action actuel est un message à envoyé dans la barre d'action, on récupère le message et ajoute l'action en question au NPC
                     } else if(actionType.equals(Interact.Actions.Type.SEND_ACTIONBAR_MESSAGE)) {
 
                         String message = config.getString("interact.actions." + keys + ".message").replaceAll("&", "§"); // Récupère le Message
@@ -1523,19 +1525,19 @@ public class NPCGlobal extends NPC {
                         String server = config.getString("interact.actions." + keys + ".server"); // Récupère le nom du Serveur
                         npcGlobal.addConnectBungeeServerClickAction(clickType, server); // Ajoute l'action de connexion à ce serveur au NPC
 
-                    // Sinon, si le type d'action actuel est une commande à énvoyé par la console, on récupère la commande et ajoute l'action en question au NPC
+                    // Sinon, si le type d'action actuel est une commande à envoyé par la console, on récupère la commande et ajoute l'action en question au NPC
                     } else if(actionType.equals(Interact.Actions.Type.RUN_CONSOLE_COMMAND)) {
 
                         String command = config.getString("interact.actions." + keys + ".command"); // Récupère la commande
                         npcGlobal.addRunConsoleCommandClickAction(clickType, command); // Ajoute l'action d'envoi de la commande par la console au NPC
 
-                    // Sinon, si le type d'action actuel est une commande à énvoyé par le joueur, on récupère la commande et ajoute l'action en question au NPC
+                    // Sinon, si le type d'action actuel est une commande à envoyé par le joueur, on récupère la commande et ajoute l'action en question au NPC
                     } else if(actionType.equals(Interact.Actions.Type.RUN_PLAYER_COMMAND)) {
 
                         String command = config.getString("interact.actions." + keys + ".command"); // Récupère la commande
                         npcGlobal.addRunPlayerCommandClickAction(clickType, command); // Ajoute l'action d'envoi de la commande par le joueur au NPC
 
-                    // Sinon, si le type d'action actuel est un titre à énvoyé, on récupère le titre, sous-titre, et temps, et ajoute l'action en question au NPC
+                    // Sinon, si le type d'action actuel est un titre à envoyé, on récupère le titre, sous-titre, et temps, et ajoute l'action en question au NPC
                     } else if(actionType.equals(Interact.Actions.Type.SEND_TITLE_MESSAGE)) {
 
                         // Récupère le titre principal
@@ -1567,7 +1569,7 @@ public class NPCGlobal extends NPC {
 
 
             // On envoie un message à la console disant que le NPC a été rechargé
-            Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatColor.GRAY + "Persistent NPCGlobal NPC " + ChatColor.GREEN + npcGlobal.getCode() + ChatColor.GRAY + " has been loaded.");
+            Bukkit.getServer().getConsoleSender().sendMessage(UtilityMain.getInstance().prefix + ChatFormatting.GRAY + "Persistent NPCGlobal NPC " + ChatFormatting.GREEN + npcGlobal.getCode() + ChatFormatting.GRAY + " has been loaded.");
         }
 
         /**
@@ -1579,7 +1581,7 @@ public class NPCGlobal extends NPC {
             if(npcGlobal == null) npcGlobal = NPCUtils.getInstance().getGlobalNPC(plugin, id);
             if(npcGlobal == null || !npcGlobal.isPersistent()) return; // Si le NPC Globale est null ou n'est pas persistant, on ne fait rien
 
-            checkFileExists(); // Vérifie l'éxistance du fichier de configuration
+            checkFileExists(); // Vérifie l'existence du fichier de configuration
 
             // Si le fichier de configuration est null, on le recharge
             if(config == null) config = YamlConfiguration.loadConfiguration(file);
@@ -1588,7 +1590,7 @@ public class NPCGlobal extends NPC {
             if(config.contains("disableSaving") && config.getBoolean("disableSaving")) return;
 
             // On définit un en tête au fichier de configuration
-            config.options().header("NPC NPCGlobal persistant " + npcGlobal.getCode());
+            config.options().setHeader(List.of("NPC NPCGlobal persistant " + npcGlobal.getCode()));
 
             config.set("location", npcGlobal.getLocation()); // On sauvegarde dans le fichier la localisation du NPC
             config.set("visibility.type", npcGlobal.getVisibility().name()); // On sauvegarde dans le fichier la visibilité du NPC
@@ -1623,7 +1625,7 @@ public class NPCGlobal extends NPC {
             List<String> lines = npcGlobal.getText(); // Récupère toutes les lignes du texte affiché par le NPC
 
             // Si les lignes ne sont pas null, et que la taille est supérieure à 0, on sauvegarde chaque ligne dans le fichier
-            if(lines != null && lines.size() > 0) {
+            if(lines != null && !lines.isEmpty()) {
 
                 List<String> coloredLines = new ArrayList<>(); // Liste récupérant les couleurs pour une ligne
                 lines.forEach(x-> coloredLines.add(x.replaceAll("§", "&"))); // On récupère le texte en convertissant les codes couleurs
@@ -1632,8 +1634,8 @@ public class NPCGlobal extends NPC {
             } else config.set("hologram.text", lines); // Sinon, on sauvegarde la seule ligne actuelle
 
             config.set("hologram.lineSpacing", npcGlobal.getLineSpacing()); // Sauvegarde dans le fichier le champ de vision pour un joueur et le NPC
-            config.set("hologram.textOpacity", npcGlobal.getTextOpacity().name()); // Sauvegarde dans le fichie l'opacité du texte affiché par le NPC
-            config.set("hologram.linesOpacity", null); // Définit par défaut dans le fichier l'opacité de chaques lignes afficheant du texte par le NPC sur 'null'
+            config.set("hologram.textOpacity", npcGlobal.getTextOpacity().name()); // Sauvegarde dans le fichier l'opacité du texte affiché par le NPC
+            config.set("hologram.linesOpacity", null); // Définit par défaut dans le fichier l'opacité de chaques lignes affichent du texte par le NPC sur 'null'
 
             // Si le NPC contient une opacité sur ses lignes de textes, on effectue la sauvegarde de celui-ci dans le fichier de configuration
             for(Integer line : npcGlobal.getLinesOpacity().keySet()) config.set("hologram.linesOpacity." + line, npcGlobal.getLineOpacity(line).name());
@@ -1725,13 +1727,13 @@ public class NPCGlobal extends NPC {
 
             // ⬇️ On essaie de sauvegarder le fichier ⬇️ //
             try { config.save(file); }
-            catch (Exception ignored){}
+            catch (Exception ignored) {}
             // ⬆️ On essaie de sauvegarder le fichier ⬆️ //
 
             this.lastUpdate.save(); // On sauvegarde la dernière mise à jour du NPC
 
             // On envoie un message à la console disant que le NPC a été sauvegardé
-            UtilityMain.getInstance().console.sendMessage(ChatColor.GRAY + "Le NPC NPCGlobal persistant " + ChatColor.GREEN + npcGlobal.getCode() + ChatColor.GRAY + " a été sauvegardé.");
+            UtilityMain.getInstance().console.sendMessage(ChatFormatting.GRAY + "Le NPC NPCGlobal persistant " + ChatFormatting.GREEN + npcGlobal.getCode() + ChatFormatting.GRAY + " a été sauvegardé.");
         }
 
         /**
@@ -1742,13 +1744,13 @@ public class NPCGlobal extends NPC {
 
             boolean exist = file.exists(); // Vérifie si le fichier de configuration éxiste
 
-            // ⬇️ Si le fichier de configuration n'éxiste pas, essait de créer un nouveau fichier ⬇️ //
+            // ⬇️ Si le fichier de configuration n'éxiste pas, essai de créer un nouveau fichier ⬇️ //
             if(!exist) {
 
                 try { file.createNewFile(); }
-                catch(Exception ignored){}
+                catch(Exception ignored) {}
             }
-            // ⬆️ Si le fichier de configuration n'éxiste pas, essait de créer un nouveau fichier ⬆️ //
+            // ⬆️ Si le fichier de configuration n'éxiste pas, essai de créer un nouveau fichier ⬆️ //
         }
 
        /**
@@ -1772,14 +1774,14 @@ public class NPCGlobal extends NPC {
          */
         public void setDisableSaving(boolean b) {
 
-            checkFileExists(); // Vérifie l'éxistance du fichier de configuration
+            checkFileExists(); // Vérifie l'existence du fichier de configuration
 
             if(config == null) config  = YamlConfiguration.loadConfiguration(file); // Si le fichier de configuration est null, on le recharge
             config.set("disableSaving", b); // On définit dans le fichier de configuration le fait de désactiver la sauvegarde de celui-ci sur le booléen en question
 
             // ⬇️ On essaie de sauvegarder le fichier ⬇️ //
             try { config.save(file); }
-            catch(Exception ignored){}
+            catch(Exception ignored) {}
             // ⬆️ On essaie de sauvegarder le fichier ⬆️ //
         }
 
@@ -1820,7 +1822,7 @@ public class NPCGlobal extends NPC {
         public boolean isLoaded() { return config != null; }
 
         /**
-         * Récupère le fichier de configurationa actuel
+         * Récupère le fichier de configuration actuel
          *
          * @return Le fichier de configuration
          */
@@ -1886,7 +1888,7 @@ public class NPCGlobal extends NPC {
             /* ÉNUMÉRATIONS UTILE POUR LE TYPE DE DERNIÈRE MISE À JOUR */
             /**********************************************************/
 
-            public enum Type { SAVE, LOAD; }
+            public enum Type { SAVE, LOAD }
 
             /************************************************************/
             /* ÉNUMÉRATIONS UTILE POUR LE TYPE DE DERNIÈRE MISE À JOUR */

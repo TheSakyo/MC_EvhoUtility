@@ -7,7 +7,7 @@ public class UserTimeManager {
 	
 	
 	  /*********************************************************************************/
-	  /* MÉTHODE POUR PERMETTRE DE DEFINIR LE TEMPS DU MONDE POUR UN JOUEUR SPECIFIQUE */
+	  /* MÉTHODE POUR PERMETTRE DE DÉFINIR LE TEMPS DU MONDE POUR UN JOUEUR SPÉCIFIQUE */
 	  /*********************************************************************************/
 
 	  public void setUserTime(final Player player, final Long ticks, final Boolean relative) {
@@ -30,7 +30,7 @@ public class UserTimeManager {
 	  }
 	  
 	  /*********************************************************************************/
-	  /* MÉTHODE POUR PERMETTRE DE DEFINIR LE TEMPS DU MONDE POUR UN JOUEUR SPECIFIQUE */
+	  /* MÉTHODE POUR PERMETTRE DE DÉFINIR LE TEMPS DU MONDE POUR UN JOUEUR SPÉCIFIQUE */
 	  /*********************************************************************************/
 
 }

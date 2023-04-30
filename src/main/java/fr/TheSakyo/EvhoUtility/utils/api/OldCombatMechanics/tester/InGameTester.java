@@ -24,7 +24,7 @@ public class InGameTester {
     private Tally tally;
     private long delay;
     private Player attacker, defender;
-    private Runnable extras; // pour donner une armure au défenseur etc...
+    private Runnable extras; // pour donner une armure au défenseur, etc.
 
     // todo test de l'armure
     // todo test avec des armes enchantées
@@ -44,6 +44,7 @@ public class InGameTester {
      * Effectuer tous les tests en utilisant les deux joueurs spécifiés
      */
     public void performTests(Player attacker, Player defender) {
+
         this.attacker = attacker;
         this.defender = defender;
         beforeAll();
@@ -58,7 +59,7 @@ public class InGameTester {
     private void runAttacks() {
 
         testMelee();
-        testOverdamage();
+        testOverDamage();
     }
 
     private void appendExtras(Runnable runnable) {
@@ -98,7 +99,7 @@ public class InGameTester {
         }
     }
 
-    private void testOverdamage() {
+    private void testOverDamage() {
 
         Material[] weapons = {Material.WOODEN_HOE, Material.WOODEN_SWORD, Material.STONE_SWORD, Material.IRON_AXE};
         appendExtras(() -> defender.setMaximumNoDamageTicks(100));
@@ -150,7 +151,7 @@ public class InGameTester {
 
         Bukkit.getServer().getPluginManager().registerEvents(listener, main);
 
-        // Retarde l'attaque lorsqu'on teste le surdommage.
+        // Retarde l'attaque lorsqu'on teste le sûr dommage.
         Bukkit.getScheduler().runTaskLater(main, () -> {
 
             attacker.attack(defender);

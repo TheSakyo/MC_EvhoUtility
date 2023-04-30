@@ -60,7 +60,7 @@ public class Config {
 
         Messenger.DEBUG_ENABLED = config.getBoolean("debug.enabled");
 
-        WeaponDamages.initialise(plugin); //Recharge les dégâts des armes à partir de la configuration
+        WeaponDamages.initialise(plugin); //Recharge tous les dégâts des armes à partir de la configuration
 
         // Chargement de tous les blocs interactifs (utilisés par les modules sword blocking et elytra)
         reloadInteractiveBlocks();
@@ -96,7 +96,7 @@ public class Config {
         final List<String> list = section.getStringList("worlds");
 
         // Si la liste est vide, le module doit être activé dans tous les mondes.
-        if(list.size() == 0) return true;
+        if(list.isEmpty()) return true;
 
         boolean isInList = list.stream().anyMatch(entry -> entry.equalsIgnoreCase(worldName));
         return isBlacklist != isInList;

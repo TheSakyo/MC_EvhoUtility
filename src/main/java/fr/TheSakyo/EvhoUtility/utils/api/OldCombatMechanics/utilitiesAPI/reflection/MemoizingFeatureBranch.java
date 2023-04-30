@@ -24,7 +24,7 @@ public class MemoizingFeatureBranch<T, R> {
      * @param trueBranch  La branche à choisir si le test est vrai
      * @param falseBranch La branche à choisir si le test est faux
      */
-    public MemoizingFeatureBranch(Function<T, Boolean> test, Function<T, R> trueBranch, Function<T, R> falseBranch){
+    public MemoizingFeatureBranch(Function<T, Boolean> test, Function<T, R> trueBranch, Function<T, R> falseBranch) {
 
         this.test = test;
         this.trueBranch = trueBranch;
@@ -34,7 +34,7 @@ public class MemoizingFeatureBranch<T, R> {
     /**
      * Applique l'action stockée à la cible donnée et choisit la branche à utiliser lors du premier appel.
      *
-     * @param target La cible à laquelle l'appliquer
+     * @param target La cible à laquelle il faut l'appliquer
      * @return Le résultat de l'application de la fonction à la cible donnée
      */
     public R apply(T target) {
@@ -61,13 +61,13 @@ public class MemoizingFeatureBranch<T, R> {
      * @param <R>     le type de résultat de l'action
      * @return un {@link MemoizingFeatureBranch} qui choisit la branche selon que l'action a déclenché une exception ou non.
      */
-    public static <T, R> MemoizingFeatureBranch<T, R> onException(ExceptionalFunction<T, R> action, Function<T, R> success, Function<T, R> failure){
+    public static <T, R> MemoizingFeatureBranch<T, R> onException(ExceptionalFunction<T, R> action, Function<T, R> success, Function<T, R> failure) {
         return new MemoizingFeatureBranch<>(
                 (t) -> {
                     try{
                         action.apply(t);
                         return true;
-                    } catch(ExceptionalFunction.WrappedException e){
+                    } catch(ExceptionalFunction.WrappedException e) {
                         return false;
                     }
                 },
@@ -94,16 +94,16 @@ public class MemoizingFeatureBranch<T, R> {
          * @throws WrappedException Si un quelconque *Throwable* est déclenché
          */
         @Override
-        default R apply(T t){
+        default R apply(T t) {
             try{
                 return applyWithException(t);
-            } catch(Throwable e){
+            } catch(Throwable e) {
                 throw new WrappedException(e);
             }
         }
 
         class WrappedException extends RuntimeException {
-            WrappedException(Throwable cause){
+            WrappedException(Throwable cause) {
                 super(cause);
             }
         }

@@ -15,27 +15,21 @@ import java.util.UUID;
 
 public class WeathersRainPlayer extends BukkitRunnable {
 
-	private UUID playerUUID;
+	private final UUID playerUUID;
 
 	public WeathersRainPlayer(UUID uuid) { this.playerUUID = uuid; }
 
 	@Override
 	public void run() {
 
-    	if(UtilityMain.playerweathers == null) { return; }
+    	if(UtilityMain.playerWeathers != null && !UtilityMain.playerWeathers.isEmpty()) {
 
-		else if(UtilityMain.playerweathers != null && UtilityMain.playerweathers.isEmpty()) { return; }
-
-		else {
-
-			for(UUID uuid : UtilityMain.playerweathers) {
+			for(UUID uuid : UtilityMain.playerWeathers) {
 
 				if(uuid == playerUUID) {
 
 					Player p = Bukkit.getServer().getPlayer(uuid);
-
 					if(p.getPlayerWeather() != WeatherType.DOWNFALL) p.setPlayerWeather(WeatherType.DOWNFALL);
-					else { return; }
 				}
 			}
 		}

@@ -44,7 +44,7 @@ public class ListLinks {
     }
 
     private static void print(String msg, Object... args) {
-        System.out.println(String.format(msg, args));
+        System.out.printf((msg) + "%n", args);
     }
 
     private static String trim(String s, int width) {

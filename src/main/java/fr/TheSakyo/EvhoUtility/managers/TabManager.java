@@ -8,6 +8,7 @@ import fr.TheSakyo.EvhoUtility.config.ConfigFile;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import fr.TheSakyo.EvhoUtility.utils.custom.methods.ColorUtils;
 import net.kyori.adventure.text.Component;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -15,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 
 public class TabManager {
@@ -25,7 +25,7 @@ public class TabManager {
    /***************************/
 	
     /* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public TabManager(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
@@ -35,8 +35,8 @@ public class TabManager {
    
   
    // Variable pour défini le "header" et le "footer" du Tablist //
-   private List<Component> headers = new ArrayList<Component>();
-   private List<Component> footers = new ArrayList<Component>();
+   private final List<Component> headers = new ArrayList<>();
+   private final List<Component> footers = new ArrayList<>();
    // Variable pour défini le "header" et le "footer" du Tablist //
 
   
@@ -66,19 +66,19 @@ public class TabManager {
   
   
   
-  /****************************/
-  /* CONFIFURATION DU TABLIST */ 
+  /*****************************/
+  /* CONFIGURATION DU TABLIST */
   /****************************/
   
   // Vérifie les informations de la config "tablist.yml" //
   private void getConfigString() {
 	   
-    this.name1 = ConfigFile.getString(main.tabconfig, "title1");
-    this.name2 = ConfigFile.getString(main.tabconfig, "title2");
-    this.name3 = ConfigFile.getString(main.tabconfig, "title3");
-    this.website = ConfigFile.getString(main.tabconfig, "website");
-    this.ip = ConfigFile.getString(main.tabconfig, "ip");
-    this.colorfootersection = ConfigFile.getString(main.tabconfig, "ColorFooterSection");
+    this.name1 = ConfigFile.getString(main.tabConfig, "title1");
+    this.name2 = ConfigFile.getString(main.tabConfig, "title2");
+    this.name3 = ConfigFile.getString(main.tabConfig, "title3");
+    this.website = ConfigFile.getString(main.tabConfig, "website");
+    this.ip = ConfigFile.getString(main.tabConfig, "ip");
+    this.colorfootersection = ConfigFile.getString(main.tabConfig, "ColorFooterSection");
   }
   // Vérifie les informations de la config "tablist.yml" //
   
@@ -90,9 +90,8 @@ public class TabManager {
 	
 	String CS = this.colorfootersection;
 	
-	ChatColor w  = ChatColor.WHITE;
-	
-	ChatColor reset = ChatColor.RESET;
+	ChatFormatting w  = ChatFormatting.WHITE;
+	ChatFormatting reset = ChatFormatting.RESET;
 	
     if(this.task != null) removeAll();
 
@@ -119,10 +118,10 @@ public class TabManager {
 
                                 /* --------------------------------------------- */
 
-    //Essait d'Appeler la méthode "ShowTab" //
+    //Essaie d'Appeler la méthode "ShowTab" //
     try { showTab(p); }
     catch(IllegalPluginAccessException ignored) {}
-    //Essait d'Appeler la méthode "ShowTab" //
+    //Essaie d'Appeler la méthode "ShowTab" //
 
   }
   // Configure le Tablist //
@@ -138,11 +137,11 @@ public class TabManager {
 
 		public void run() {
 
-          if(headers.isEmpty() && footers.isEmpty()) { hi = 0; fi = 0; return; }
+          if(headers.isEmpty() && footers.isEmpty()) { hi = 0; fi = 0; }
 
           else {
 
-            if(Bukkit.getServer().getOnlinePlayers().size() == 0) {  hi = 0; fi = 0; return; }
+            if(Bukkit.getServer().getOnlinePlayers().isEmpty()) { hi = 0; fi = 0; }
 
             else {
 
@@ -187,10 +186,8 @@ public class TabManager {
 
   }
  // Supprime entièrement le Tablist personnalisé //
-  
-  
+
+  /*****************************/
+  /* CONFIGURATION DU TABLIST */
   /****************************/
-  /* CONFIFURATION DU TABLIST */ 
-  /****************************/
-  
 }

@@ -49,6 +49,7 @@ public final class Util {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public static <E extends Throwable> void sneakyThrow(final Throwable ex) throws E {
     throw (E) ex;
   }
@@ -80,17 +81,14 @@ public final class Util {
     }
 
     final @Nullable Proxies proxies = proxyInterface.getDeclaredAnnotation(Proxies.class);
-    if (proxies == null) {
-      throw new IllegalArgumentException("interface " + proxyInterface.getTypeName() + " is not annotated with @Proxies.");
+
+      if(proxies.value() == Object.class && proxies.className().isEmpty()) {
+
+        throw new IllegalArgumentException("@Proxies annotation must either have value() or className() set. Interface: " + proxyInterface.getTypeName());
     }
 
-    if (proxies.value() == Object.class && proxies.className().isEmpty()) {
-      throw new IllegalArgumentException("@Proxies annotation must either have value() or className() set. Interface: " + proxyInterface.getTypeName());
-    }
+    if(proxies.value() != Object.class) return proxies.value();
 
-    if (proxies.value() != Object.class) {
-      return proxies.value();
-    }
 
     try {
       return Class.forName(classMapper.apply(proxies.className()));

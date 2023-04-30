@@ -12,10 +12,10 @@ public abstract class AdvancementVisibility {
 		
 		
 		
-    // Détecte si l'achievement est visible //
+    // Détecte si un achievement est visible //
 	@Override
 	public boolean isVisible(Player player, Advancement advancement) { return true; }
-	// Détecte si l'achievement est visible //
+	// Détecte si un achievement est visible //
 		
 	
 	
@@ -29,7 +29,6 @@ public abstract class AdvancementVisibility {
 		  if(advancement.isGranted(player)) return true;
 			
 		  Advancement parent = advancement.getParent();
-			
 		  return parent == null || parent.isGranted(player);
 		}
 		
@@ -68,7 +67,7 @@ public abstract class AdvancementVisibility {
 	
 	// Variable utile pour définir le nom de la visibilité //
 	private final String name;
-	// Variable utile pour définir le nom de la visibilité  //
+	// Variable utile pour définir le nom de la visibilité //
 	
 	
 	
@@ -76,7 +75,7 @@ public abstract class AdvancementVisibility {
 	public AdvancementVisibility() { name = "CUSTOM"; }
 	
 	private AdvancementVisibility(String name) { this.name = name; }
-	// Méthodes pour  récupérer une visibilité avec la variable "name" //
+	// Méthodes pour récupérer une visibilité avec la variable "name" //
 	
 	
 	
@@ -85,7 +84,7 @@ public abstract class AdvancementVisibility {
 	 * 
 	 * @param player Player à vérifier
 	 * @param advancement achievement à vérifier
-	 * @return true si l'achievements doit être visible
+	 * @return true si un achievements doit être visible
 	 */
 	public abstract boolean isVisible(Player player, Advancement advancement);
 	
@@ -93,7 +92,7 @@ public abstract class AdvancementVisibility {
 	
 	/**
 	 * 
-	 * @return true si l'achievements doit toujours être visible si un enfant doit être visible, la valeur par défaut est true.
+	 * @return true si un achievements doit toujours être visible si un enfant doit être visible, la valeur par défaut est true.
 	 */
 	public boolean isAlwaysVisibleWhenAdvancementAfterIsVisible() { return true; }
 	

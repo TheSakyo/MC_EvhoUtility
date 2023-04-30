@@ -9,8 +9,8 @@ import fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.Messeng
 import fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.utilitiesAPI.damage.EntityDamageByEntityListener;
 import fr.TheSakyo.EvhoUtility.utils.api.OldCombatMechanics.module.*;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventException;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -26,14 +26,14 @@ public class OldCM {
 
     /* ----------------------------------------------------------------- */
 
-    private static UtilityMain plugin = UtilityMain.getInstance();
+    private static final UtilityMain plugin = UtilityMain.getInstance();
     private static final Logger logger = Logger.getAnonymousLogger();
     private static final List<Runnable> disableListeners = new ArrayList<>();
     private static final List<Runnable> enableListeners = new ArrayList<>();
     private static final List<Hook> hooks = new ArrayList<>();
 
     // Variable pour le Nom du Plugin //
-	public static String prefix = ChatColor.WHITE + "[" + ChatColor.RED + "Old" + ChatColor.DARK_GREEN + "Combat" + ChatColor.WHITE + "]" + " ";
+	public static String prefix = ChatFormatting.WHITE + "[" + ChatFormatting.RED + "Old" + ChatFormatting.DARK_GREEN + "Combat" + ChatFormatting.WHITE + "]" + " ";
 	// Variable pour le Nom du Plugin //
 
 
@@ -85,12 +85,12 @@ public class OldCM {
             joinListeners.forEach(registeredListener -> {
 
                 try { registeredListener.callEvent(event); }
-                catch(EventException e) { e.printStackTrace(); }
+                catch(EventException e) { e.printStackTrace(System.err); }
             });
         });
 
         //Message disant que l'api 'OldCombat' est activé
-        plugin.console.sendMessage(plugin.prefix + ChatColor.GREEN + " - " + prefix + ChatColor.GREEN + "API Enabled");
+        plugin.console.sendMessage(plugin.prefix + ChatFormatting.GREEN + " - " + prefix + ChatFormatting.GREEN + "API Enabled");
     }
 
 
@@ -110,13 +110,13 @@ public class OldCM {
             quitListeners.forEach(registeredListener -> {
 
                 try { registeredListener.callEvent(event); }
-                catch (EventException e) { e.printStackTrace(); }
+                catch (EventException e) { e.printStackTrace(System.err); }
 
             });
         });
 
         //Message disant que l'api 'OldCombat' est activé
-        plugin.console.sendMessage(plugin.prefix + ChatColor.GREEN + " - " + prefix + ChatColor.RED + "API Disabled");
+        plugin.console.sendMessage(plugin.prefix + ChatFormatting.GREEN + " - " + prefix + ChatFormatting.RED + "API Disabled");
     }
 
     private static void registerModules() {
@@ -134,7 +134,7 @@ public class OldCM {
         ModuleLoader.addModule(new ModuleOldCriticalHits(plugin));
 
         //Les blocs suivants sont tous sur la plus basse priorité, ils seront donc appelés dans l'ordre suivant :
-        //Ordre des dégâts : base → effets des potions -> coup critique -> enchantements -> blocage -> effets de l'armure.
+        //Ordre des dégâts : base → effets des potions → coup critique → enchantements → blocage →> effets de l'armure.
         //'EntityDamageByEntityListener' appelle 'OldEntityDamageByEntityEvent', voir les modules ci-dessus.
         ModuleLoader.addModule(new EntityDamageByEntityListener(plugin));
 

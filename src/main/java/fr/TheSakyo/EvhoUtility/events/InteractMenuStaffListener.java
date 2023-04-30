@@ -1,8 +1,8 @@
 package fr.TheSakyo.EvhoUtility.events;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,12 +20,12 @@ import fr.TheSakyo.EvhoUtility.utils.sanctions.ScrollInventory;
 public class InteractMenuStaffListener implements Listener {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public InteractMenuStaffListener(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
 
-	String prefixPlayerHead = ChatColor.YELLOW + "Tête de " + ChatColor.GOLD;
+	String prefixPlayerHead = ChatFormatting.YELLOW + "Tête de " + ChatFormatting.GOLD;
 
 
 	/*************************************************************************/
@@ -110,7 +110,7 @@ public class InteractMenuStaffListener implements Listener {
 		
 		if(current == null) return;	
 		
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Mode-Vanish On")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Mode-Vanish On")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -127,7 +127,7 @@ public class InteractMenuStaffListener implements Listener {
 			}
 		}
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Mode-Vanish Off")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Mode-Vanish Off")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -152,7 +152,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Freeze]")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Freeze]")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -180,7 +180,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Inventaire]")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Inventaire]")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -210,7 +210,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [EnderChest]")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [EnderChest]")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -229,13 +229,13 @@ public class InteractMenuStaffListener implements Listener {
 		}
 										/* --------------------------------------------------------------------- */
 
-		// Bonus : On vérifie si le joueur à les permision de bypass ou la permission spécifique pour déplacer l'inventaire d'un autre joueur que lui //
+		// Bonus : On vérifie si le joueur contient les permissions de bypass ou la permission spécifique pour déplacer l'inventaire d'un autre joueur que lui //
 		if(clickedInventory.getType() == InventoryType.PLAYER && clickedInventory != p.getInventory()) {
 
 				// Si le Joueur n'a ni la permission de bypass, ni la permission spécifique pour déplacer l'inventaire, on annule l'évènement
 				if(!CustomMethod.hasByPassPerm(p) && !p.hasPermission("evhoutility.invsee.move")) e.setCancelled(true);
 		}
-		// Bonus : On vérifie si le joueur à les permision de bypass ou la permission spécifique pour déplacer l'inventaire d'un autre joueur que lui //
+		// Bonus : On vérifie si le joueur contient les permissions de bypass ou la permission spécifique pour déplacer l'inventaire d'un autre joueur que lui //
 	}
 
 	@EventHandler
@@ -248,7 +248,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Kick] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Kick] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -276,7 +276,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Kick-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Kick-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -304,7 +304,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [TempMute] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [TempMute] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -333,7 +333,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [TempMute-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [TempMute-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -362,7 +362,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Mute] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Mute] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -390,7 +390,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Mute-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Mute-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -418,7 +418,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Ban] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Ban] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -446,7 +446,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Ban-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Ban-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -474,7 +474,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [TempBan] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [TempBan] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -502,7 +502,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [TempBan-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [TempBan-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -530,7 +530,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Ban-IP] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Ban-IP] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();
@@ -559,7 +559,7 @@ public class InteractMenuStaffListener implements Listener {
 
 		if(current == null) return;
 
-		if(title.equalsIgnoreCase(ChatColor.DARK_GRAY + "Joueurs [Ban-IP-S] Sanction")) {
+		if(title.equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Joueurs [Ban-IP-S] Sanction")) {
 
 			e.setCancelled(true);
 			p.closeInventory();

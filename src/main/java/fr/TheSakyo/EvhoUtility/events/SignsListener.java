@@ -11,18 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
-import fr.TheSakyo.EvhoUtility.UtilityMain;
 
 public class SignsListener implements Listener {
+
 	
-	/* Récupère la class "Main" */
-	private UtilityMain main;
-	public SignsListener(UtilityMain pluginMain) { this.main = pluginMain; }
-	/* Récupère la class "Main" */
-	
-	
-	
-	// Évenement quand le joueur écrit dans une pancarte //
+	// Évènement quand le joueur écrit dans une pancarte //
 	// Traduit les codes couleurs Minecraft, s'il a la permission //
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
@@ -42,6 +35,6 @@ public class SignsListener implements Listener {
 			e.line(i, CustomMethod.StringToComponent(lineString));
 		}
 	}
-	// Évenement quand le joueur écrit dans une pancarte //
+	// Évènement quand le joueur écrit dans une pancarte //
 	// Traduit les codes couleurs Minecraft, s'il a la permission //
 }

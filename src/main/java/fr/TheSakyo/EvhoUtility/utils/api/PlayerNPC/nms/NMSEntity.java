@@ -13,10 +13,9 @@ import net.minecraft.world.entity.Pose;
 
 public class NMSEntity {
 
-  private static Class entityClass; // Variable récupérant la 'class' "entity"
   private static Method setLocation; // Variable récupérant la méthode qui définira la localisation NMS de l'Entité
-  private static Method setYRot; // Variable récupérant la méthode qui définira la rotation NMS de la coordonées 'Y' de l'Entité
-  private static Method setXRot; // Variable récupérant la méthode qui définira la rotation NMS de la coordonées 'X' de l'Entité
+  private static Method setYRot; // Variable récupérant la méthode qui définira la rotation NMS de la coordonnée 'Y' de l'Entité
+  private static Method setXRot; // Variable récupérant la méthode qui définira la rotation NMS de la coordonnée 'X' de l'Entité
   private static Method getUUID;  // Variable récupérant la méthode qui récupérera l'UUID NMS de l'Entité
   private static Method getID; // Variable récupérant la méthode qui récupérera l'Identifiant NMS de l'Entité
   private static Method getCustomName; // Variable récupérant la méthode qui récupérera le Nom Customisé NMS de l'Entité
@@ -37,9 +36,11 @@ public class NMSEntity {
   public static void load() throws ClassNotFoundException, NoSuchMethodException {
 
     ServerVersion serverVersion = PaperPlugin.getServerVersion(); // Récupère la version du Serveur
-    entityClass = NMSUtils.getMinecraftClass("world.entity.Entity"); // Initialise la 'class' en question
 
-    // ⬇️ Récupère les bonnes méthodes du NMS à initialiser en fonction de la version actuel du Serveur ⬇️ //
+    // Variable récupérant la 'class' "entity"
+    Class<?> entityClass = NMSUtils.getMinecraftClass("world.entity.Entity"); // Initialise la 'class' en question
+
+      /** // ⬇️ Récupère les bonnes méthodes du NMS à initialiser en fonction de la version actuel du Serveur ⬇️ //
     if(serverVersion.isOlderThanOrEqual(ServerVersion.VERSION_1_17_1)) {
 
       setLocation = entityClass.getMethod("setLocation", double.class, double.class, double.class, float.class, float.class);
@@ -79,7 +80,29 @@ public class NMSEntity {
       setPose = entityClass.getMethod("b", Pose.class);
       setGlowingTag = entityClass.getMethod("i", boolean.class);
     }
-    // ⬆️ Récupère les bonnes méthodes du NMS à initialiser en fonction de la version actuel du Serveur ⬆️ //
+    // ⬆️ Récupère les bonnes méthodes du NMS à initialiser en fonction de la version actuel du Serveur ⬆️ // **/
+
+   // ⬇️ Récupère les méthodes du NMS à initialiser ⬇️ //
+    setLocation = entityClass.getMethod("a", double.class, double.class, double.class, float.class, float.class);
+    setYRot = entityClass.getMethod("a_", float.class);
+    setXRot = entityClass.getMethod("b_", float.class);
+
+    getID = entityClass.getMethod("af");
+
+    getUUID = entityClass.getMethod("ct");
+    getCustomName = entityClass.getMethod("ab");
+
+    setCustomName = entityClass.getMethod("b", Component.class);
+
+    setCustomNameVisible = entityClass.getMethod("n", boolean.class);
+    setNoGravity = entityClass.getMethod("e", boolean.class);
+
+    getDataWatcher = entityClass.getMethod("aj");
+
+    setPose = entityClass.getMethod("b", Pose.class);
+    setGlowingTag = entityClass.getMethod("i", boolean.class);
+    // ⬇️ Récupère les méthodes du NMS à initialiser ⬇️ //
+
   }
 
 
@@ -89,39 +112,40 @@ public class NMSEntity {
    * Définit la localisation d'une {@link Entity Entité} spécifiée.
    *
    * @param entity L'{@link Entity Entité} en question
-   * @param x La Coordonée 'X' où téléporter l'{@link Entity Entité}
-   * @param y La Coordonée 'Y' où téléporter l'{@link Entity Entité}
-   * @param z La Coordonée 'Z' où téléporter l'{@link Entity Entité}
+   * @param x La Coordonnée 'X' où téléporter l'{@link Entity Entité}
+   * @param y La Coordonnée 'Y' où téléporter l'{@link Entity Entité}
+   * @param z La Coordonnée 'Z' où téléporter l'{@link Entity Entité}
    * @param yaw La Rotation 'yaw' de l'{@link Entity Entité}
    * @param pitch La Rotation 'pitch' de l'{@link Entity Entité}
    */
   public static void setLocation(Entity entity, double x, double y, double z, float yaw, float pitch) {
 
-    try { setLocation.invoke(entity, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z), Float.valueOf(yaw), Float.valueOf(pitch)); }
-    catch(Exception e) { e.printStackTrace(); }
+    try { setLocation.invoke(entity, x, y, z, yaw, pitch); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
-   * Définit la rotation de la coordonée 'Y' d'une {@link Entity Entité} spécifiée.
+   * Définit la rotation de la coordonnée 'Y' d'une {@link Entity Entité} spécifiée.
    *
    * @param entity L'{@link Entity Entité} en question
-   * @param y La Rotation de la coordonée 'Y' de l'{@link Entity Entité}
+   * @param y La Rotation de la coordonnée 'Y' de l'{@link Entity Entité}
    */
   public static void setYRot(Entity entity, float y) {
 
-    try { setYRot.invoke(entity, Float.valueOf(y)); }
-    catch (Exception e) { e.printStackTrace(); }
+    try { setYRot.invoke(entity, y); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
-   * Définit la rotation de la coordonée 'X' d'une {@link Entity Entité} spécifiée.
+   * Définit la rotation de la coordonnée 'X' d'une {@link Entity Entité} spécifiée.
    *
    * @param entity L'{@link Entity Entité} en question
-   * @param x La Rotation de la coordonée 'X' de l'{@link Entity Entité}
+   * @param x La Rotation de la coordonnée 'X' de l'{@link Entity Entité}
    */
   public static void setXRot(Entity entity, float x) {
-    try { setXRot.invoke(entity, Float.valueOf(x)); }
-    catch(Exception e) { e.printStackTrace(); }
+
+    try { setXRot.invoke(entity, x); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
@@ -133,7 +157,7 @@ public class NMSEntity {
   public static void setPose(Entity entity, Pose pose) {
 
     try { setPose.invoke(entity, pose); }
-    catch(Exception e) { e.printStackTrace(); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
@@ -145,7 +169,7 @@ public class NMSEntity {
   public static void setCustomName(Entity entity, String name) {
 
     try { setCustomName.invoke(entity, Component.nullToEmpty(name)); }
-    catch(Exception e) { e.printStackTrace(); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
@@ -156,8 +180,8 @@ public class NMSEntity {
    */
   public static void setCustomNameVisible(Entity entity, boolean b) {
 
-    try { setCustomNameVisible.invoke(entity, Boolean.valueOf(b)); }
-    catch(Exception e) { e.printStackTrace(); }
+    try { setCustomNameVisible.invoke(entity, b); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
@@ -168,8 +192,8 @@ public class NMSEntity {
    */
   public static void setNoGravity(Entity entity, boolean b) {
 
-    try { setNoGravity.invoke(entity, Boolean.valueOf(b)); }
-    catch(Exception e) { e.printStackTrace(); }
+    try { setNoGravity.invoke(entity, b); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
   /**
@@ -180,26 +204,26 @@ public class NMSEntity {
    */
   public static void setGlowingTag(Entity entity, boolean b) {
 
-    try { setGlowingTag.invoke(entity, Boolean.valueOf(b)); }
-    catch(Exception e) { e.printStackTrace(); }
+    try { setGlowingTag.invoke(entity, b); }
+    catch(Exception e) { e.printStackTrace(System.err); }
   }
 
                             /* ------------------------------------------------------------------ */
 
 
   /**
-   * Récupère l'Idenfitiant d'une {@link Entity Entité} spécifiée.
+   * Récupère l'Identifiant d'une {@link Entity Entité} spécifiée.
    *
    * @param entity L'{@link Entity Entité} en question
    *
-   * @return L'Idenfitiant de l'{@link Entity Entité} demandé.
+   * @return L'Identifiant de l'{@link Entity Entité} demandé.
    */
   public static Integer getEntityID(Entity entity) {
 
-    try { return Integer.valueOf(((Integer)getID.invoke(entity, new Object[0])).intValue()); }
+    try { return (Integer) getID.invoke(entity, new Object[0]); }
     catch(Exception e) {
 
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
   }
@@ -216,7 +240,7 @@ public class NMSEntity {
     try { return (UUID)getUUID.invoke(entity, new Object[0]); }
     catch(Exception e) {
 
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
   }
@@ -233,7 +257,7 @@ public class NMSEntity {
     try { return(SynchedEntityData)getDataWatcher.invoke(entity); }
     catch(Exception e) {
 
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
   }
@@ -250,7 +274,7 @@ public class NMSEntity {
     try { return (Component)getCustomName.invoke(entity, new Object[0]); }
     catch(Exception e) {
 
-      e.printStackTrace();
+      e.printStackTrace(System.err);
       return null;
     }
   }

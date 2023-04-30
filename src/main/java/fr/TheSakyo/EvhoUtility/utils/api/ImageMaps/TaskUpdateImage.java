@@ -12,9 +12,8 @@ import fr.TheSakyo.EvhoUtility.UtilityMain;
 
 public class TaskUpdateImage extends BukkitRunnable {
 
-	private ImageMap imagemap; //Variable pour récupérer "l'imagemap"
-	
-	
+	private final ImageMap imagemap; //Variable pour récupérer "l'imagemap"
+
 	
 	public TaskUpdateImage(ImageMap imagemap) { this.imagemap = imagemap; } //Constructeur de la class "TaskUpdateImage"
 	
@@ -24,11 +23,10 @@ public class TaskUpdateImage extends BukkitRunnable {
    /* RECHARGE LE RENDU DE L'IMAGEMAP */
    /***********************************/
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		
-		// Essait de recharger le rendu de "l'imagemap", sinon une erreur est afficher //
+		// Essaie de recharger le rendu de "l'imagemap", sinon une erreur est afficher //
 		try {
 			
 			final BufferedImage image = ImageHelper.getImage(imagemap.getPath(), null); //Variable "image" qui récupère l'image de "l'imagemap"
@@ -52,7 +50,7 @@ public class TaskUpdateImage extends BukkitRunnable {
 			UtilityMain.getInstance().getLogger().warning(e.getMessage());
 			// Message d'erreur //
 		}
-		// Essait de recharger le rendu de "l'imagemap", sinon une erreur est afficher //
+		// Essaie de recharger le rendu de "l'imagemap", sinon une erreur est afficher //
 	}
 	
 	/***********************************/

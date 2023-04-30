@@ -1,5 +1,6 @@
 package fr.TheSakyo.EvhoUtility.commands.inventory;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,25 +12,24 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class RepairItemCommand implements CommandExecutor {
 	
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public RepairItemCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 	
 	
 	
 	/****************************************************************/
-	/* PARTIE COMMANDE POUR REPARER UN ITEM DANS LA MAIN DU JOUEUR  */ 
+	/* PARTIE COMMANDE POUR RÉPARER UN ITEM DANS LA MAIN DU JOUEUR  */
 	/****************************************************************/
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		
-		if(sender instanceof Player p){
+		if(sender instanceof Player p) {
 
 			if(p.hasPermission("evhoutility.repair")) {
 
@@ -40,13 +40,13 @@ public class RepairItemCommand implements CommandExecutor {
 					//Info : Le Trident est détecté comme un item d'air
 					if(HandItem.getType() == Material.AIR && HandItem.getType() != Material.TRIDENT) {
 						
-						p.sendMessage(main.prefix + ChatColor.RED + "Vous ne possédez aucun item(s) dans votre main principale");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne possédez aucun item(s) dans votre main principale");
 						
 					} else {
 						
 						if(HandItem.getAmount() >= 2) {
 							
-							p.sendMessage(main.prefix + ChatColor.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans votre main principale");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans votre main principale");
 							return true;
 						}
 						
@@ -57,15 +57,12 @@ public class RepairItemCommand implements CommandExecutor {
 							((Damageable) it).setDamage(0);
 							HandItem.setItemMeta(it);
 							
-							p.sendMessage(main.prefix + ChatColor.GRAY + "Vous avez réparé l'item dans votre main principale");
+							p.sendMessage(main.prefix + ChatFormatting.GRAY + "Vous avez réparé l'item dans votre main principale");
 							
-						} else {
-							
-							p.sendMessage(main.prefix + ChatColor.RED + "L'Item dans votre main principale n'est pas cassé");
-						}
+						} else p.sendMessage(main.prefix + ChatFormatting.RED + "L'Item dans votre main principale n'est pas cassé");
 					}
 
-				} else if(args.length != 0) {
+				} else {
 					
 					if(args.length == 1) {
 						
@@ -74,19 +71,18 @@ public class RepairItemCommand implements CommandExecutor {
 							if(Bukkit.getServer().getPlayer(args[0]) != null) {
 								
 								Player target = Bukkit.getServer().getPlayer(args[0]);
-								
 								ItemStack HandItem = target.getInventory().getItemInMainHand();
 								
-								//Info : Le Trident est d�tect� comme un item d'air
+								//Info : Le Trident est détecté comme un item d'air
 								if(HandItem.getType() == Material.AIR && HandItem.getType() != Material.TRIDENT) {
 									
-									p.sendMessage(main.prefix + ChatColor.GOLD + target.getName() + ChatColor.RED + " ne possède aucun item(s) dans sa main principale");
+									p.sendMessage(main.prefix + ChatFormatting.GOLD + target.getName() + ChatFormatting.RED + " ne possède aucun item(s) dans sa main principale");
 									
 								} else {
 									
 									if(HandItem.getAmount() >= 2) {
 										
-										p.sendMessage(main.prefix + ChatColor.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans la main principale de " + ChatColor.GOLD + target.getName());
+										p.sendMessage(main.prefix + ChatFormatting.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans la main principale de " + ChatFormatting.GOLD + target.getName());
 										return true;
 									}
 									
@@ -97,63 +93,49 @@ public class RepairItemCommand implements CommandExecutor {
 										((Damageable) it).setDamage(0);
 										HandItem.setItemMeta(it);
 										
-										p.sendMessage(main.prefix + ChatColor.GRAY + "Vous venez de réparé l'item dans la main principale de " + ChatColor.GOLD + target.getName());
+										p.sendMessage(main.prefix + ChatFormatting.GRAY + "Vous venez de réparé l'item dans la main principale de " + ChatFormatting.GOLD + target.getName());
+										target.sendMessage(main.prefix + ChatFormatting.GRAY + "Votre item dans votre main principale a été réparé par " + ChatFormatting.GOLD + p.getName());
 										
-										target.sendMessage(main.prefix + ChatColor.GRAY + "Votre item dans votre main principale a été réparé par " + ChatColor.GOLD + p.getName());
-										
-									} else {
-										
-										p.sendMessage(main.prefix + ChatColor.RED + "L'Item dans votre main principale n'est pas cassé");
-									}
+									} else p.sendMessage(main.prefix + ChatFormatting.RED + "L'Item dans votre main principale n'est pas cassé");
 								}
-							
-							} else {
-								
-								p.sendMessage(main.prefix + ChatColor.RED + "Le joueur est introuvable !");
-							}
-						
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /repair sans arguments"); }
+
+							} else p.sendMessage(main.prefix + ChatFormatting.RED + "Le joueur est introuvable !");
+
+						} else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /repair sans arguments");
 						
 					} else {
 						
-						if(p.hasPermission("evhoutility.repair.other")) {
-							
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas entrer plus d'un argument !");
-						
-						} else { p.sendMessage(main.prefix + ChatColor.RED + "Essayez /repair sans arguments"); }
+						if(p.hasPermission("evhoutility.repair.other")) p.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas entrer plus d'un argument !");
+						else p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /repair sans arguments");
 					}
 					
 				}
 				
-			} else {
-				
-				p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !");
-			}
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 		
 		} else {
 			
 			if(args.length == 0) {
 				
-				sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour vous réparez votre item en main principal, ou essayez de mettre un joueur en premier argument !");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour vous réparez votre item en main principal, ou essayez de mettre un joueur en premier argument !");
 			
 			} else if(args.length == 1) { 
 				
 				if(Bukkit.getServer().getPlayer(args[0]) != null) {
 					
 					Player target = Bukkit.getServer().getPlayer(args[0]);
-					
 					ItemStack HandItem = target.getInventory().getItemInMainHand();
 					
-					//Info : Le Trident est d�tect� comme un item d'air
+					//Info : Le Trident est détecté comme un item d'air
 					if(HandItem.getType() == Material.AIR && HandItem.getType() != Material.TRIDENT) {
 						
-						sender.sendMessage(main.prefix + ChatColor.GOLD + target.getName() + ChatColor.RED + " ne possède aucun item(s) dans sa main principale");
+						sender.sendMessage(main.prefix + ChatFormatting.GOLD + target.getName() + ChatFormatting.RED + " ne possède aucun item(s) dans sa main principale");
 						
 					} else {
 						
 						if(HandItem.getAmount() >= 2) {
 							
-							sender.sendMessage(main.prefix + ChatColor.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans la main principale de " + ChatColor.GOLD + target.getName());
+							sender.sendMessage(main.prefix + ChatFormatting.RED + "Rien n'a été réparé, vous ne pouvez réparé seulement qu'un seul item a la fois situant dans la main principale de " + ChatFormatting.GOLD + target.getName());
 							return true;
 						}
 						
@@ -164,32 +146,23 @@ public class RepairItemCommand implements CommandExecutor {
 							((Damageable) it).setDamage(0);
 							HandItem.setItemMeta(it);
 							
-							sender.sendMessage(main.prefix + ChatColor.GRAY + "Vous venez de réparé l'item dans la main principale de " + ChatColor.GOLD + target.getName());
+							sender.sendMessage(main.prefix + ChatFormatting.GRAY + "Vous venez de réparé l'item dans la main principale de " + ChatFormatting.GOLD + target.getName());
+							target.sendMessage(main.prefix + ChatFormatting.GRAY + "Votre item dans votre main principale a été réparé par " + ChatFormatting.GOLD + "La Console");
 							
-							target.sendMessage(main.prefix + ChatColor.GRAY + "Votre item dans votre main principale a été réparé par " + ChatColor.GOLD + "La Console");
-							
-						} else {
-							
-							sender.sendMessage(main.prefix + ChatColor.RED + "L'Item dans votre main principale n'est pas cassé");
-						}
+						} else sender.sendMessage(main.prefix + ChatFormatting.RED + "L'Item dans votre main principale n'est pas cassé");
 					}
 				
-				} else {
-					
-					sender.sendMessage(main.prefix + ChatColor.RED + "Le joueur est introuvable !");
-				}
+				} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le joueur est introuvable !");
 				
-			} else {
-				
-				sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas entrer plus d'un argument !");
-			}
+			} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas entrer plus d'un argument !");
+
 		}
 		
 		return false;
 	}
 	
 	/****************************************************************/
-	/* PARTIE COMMANDE POUR REPARER UN ITEM DANS LA MAIN DU JOUEUR  */ 
+	/* PARTIE COMMANDE POUR RÉPARER UN ITEM DANS LA MAIN DU JOUEUR  */
 	/****************************************************************/
 
 }

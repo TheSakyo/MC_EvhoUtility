@@ -77,9 +77,10 @@ public class CustomEntityListener implements Listener {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     private CustomEntityType<Entity> getCustomEntityType(Entity entity) {
 
-        CustomEntityType<Entity> customEntityType = (CustomEntityType<Entity>) CustomEntityType.get(entity);
+        CustomEntityType<Entity> customEntityType = (CustomEntityType<Entity>)CustomEntityType.get(entity);
 
         if(customEntityType == null) return null;
         Class<? extends Entity> internalType = customEntityType.getInternalEntityClass();

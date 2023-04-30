@@ -28,7 +28,7 @@ import java.util.EnumMap;
  */
 public class ModuleFishingKnockback extends Module {
 
-    private MemoizingFeatureBranch<PlayerFishEvent, Entity> hookEntityFeature;
+    private final MemoizingFeatureBranch<PlayerFishEvent, Entity> hookEntityFeature;
 
     public ModuleFishingKnockback(UtilityMain plugin) {
 
@@ -146,7 +146,7 @@ public class ModuleFishingKnockback extends Module {
         final boolean isPlayer = e.getCaught() instanceof HumanEntity;
         if((cancelDraggingIn.equals("players") && isPlayer) || cancelDraggingIn.equals("mobs") && !isPlayer ||  cancelDraggingIn.equals("all")) {
 
-            hookEntityFeature.apply(e).remove(); // Enleve le 'bobber' et ne fait rien d'autre.
+            hookEntityFeature.apply(e).remove(); // Enlive le 'bobber' et ne fait rien d'autre.
             e.setCancelled(true);
         }
     }

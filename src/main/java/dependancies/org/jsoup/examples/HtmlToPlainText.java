@@ -69,7 +69,7 @@ public class HtmlToPlainText {
     private static class FormattingVisitor implements NodeVisitor {
         private static final int maxWidth = 80;
         private int width = 0;
-        private StringBuilder accum = new StringBuilder(); // holds the accumulated text
+        private final StringBuilder accum = new StringBuilder(); // holds the accumulated text
 
         // hit when the node is first seen
         public void head(Node node, int depth) {
@@ -98,7 +98,7 @@ public class HtmlToPlainText {
             if (text.startsWith("\n"))
                 width = 0; // reset counter if starts with a newline. only from formats above, not in natural text
             if (text.equals(" ") &&
-                    (accum.length() == 0 || StringUtil.in(accum.substring(accum.length() - 1), " ", "\n")))
+                    (accum.isEmpty() || StringUtil.in(accum.substring(accum.length() - 1), " ", "\n")))
                 return; // don't accumulate long runs of empty spaces
 
             if (text.length() + width > maxWidth) { // won't fit, needs to wrap

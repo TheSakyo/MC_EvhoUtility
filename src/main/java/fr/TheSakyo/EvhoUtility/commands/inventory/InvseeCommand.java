@@ -1,5 +1,6 @@
 package fr.TheSakyo.EvhoUtility.commands.inventory;
 
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,16 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class InvseeCommand implements CommandExecutor {
 	
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public InvseeCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
-	
-	
+
 	
 	/******************************************************/
 	/* PARTIE COMMANDE POUR VOIR L'INVENTAIRE D'UN JOUEUR */ 
@@ -25,13 +24,13 @@ public class InvseeCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		
-		if(sender instanceof Player p){
+		if(sender instanceof Player p) {
 
 			if(p.hasPermission("evhoutility.invsee")) {
 				
 				if(args.length == 0) {
 					
-				   p.sendMessage(main.prefix + ChatColor.RED + "Essayez /invsee <player>");
+				   p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /invsee <player>");
 				   
 				} else if(args.length == 1) {
 					
@@ -41,29 +40,20 @@ public class InvseeCommand implements CommandExecutor {
 						
 						if(target.getName().equalsIgnoreCase(p.getName())) {
 							
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous pouvez voir votre propre inventaire autrement qu'avec cette commande !");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Vous pouvez voir votre propre inventaire autrement qu'avec cette commande !");
 							return true;
 						}
 						
 						p.openInventory(target.getInventory());
-						
-						main.invUpdate.updateInventory(p, ChatColor.WHITE + "Inventaire de " + ChatColor.GOLD + target.getName());
+						main.invUpdate.updateInventory(p, ChatFormatting.WHITE + "Inventaire de " + ChatFormatting.GOLD + target.getName());
 					
-					} else {
-						
-						p.sendMessage(main.prefix + ChatColor.RED + "Le joueur est introuvable !");
-					}
+					} else p.sendMessage(main.prefix + ChatFormatting.RED + "Le joueur est introuvable !");
 					
-				} else { p.performCommand("invsee"); }
+				} else p.performCommand("invsee");
 				
-			} else {
-				
-				p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !");
-			}
-		} else {
-			
-			sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour voir l'inventaire d'un joueur !");
-		}
+			} else p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
+
+		} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour voir l'inventaire d'un joueur !");
 		
 		return false;
 	}

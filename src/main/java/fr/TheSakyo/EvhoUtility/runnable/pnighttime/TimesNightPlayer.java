@@ -15,24 +15,21 @@ import java.util.UUID;
 
 public class TimesNightPlayer extends BukkitRunnable {
 	
-	private UUID playerUUID;
+	private final UUID playerUUID;
 	
 	public TimesNightPlayer(UUID uuid) { this.playerUUID = uuid; }
 
 	@Override
 	public void run() {
-		
-    	if(UtilityMain.playertimes == null) { return; }
-		
-		else if(UtilityMain.playertimes != null && UtilityMain.playertimes.isEmpty()) { return; }
-    	
-		else { 
-			
-			for(UUID uuid : UtilityMain.playertimes) {
+
+		if(UtilityMain.playerTimes != null && !UtilityMain.playerTimes.isEmpty()) {
+
+			for(UUID uuid : UtilityMain.playerTimes) {
 				
 				if(uuid == playerUUID) {
 					
-					UtilityMain.getInstance().usertime.setUserTime(Bukkit.getServer().getPlayer(uuid), DescParseTickFormat.parse("night"), true); }
+					UtilityMain.getInstance().userTime.setUserTime(Bukkit.getServer().getPlayer(uuid), DescParseTickFormat.parse("night"), true);
+				}
 				
 			} 
 			

@@ -281,7 +281,7 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
     }
 
     public Iterator<Attribute> iterator() {
-        return new Iterator<Attribute>() {
+        return new Iterator<>() {
             int i = 0;
 
             @Override
@@ -489,7 +489,7 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
 
         private class DatasetIterator implements Iterator<Map.Entry<String, String>> {
 
-            private Iterator<Attribute> attrIter = attributes.iterator();
+            private final Iterator<Attribute> attrIter = attributes.iterator();
 
             @SuppressWarnings("all")
             private Attribute attr;

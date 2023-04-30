@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class EmojiManager {
 	private static Pattern emoticonRegexPattern;
 	
-	private static List<Emoji> emojiData;
+	private static final List<Emoji> emojiData;
 
 	static {
 		try {
@@ -60,14 +60,14 @@ public class EmojiManager {
 	 */
 	private static void processEmoticonsToRegex() {
 		
-		List<String> emoticons = new ArrayList<String>();
+		List<String> emoticons = new ArrayList<>();
 		
 		for(Emoji e: emojiData) {
 
 			if(e.getEmoticons() != null) emoticons.addAll(e.getEmoticons());
 		}
 		
-		// La liste des émotions doit être prétraitée pour traiter les instances de sous-tranches comme :-) :-
+		// La liste des émotions doit être prés traités pour traiter les instances de sous-tranches comme :-) :-
 		// Sans ce prétraitement, les émoticônes dans une chaîne ne seront pas traitées correctement.
 		for(int i = 0; i < emoticons.size(); i++) {
 
@@ -78,9 +78,8 @@ public class EmojiManager {
 				
 				if(o2.contains(o1)) {
 
-					String temp = o2;
-					emoticons.remove(j);
-					emoticons.add(i, temp);
+                    emoticons.remove(j);
+					emoticons.add(i, o2);
 				}
 			}
 		}
@@ -114,7 +113,7 @@ public class EmojiManager {
 		StringBuilder sb = new StringBuilder();
 		for(String emoticon: emojiList) {
 
-			if(sb.length() != 0) sb.append("|");
+			if(!sb.isEmpty()) sb.append("|");
 			sb.append(Pattern.quote(emoticon));
 		}
 		return Pattern.compile(sb.toString());

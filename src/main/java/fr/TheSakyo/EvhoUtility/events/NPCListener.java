@@ -1,6 +1,5 @@
 package fr.TheSakyo.EvhoUtility.events;
 
-import fr.TheSakyo.EvhoUtility.UtilityMain;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -9,19 +8,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.ConcurrentModificationException;
 
 public class NPCListener implements Listener {
 
-    /* Récupére la class "Main" */
-	private UtilityMain main;
-	public NPCListener(UtilityMain pluginMain) { this.main = pluginMain; }
-	/* Récupére la class "Main" */
-
-
-    /***********************************************************/
-	/* EVENEMENENT QUAND LE JOUEUR SE DÉPLACE OU SE TÉLÉPORTE */
-	/*********************************************************/
+    /*********************************************************/
+	/* ÉVÈNEMENT QUAND LE JOUEUR SE DÉPLACE OU SE TÉLÉPORTE */
+	/*******************************************************/
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
 
@@ -35,7 +27,7 @@ public class NPCListener implements Listener {
 
                     /* -------------------------------------------------------------------- */
 
-        // ⬇️ On Vérfie si le chunk où se situe le Joueur n'est pas celu où il était précédement ⬇️ //
+        // ⬇️ On vérifie si le chunk où se situe le Joueur n'est pas celui où il était précédemment ⬇️ //
         if(!chunkTo.equals(chunkFrom)) {
 
             // ⬇️ On recharge les 'NPC' pour le Joueur en question selon le chunk où il se situe ⬇️ //
@@ -43,7 +35,7 @@ public class NPCListener implements Listener {
             loadNPCOnChunk(p, chunkFrom);
             // ⬆️ On recharge les 'NPC' pour le Joueur en question selon le chunk où il se situe ⬆️ //
         }
-        // ⬆️ On Vérfie si le chunk où se situe le Joueur n'est pas celu où il était précédement ⬆️ //
+        // ⬆️ On vérifie si le chunk où se situe le Joueur n'est pas celui où il était précédemment ⬆️ //
     }
 
                             /* ----------------------------------------------------------------------------------------------- */
@@ -64,9 +56,9 @@ public class NPCListener implements Listener {
         loadNPCOnChunk(p, locTo.getChunk()); // On recharge les 'NPC' pour le Joueur en question selon le chunk où il se situe
 
     }
-    /***********************************************************/
-    /* EVENEMENENT QUAND LE JOUEUR SE DÉPLACE OU SE TÉLÉPORTE */
     /*********************************************************/
+    /* ÉVÈNEMENT QUAND LE JOUEUR SE DÉPLACE OU SE TÉLÉPORTE */
+    /*******************************************************/
 
 
     /* ------------------------------------------------------------------------------------------------------------------------------- */
@@ -76,7 +68,7 @@ public class NPCListener implements Listener {
 
     /**
      *
-     * Essait de recharger les NPCs étant dans les {@link Chunk} demandé
+     * Essaie de recharger les NPCs étant dans les {@link Chunk} demandé
      * pour un {@link Player joueur}
      *
      * @param player Le {@link Player joueur} qui subira les modifications.

@@ -4,8 +4,8 @@ import java.util.*;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import fr.TheSakyo.EvhoUtility.utils.entity.player.utilities.Skin;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,20 +18,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import fr.TheSakyo.EvhoUtility.UtilityMain;
 
 public class ScrollInventory implements Listener {
-	
-	/* Récupère la class "Main" */
-	private UtilityMain main;
-    public ScrollInventory(UtilityMain pluginMain) { this.main = pluginMain; }
-	/* Récupère la class "Main" */
-
-
     
     // Variables Utiles //
 
-    public ArrayList<Inventory> pages = new ArrayList<Inventory>();
+    public ArrayList<Inventory> pages = new ArrayList<>();
     public UUID id;
-    public int currpage = 0;
-    public static HashMap<UUID, ScrollInventory> users = new HashMap<UUID, ScrollInventory>();
+    public int currPage = 0;
+    public static HashMap<UUID, ScrollInventory> users = new HashMap<>();
     
     // Variables Utiles //
     
@@ -40,33 +33,36 @@ public class ScrollInventory implements Listener {
     /********************************************/
 	/* CRÉER UN INVENTAIRE QU'ONT PEUT SCROLLER */
 	/********************************************/
-    
+
+	public ScrollInventory() {}
+
 	public ScrollInventory(ArrayList<ItemStack> items, String name, Player p) {
 		
 	    this.id = UUID.randomUUID();
-	    
 	    users.put(p.getUniqueId(), this);
-	
 	    Inventory page = getBlankPage(name, p);
-	
-	    for(int i = 0; i < items.size(); i++) {
-	    	
-	    	if(page.contains(items.get(i))) return;
-	
-	        if(page.firstEmpty() == -1) {
 
-				if(!pages.contains(page)) { pages.remove(page); }
-				pages.add(page);
+        for(ItemStack item : items) {
 
-	            page = getBlankPage(name, p);
-	            page.addItem(items.get(i));
-	        
-	        } else { page.addItem(items.get(i)); }
-	    }
+            if(page.contains(item)) return;
+
+			/************************************/
+
+            if(page.firstEmpty() == -1) {
+
+                if(!pages.contains(page)) pages.remove(page);
+                pages.add(page);
+
+                page = getBlankPage(name, p);
+                page.addItem(item);
+
+            } else  page.addItem(item);
+        }
+
 		if(!pages.contains(page)) { pages.remove(page); }
 		pages.add(page);
 
-	    p.openInventory(pages.get(currpage));
+	    p.openInventory(pages.get(currPage));
 	}
 	
 	/********************************************/
@@ -76,17 +72,17 @@ public class ScrollInventory implements Listener {
 	
    // Création des boutons 'pages suivantes', 'pages précédentes' et 'Rechercher' //
 	
-   public final static String nextPageName = ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Suivant";
-   public final static String previousPageName = ChatColor.GREEN.toString() + ChatColor.BOLD.toString() + "Précédent";
+   public final static String nextPageName = ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Suivant";
+   public final static String previousPageName = ChatFormatting.GREEN.toString() + ChatFormatting.BOLD.toString() + "Précédent";
    
-   public final static String SearchAnvilGuiName = ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Rechercher";
+   public final static String SearchAnvilGuiName = ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Rechercher";
    
-   // Cr�ation des boutons 'pages suivantes', 'pages précédentes' et 'Rechercher' //
+   // Création des boutons 'pages suivantes', 'pages précédentes' et 'Rechercher' //
 
    
    
     /************************************/
-	/* RECUP�RE LA PAGE DE L'INVENTAIRE */ 
+	/* RÉCUPÈRE LA PAGE DE L'INVENTAIRE */
 	/************************************/
    
     private Inventory getBlankPage(String name, Player p) {
@@ -97,8 +93,8 @@ public class ScrollInventory implements Listener {
         
 		ItemStack close = new ItemStack(Material.BARRIER, 1);
 		ItemMeta CustomC = close.getItemMeta();
-		CustomC.displayName(CustomMethod.StringToComponent(ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString() + "Retour"));
-		CustomC.lore(List.of(CustomMethod.StringToComponent(ChatColor.RED + "Retour au menu [Sanction Evhonia] !")));
+		CustomC.displayName(CustomMethod.StringToComponent(ChatFormatting.DARK_RED.toString() + ChatFormatting.BOLD.toString() + "Retour"));
+		CustomC.lore(List.of(CustomMethod.StringToComponent(ChatFormatting.RED + "Retour au menu [Sanction Evhonia] !")));
 		close.setItemMeta(CustomC);
         
         ItemStack nul = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, 1);
@@ -106,41 +102,41 @@ public class ScrollInventory implements Listener {
         metaN.displayName(CustomMethod.StringToComponent(" "));
         nul.setItemMeta(metaN);
         
-        if(inv.currpage > 0) {
+        if(inv.currPage > 0) {
 
-			if(inv.currpage == pages.size()-1) {
+			if(inv.currPage == pages.size()-1) {
 
-				ItemStack prevpage = new ItemStack(Material.ARROW, 1);
-				ItemMeta metaPP = prevpage.getItemMeta();
+				ItemStack prevPage = new ItemStack(Material.ARROW, 1);
+				ItemMeta metaPP = prevPage.getItemMeta();
 				metaPP.displayName(CustomMethod.StringToComponent(previousPageName));
-				prevpage.setItemMeta(metaPP);
+				prevPage.setItemMeta(metaPP);
 
-				page.setItem(48, prevpage);
+				page.setItem(48, prevPage);
 
 			} else {
 
-		        ItemStack nextpage =  new ItemStack(Material.ARROW, 1);
-				ItemMeta metaNP = nextpage.getItemMeta();
+		        ItemStack nextPage =  new ItemStack(Material.ARROW, 1);
+				ItemMeta metaNP = nextPage.getItemMeta();
 				metaNP.displayName(CustomMethod.StringToComponent(nextPageName));
-				nextpage.setItemMeta(metaNP);
+				nextPage.setItemMeta(metaNP);
 
-				ItemStack prevpage = new ItemStack(Material.ARROW, 1);
-				ItemMeta metaPP = prevpage.getItemMeta();
+				ItemStack prevPage = new ItemStack(Material.ARROW, 1);
+				ItemMeta metaPP = prevPage.getItemMeta();
 				metaPP.displayName(CustomMethod.StringToComponent(previousPageName));
-				prevpage.setItemMeta(metaPP);
+				prevPage.setItemMeta(metaPP);
 
-				page.setItem(50, nextpage);
-				page.setItem(48, prevpage);
+				page.setItem(50, nextPage);
+				page.setItem(48, prevPage);
 			}
 
 		} else {
         	
-	        ItemStack nextpage =  new ItemStack(Material.ARROW, 1);
-	        ItemMeta metaNP = nextpage.getItemMeta();
+	        ItemStack nextPage =  new ItemStack(Material.ARROW, 1);
+	        ItemMeta metaNP = nextPage.getItemMeta();
 	        metaNP.displayName(CustomMethod.StringToComponent(nextPageName));
-	        nextpage.setItemMeta(metaNP);
+	        nextPage.setItemMeta(metaNP);
 	        
-	        page.setItem(50, nextpage);
+	        page.setItem(50, nextPage);
 	        
 	        page.setItem(48, nul);
         }
@@ -150,12 +146,12 @@ public class ScrollInventory implements Listener {
         metaA.displayName(CustomMethod.StringToComponent(SearchAnvilGuiName));
         search.setItemMeta(metaA);
         
-        String lorebook = ChatColor.GOLD + "Vous êtes à la page [" + ChatColor.YELLOW.toString() + ChatColor.BOLD.toString() + inv.currpage + ChatColor.GOLD + "]";
+        String loreBook = ChatFormatting.GOLD + "Vous êtes à la page [" + ChatFormatting.YELLOW.toString() + ChatFormatting.BOLD.toString() + inv.currPage + ChatFormatting.GOLD + "]";
         
         ItemStack book = new ItemStack(Material.BOOK, 1);
         ItemMeta metaB = book.getItemMeta();
-        metaB.displayName(CustomMethod.StringToComponent(ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "Information"));
-        metaB.lore(List.of(CustomMethod.StringToComponent(lorebook)));
+        metaB.displayName(CustomMethod.StringToComponent(ChatFormatting.AQUA.toString() + ChatFormatting.BOLD.toString() + "Information"));
+        metaB.lore(List.of(CustomMethod.StringToComponent(loreBook)));
         book.setItemMeta(metaB);
         
         // ITEM EN HAUT EN EN BAS DU MENU (DECORATION ET QUELQUES FONCTIONS) //
@@ -185,7 +181,7 @@ public class ScrollInventory implements Listener {
     }
     
     /************************************/
-	/* RECUPÈRE LA PAGE DE L'INVENTAIRE */
+	/* RÉCUPÈRE LA PAGE DE L'INVENTAIRE */
 	/************************************/
 
     
@@ -207,7 +203,7 @@ public class ScrollInventory implements Listener {
 		
 		for(String InvPlayers : SanctionUtils.InvAllName) {
 
-			 if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(InvPlayers) || CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatColor.DARK_GRAY + "Liste " + InvPlayers)) {
+			 if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(InvPlayers) || CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Liste " + InvPlayers)) {
 				 
 				e.setCancelled(true);	
 				
@@ -220,40 +216,46 @@ public class ScrollInventory implements Listener {
 				
 				if(current.getType() == Material.ARROW && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(ScrollInventory.nextPageName)) {
 					
-		            if(inv.currpage >= inv.pages.size() -1) { return; }
+		            if(inv.currPage >= inv.pages.size() -1) { return; }
 		            
 		            else {
 		            	
-		            	if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatColor.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
-						
-		                inv.currpage += 1;
-		                p.openInventory(inv.pages.get(inv.currpage));
+		            	if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
+
+						/**********************************/
+
+						inv.currPage += 1;
+		                p.openInventory(inv.pages.get(inv.currPage));
 		            }
 		            
 				} else if(current.getType() == Material.ARROW && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(ScrollInventory.previousPageName)) {
 					
-	                if(inv.currpage > 0) {
+	                if(inv.currPage > 0) {
 	                	
-	                	if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatColor.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
+	                	if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
 
-	                    inv.currpage -= 1;
-	                    p.openInventory(inv.pages.get(inv.currpage));
+						/**********************************/
+
+						inv.currPage -= 1;
+	                    p.openInventory(inv.pages.get(inv.currPage));
 	                    
 	                } else { return; }
 		                
 		       } else if(current.getType() == Material.ANVIL && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(ScrollInventory.SearchAnvilGuiName)) {
 		    	    
-		    	    if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatColor.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
-		    	    
-		    	   	new AnvilCreation(UtilityMain.getInstance()).CreateSearchAnvilGui(p); //Créer une Enclume de recherche customisée
+		    	    if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Liste " + InvPlayers)) p.closeInventory();
+
+					/**********************************/
+
+					new AnvilCreation(UtilityMain.getInstance()).CreateSearchAnvilGui(p); //Créer une Enclume de recherche customisée
                 } 
 				
 				for(Player online : Bukkit.getServer().getOnlinePlayers()) {
 
-					String prefixPlayerHead = ChatColor.YELLOW + "Tête de " + ChatColor.GOLD;
+					String prefixPlayerHead = ChatFormatting.YELLOW + "Tête de " + ChatFormatting.GOLD;
 					if(current.getType() == Material.PLAYER_HEAD && current.hasItemMeta() && current.getItemMeta().hasDisplayName() && CustomMethod.ComponentToString(current.getItemMeta().displayName()).equalsIgnoreCase(prefixPlayerHead + online.getName())) {
 						
-						if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatColor.DARK_GRAY + "Liste " + InvPlayers)) {
+						if(CustomMethod.ComponentToString(e.getView().title()).equalsIgnoreCase(ChatFormatting.DARK_GRAY + "Liste " + InvPlayers)) {
 							
 							p.closeInventory();
 

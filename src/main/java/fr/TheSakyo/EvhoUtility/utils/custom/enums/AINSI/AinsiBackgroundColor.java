@@ -84,9 +84,7 @@ public enum AinsiBackgroundColor {
     /**
      * Récupère la couleur 'AINSI' en question de {@link AinsiBackgroundColor}.
      *
-     * @param colorCode Un Code Couleur d'arrière-plan 'AINSI' a interprété
-     *
-     * @return Une instance d'un code couleur d'arrière-plan 'AINSI' spécial.
+     * @param colorCode Un Code Couleur d'arrière-plan 'AINSI' qu'il faut interpréter.
      */
     AinsiBackgroundColor(String colorCode) { this.colorCode = colorCode; }
 

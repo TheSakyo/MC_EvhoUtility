@@ -1,7 +1,7 @@
 package fr.TheSakyo.EvhoUtility.commands.basic;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
-import fr.TheSakyo.EvhoUtility.utils.custom.methods.ColorUtils;
+import net.minecraft.ChatFormatting;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,12 +10,11 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
-import org.bukkit.ChatColor;
 
 public class BypassCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public BypassCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
@@ -29,7 +28,7 @@ public class BypassCommand implements CommandExecutor {
 
 		if(sender instanceof Player p) {
 
-            if(!p.hasPermission("evhoutility.bypass")) { p.sendMessage(ChatColor.RED + "Vous n'avez pas la permission requise !"); }
+            if(!p.hasPermission("evhoutility.bypass")) { p.sendMessage(ChatFormatting.RED + "Vous n'avez pas la permission requise !"); }
 
             else {
 
@@ -43,33 +42,33 @@ public class BypassCommand implements CommandExecutor {
 
                             if(CustomMethod.hasByPassPerm(target)) {
 
-                                p.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass désactivé pour " + ChatColor.GOLD + target.getName() + ChatColor.GREEN + " !");
-                                target.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass désactivé par " + ChatColor.YELLOW + p.getName() + ChatColor.GREEN + " !");
+                                p.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass désactivé pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GREEN + " !");
+                                target.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass désactivé par " + ChatFormatting.YELLOW + p.getName() + ChatFormatting.GREEN + " !");
 
                                 target.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", false);
 
                             } else {
 
-                                p.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass activé pour " + ChatColor.GOLD + target.getName() + ChatColor.GREEN + " !");
-                                target.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass activé par " + ChatColor.YELLOW + p.getName() + ChatColor.GREEN + " !");
+                                p.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass activé pour " + ChatFormatting.GOLD + target.getName() + ChatFormatting.GREEN + " !");
+                                target.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass activé par " + ChatFormatting.YELLOW + p.getName() + ChatFormatting.GREEN + " !");
 
                                 target.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", true);
                             }
 
-                        } else { p.sendMessage(main.prefix + ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Erreur : " + ChatColor.RED + "Le joueur est introuvable !"); }
+                        } else { p.sendMessage(main.prefix + ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Erreur : " + ChatFormatting.RED + "Le joueur est introuvable !"); }
 
-                    } else { p.sendMessage(main.prefix + ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Erreur : " + ChatColor.RED + "Essayez /bypass" + ChatColor.GREEN + " <player>"); }
+                    } else { p.sendMessage(main.prefix + ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Erreur : " + ChatFormatting.RED + "Essayez /bypass" + ChatFormatting.GREEN + " <player>"); }
 
                 } else {
 
                     if(CustomMethod.hasByPassPerm(p)) {
 
-                        p.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass désactivé");
+                        p.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass désactivé");
                         p.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", false);
 
                     } else {
 
-                        p.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass activé");
+                        p.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass activé");
                         p.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", true);
                     }
                 }
@@ -85,22 +84,22 @@ public class BypassCommand implements CommandExecutor {
 
                     if(CustomMethod.hasByPassPerm(target)) {
 
-                        sender.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass désactivé pour " + ChatColor.GOLD + target.getName());
-                        target.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass désactivé par " + ChatColor.YELLOW + "La Console" + ChatColor.GREEN + " !");
+                        sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass désactivé pour " + ChatFormatting.GOLD + target.getName());
+                        target.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass désactivé par " + ChatFormatting.YELLOW + "La Console" + ChatFormatting.GREEN + " !");
 
                         target.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", false);
 
                     } else {
 
-                        sender.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass activé pour " + ChatColor.GOLD + target.getName());
-                        target.sendMessage(main.prefix + ChatColor.GREEN + "Mode Bypass activé par " + ChatColor.YELLOW + "La Console" + ChatColor.GREEN + " !");
+                        sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass activé pour " + ChatFormatting.GOLD + target.getName());
+                        target.sendMessage(main.prefix + ChatFormatting.GREEN + "Mode Bypass activé par " + ChatFormatting.YELLOW + "La Console" + ChatFormatting.GREEN + " !");
 
                         target.addAttachment(UtilityMain.pm.getPlugin("EvhoUtility")).setPermission("utility.bypass", true);
                     }
 
-                } else { sender.sendMessage(main.prefix + ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Erreur : " + ChatColor.RED + "Le joueur est introuvable !"); }
+                } else { sender.sendMessage(main.prefix + ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Erreur : " + ChatFormatting.RED + "Le joueur est introuvable !"); }
 
-            } else { sender.sendMessage(main.prefix + ChatColor.RED.toString() + ChatColor.BOLD.toString() + "Erreur : " + ChatColor.RED + "Essayez /bypass" + ChatColor.GREEN + " <player>"); } }
+            } else { sender.sendMessage(main.prefix + ChatFormatting.RED.toString() + ChatFormatting.BOLD.toString() + "Erreur : " + ChatFormatting.RED + "Essayez /bypass" + ChatFormatting.GREEN + " <player>"); } }
 
 		return false;
 	}

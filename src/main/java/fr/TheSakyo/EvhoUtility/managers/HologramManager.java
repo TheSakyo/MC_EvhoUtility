@@ -18,17 +18,17 @@ import org.bukkit.entity.Player;
 public class HologramManager {
 
 	/* Récupère la class "Main" */
-	private static UtilityMain mainInstance = UtilityMain.getInstance();
+	private static final UtilityMain mainInstance = UtilityMain.getInstance();
 	/* Récupère la class "Main" */
 
-	private static ConfigFile HG_CONFIG = mainInstance.holoconfig;
+	private static final ConfigFile HG_CONFIG = mainInstance.holoConfig;
 
  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
  /* PARTIE CONFIGURATION HOLOGRAMME */ 
  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 	/**********************************************************************/
-	/* PARTIE SUPRESSION DE LA SAUVEGARDE D'UN HOLOGRAMME EN PARTICULIER */
+	/* PARTIE SUPPRESSION DE LA SAUVEGARDE D'UN HOLOGRAMME EN PARTICULIER */
 	/********************************************************************/
 
 	/**
@@ -43,13 +43,13 @@ public class HologramManager {
 	}
 
 	/*********************************************************************/
-	/* PARTIE SUPRESSION DE LA SAUVEGARDE D'UN HOLOGRAMM EN PARTICULIER */
+	/* PARTIE SUPPRESSION DE LA SAUVEGARDE D'UN HOLOGRAMME EN PARTICULIER */
 	/*******************************************************************/
 
 			/* ----------------------------------------- */
 
 	/***************************************************************/
-	/* PARTIE SUPRESSION DE LA SAUVEGARDE DE TOUS LES HOLOGRAMMES */
+	/* PARTIE SUPPRESSION DE LA SAUVEGARDE DE TOUS LES HOLOGRAMMES */
 	/*************************************************************/
 
 	/**
@@ -60,8 +60,7 @@ public class HologramManager {
 	public static void unsaveHolograms(Set<String> holograms) { holograms.forEach(HologramManager::unsaveHologram); }
 
 	/***************************************************************/
-
-	/* PARTIE SUPRESSION DE LA SAUVEGARDE DE TOUS LES HOLOGRAMMES */
+	/* PARTIE SUPPRESSION DE LA SAUVEGARDE DE TOUS LES HOLOGRAMMES */
 	/*************************************************************/
 	
 	
@@ -127,18 +126,18 @@ public class HologramManager {
 							/* ----------------------------------------- */
 
 	/********************************************************************************************************/
-	/* PARTIE CHARGEMENT/DÉCHARGEMENT DES SAUVEGARDES D'HOLOGRAMME DEFINIT SUR UN FICHIER DE CONFIGURATION */
+	/* PARTIE CHARGEMENT/DÉCHARGEMENT DES SAUVEGARDES D'HOLOGRAMME DEFINITE SUR UN FICHIER DE CONFIGURATION */
 	/*******************************************************************************************************/
 
 	/**
-	 * Recharge les hologrammes enregistrés dans le fichier de configuration des hologrammes.
+	 * Recharge tous les hologrammes enregistrés dans le fichier de configuration des hologrammes.
 	 *
 	 * @param p Le joueur qui subira les changements
 	 * @param saveConfig Si oui ou non, on recharge l'hologramme et son enregistrement dans le fichier de configuration
 	 */
 	public static void loadHolograms(Player p, boolean saveConfig) {
 
-		ConfigurationSection configSection = mainInstance.holokeys;
+		ConfigurationSection configSection = mainInstance.holoKeys;
 		List<String> keyList = configSection.getKeys(false).stream().toList();
 
 						/* ----------------------------------------- */
@@ -159,7 +158,7 @@ public class HologramManager {
 
 						/* ----------------------------------------- */
 
-		List<String> lineOriginal = new ArrayList<String>();
+		List<String> lineOriginal = new ArrayList<>();
 
 
 		ConfigurationSection keyHologram = ConfigFile.getConfigurationSection(HG_CONFIG, "Holograms." + key + ".lines");
@@ -192,7 +191,7 @@ public class HologramManager {
 
 		String lines = EmojiUtils.emojify(String.join("//n", lineOriginal)); // Essaie de convertir le texte a affiché
 
-		HologramEntity hologram = new HologramEntity(mainInstance, p, Integer.valueOf(id), key.toUpperCase(), lines, location, saveConfig, true);
+		HologramEntity hologram = new HologramEntity(mainInstance, p, id, key.toUpperCase(), lines, location, saveConfig, true);
 		mainInstance.HOLOGRAMS.putIfAbsent(key.toUpperCase(), hologram.getLine()); // On ajoute toutes les instances d'hologrammes construits
 		if(mainInstance.HOLOGRAMS.containsKey(key.toUpperCase())) mainInstance.HOLOGRAMS.replace(key.toUpperCase(), hologram.getLine()); // Remplace l'enregistrement de l'hologramme
 	}
@@ -200,7 +199,7 @@ public class HologramManager {
 					/* ------------------------------------------------------------------------------------------------------------- */
 
 	/**
-	 * Décharge les hologrammes enregistrés dans le Serveur.
+	 * Décharge tous les hologrammes enregistrés dans le Serveur.
 	 *
 	 * @param p Le joueur qui subira les changements
 	 * @param unsaveConfig Si oui ou non, on supprime l'enregistrement de l'hologramme dans le fichier de configuration
@@ -215,9 +214,7 @@ public class HologramManager {
 	 */
 	public static void unloadHologram(Player p, String key, boolean unsaveConfig) {
 
-		List<HologramEntity> hologramEntities = new ArrayList<HologramEntity>();
-
-		mainInstance.HOLOGRAMS.get(key).forEach(hologramEntities::add);
+        List<HologramEntity> hologramEntities = new ArrayList<>(mainInstance.HOLOGRAMS.get(key));
 		hologramEntities.forEach(hologramEntity -> hologramEntity.remove(p, unsaveConfig));
 		hologramEntities.get(0).clearLine();
 		hologramEntities.clear();
@@ -225,11 +222,11 @@ public class HologramManager {
 					/* --------------------------------------------------- */
 
 		// Si le Joueur est null, on essaie de supprimer l'hologramme de la liste des hologrammes
-		if(p == null) if(mainInstance.HOLOGRAMS.containsKey(key)) mainInstance.HOLOGRAMS.remove(key);
+		if(p == null) mainInstance.HOLOGRAMS.remove(key);
 	}
 
 	/********************************************************************************************************/
-	/* PARTIE CHARGEMENT/DÉCHARGEMENT DES SAUVEGARDES D'HOLOGRAMME DEFINIT SUR UN FICHIER DE CONFIGURATION */
+	/* PARTIE CHARGEMENT/DÉCHARGEMENT DES SAUVEGARDES D'HOLOGRAMME DEFINITE SUR UN FICHIER DE CONFIGURATION */
 	/*******************************************************************************************************/
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

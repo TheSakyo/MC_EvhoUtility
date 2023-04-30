@@ -190,7 +190,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
             return;
 
         String href = base.absUrl("href");
-        if (href.length() != 0) { // ignore <base target> etc
+        if (!href.isEmpty()) { // ignore <base target> etc
             baseUri = href;
             baseUriSetFromDoc = true;
             doc.setBaseUri(href); // set on the doc so doc.createElement(Tag) will get updated base, and to update all descendants
@@ -485,7 +485,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
     }
 
     // todo: tidy up in specific scope methods
-    private String[] specificScopeTarget = {null};
+    private final String[] specificScopeTarget = {null};
 
     private boolean inSpecificScope(String targetName, String[] baseTypes, String[] extraTypes) {
         specificScopeTarget[0] = targetName;
@@ -610,7 +610,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
     }
 
     Element lastFormattingElement() {
-        return formattingElements.size() > 0 ? formattingElements.get(formattingElements.size()-1) : null;
+        return !formattingElements.isEmpty() ? formattingElements.get(formattingElements.size()-1) : null;
     }
 
     Element removeLastFormattingElement() {
@@ -666,7 +666,8 @@ public class HtmlTreeBuilder extends TreeBuilder {
             if (entry == null || onStack(entry)) // step 6 - neither marker nor on stack
                 break; // jump to 8, else continue back to 4
         }
-        while(true) {
+        // if not last entry in list, jump to 7
+        do {
             if (!skip) // step 7: on later than entry
                 entry = formattingElements.get(++pos);
             Validate.notNull(entry); // should not occur, as we break at last element
@@ -681,9 +682,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
             formattingElements.set(pos, newEl);
 
             // 11
-            if (pos == size-1) // if not last entry in list, jump to 7
-                break;
-        }
+        } while (pos != size - 1);
     }
 
     void clearFormattingElementsToLastMarker() {

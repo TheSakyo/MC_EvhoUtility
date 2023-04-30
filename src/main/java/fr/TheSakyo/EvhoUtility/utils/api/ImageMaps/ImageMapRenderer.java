@@ -9,13 +9,13 @@ import org.bukkit.map.MapView;
 
 public class ImageMapRenderer extends MapRenderer {
 	
-	// Variebles Utiles //
+	// Variables Utiles //
 	
 	private boolean hasRendered;
 	
 	private BufferedImage image;
 	
-	// Variebles Utiles //
+	// Variables Utiles //
 	
 	
 	// Constructeur de la class "ImageMapRenderer" //
@@ -36,13 +36,12 @@ public class ImageMapRenderer extends MapRenderer {
 			mapcanvas.drawImage(0, 0, image);
 			hasRendered = false;
 		}
-		
 	}
 	// Méthode pour déssiner l'image récupérée par le joueur dans l'item de map //
 	
 	
 	
-	public void setShouldRender(boolean shouldrender) { this.hasRendered = shouldrender; } //Méthode pour définir le type "boolean" 'hasRenderer'
+	public void setShouldRender(boolean shouldRender) { this.hasRendered = shouldRender; } //Méthode pour définir le type "boolean" 'hasRenderer'
 	
 	
 	public void setImage(BufferedImage image) { this.image = image; } //Méthode pour définir l'image

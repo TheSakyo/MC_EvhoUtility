@@ -1,10 +1,8 @@
 package fr.TheSakyo.EvhoUtility.utils.api.CustomEntity.listeners;
 
 import fr.TheSakyo.EvhoUtility.utils.entity.player.PlayerChannelPipelineManager;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import fr.TheSakyo.EvhoUtility.utils.api.CustomEntity.packets.PacketInterceptor;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

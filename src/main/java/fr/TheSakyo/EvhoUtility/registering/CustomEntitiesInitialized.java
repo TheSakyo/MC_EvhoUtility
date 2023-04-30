@@ -7,7 +7,7 @@ import fr.TheSakyo.EvhoUtility.managers.NPCManager;
 public class CustomEntitiesInitialized {
 
     /* Récupère la class "Main" */
-	 private UtilityMain main;
+	 private final UtilityMain main;
 	 public CustomEntitiesInitialized(UtilityMain pluginMain) { this.main = pluginMain; }
 	 /* Récupère la class "Main" */
 
@@ -22,30 +22,30 @@ public class CustomEntitiesInitialized {
 	/************************************/
 
     /**
-     * Permet d'initialiser les Entitées customisés enregistrés dans le Serveur (Déchargement + Rechargement).
+     * Permet d'initialiser les Entités customisés enregistrés dans le Serveur (Déchargement + Rechargement).
      *
-     * @param pluginDisabling Vrai (true) si le plugin actuel est en train de se désactiver || Faux (false) si le plugin actuel est en train de sactiver.
+     * @param pluginDisabling Vrai (true) si le plugin actuel est en train de se désactiver || Faux (false) si le plugin actuel est en train de s'activer.
      */
     public void init(boolean pluginDisabling) {
 
-        // Si plugin actuel n'est pas en désactivation, on recharge toutes les entitées customisés
+        // Si plugin actuel n'est pas en désactivation, on recharge toutes les entités customisées
         if(!pluginDisabling) {
 
-            // Recharge les 'Hologramme(s)' enregistré(s) dans le fichier de configuration "holograms.yml" (s'il y en n'a)
-            if(!main.holokeys.getKeys(false).isEmpty() || !main.HOLOGRAMS.isEmpty()) { HologramManager.loadHolograms(null, false); }
+            // Recharge tous les 'Hologramme(s)' enregistré(s) dans le fichier de configuration "holograms.yml" (s'il y en n'a)
+            if(!main.holoKeys.getKeys(false).isEmpty() || !main.HOLOGRAMS.isEmpty()) { HologramManager.loadHolograms(null, false); }
 
-            //Recharge les 'NPC(s)' enregistré(s) dans le fichier de configuration "NPC.yml" (s'il y en n'a)
-            if(!main.npckeys.getKeys(false).isEmpty() || !main.NPCS.isEmpty()) { NPCManager.loadNPC(null, true, true, true); }
+            //Recharge tous les 'NPC(s)' enregistré(s) dans le fichier de configuration "NPC.yml" (s'il y en n'a)
+            if(!main.npcKeys.getKeys(false).isEmpty() || !main.NPCS.isEmpty()) { NPCManager.loadNPC(null, true, true, true); }
 
-        // Sinon, si plugin actuel est en désactivation, on décharge donc toutes les entitées customisés
+        // Sinon, si plugin actuel est en désactivation, on décharge donc toutes les entités customisées
         } else {
 
             /* Supprime les 'Hologramme(s)' du Serveur */
-            if(!main.holokeys.getKeys(false).isEmpty() || !main.HOLOGRAMS.isEmpty()) { HologramManager.unloadHolograms(null, false); }
+            if(!main.holoKeys.getKeys(false).isEmpty() || !main.HOLOGRAMS.isEmpty()) { HologramManager.unloadHolograms(null, false); }
             /* Supprime les 'Hologramme(s)' du Serveur */
 
             /* Supprime les 'NPC(s)' du Serveur */
-            if(!main.npckeys.getKeys(false).isEmpty() || !main.NPCS.isEmpty()) { NPCManager.unloadNPC(null, false); }
+            if(!main.npcKeys.getKeys(false).isEmpty() || !main.NPCS.isEmpty()) { NPCManager.unloadNPC(null, false); }
             /* Supprime les 'NPC(s)' du Serveur */
         }
 

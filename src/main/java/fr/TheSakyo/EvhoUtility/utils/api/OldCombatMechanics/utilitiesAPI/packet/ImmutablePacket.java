@@ -11,7 +11,7 @@ public interface ImmutablePacket {
      */
     default void send(Player... players) {
 
-        for(Player player : players){ PacketSender.getInstance().sendPacket(this, player); }
+        for(Player player : players) { PacketSender.getInstance().sendPacket(this, player); }
     }
 
     /**

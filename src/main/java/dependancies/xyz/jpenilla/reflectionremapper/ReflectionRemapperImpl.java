@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import org.bukkit.craftbukkit.libs.net.fabricmc.mappingio.tree.MappingTree;
+
+import net.fabricmc.mappingio.tree.MappingTree;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -135,67 +135,19 @@ final class ReflectionRemapperImpl implements ReflectionRemapper {
     return new ReflectionRemapperImpl(mappings);
   }
 
-  private static final class ClassMapping {
-    private final String obfName;
-    private final String deobfName;
-    private final Map<String, String> fieldsDeobfToObf;
-    private final Map<String, String> methods; // deobfMethodName + obfParamsDescriptor -> obfMethodName
-
-    private ClassMapping(
-      final String obfName,
-      final String deobfName,
-      final Map<String, String> fieldsDeobfToObf,
-      final Map<String, String> methods
-    ) {
-      this.obfName = obfName;
-      this.deobfName = deobfName;
-      this.fieldsDeobfToObf = fieldsDeobfToObf;
-      this.methods = methods;
-    }
-
-    public String obfName() {
-      return this.obfName;
-    }
-
-    public String deobfName() {
-      return this.deobfName;
-    }
-
-    public Map<String, String> fieldsDeobfToObf() {
-      return this.fieldsDeobfToObf;
-    }
-
-    public Map<String, String> methods() {
-      return this.methods;
-    }
+  /**
+   * @param methods deobfMethodName + obfParamsDescriptor -> obfMethodName
+   */
+  private record ClassMapping(String obfName, String deobfName, Map<String, String> fieldsDeobfToObf,
+                              Map<String, String> methods) {
 
     @Override
-    public boolean equals(final @Nullable Object obj) {
-      if (obj == this) {
-        return true;
+      public String toString() {
+        return "ClassMapping[" +
+                "obfName=" + this.obfName + ", " +
+                "deobfName=" + this.deobfName + ", " +
+                "fieldsDeobfToObf=" + this.fieldsDeobfToObf + ", " +
+                "methods=" + this.methods + ']';
       }
-      if (obj == null || obj.getClass() != this.getClass()) {
-        return false;
-      }
-      final @Nullable ClassMapping that = (ClassMapping) obj;
-      return Objects.equals(this.obfName, that.obfName) &&
-        Objects.equals(this.deobfName, that.deobfName) &&
-        Objects.equals(this.fieldsDeobfToObf, that.fieldsDeobfToObf) &&
-        Objects.equals(this.methods, that.methods);
     }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(this.obfName, this.deobfName, this.fieldsDeobfToObf, this.methods);
-    }
-
-    @Override
-    public String toString() {
-      return "ClassMapping[" +
-        "obfName=" + this.obfName + ", " +
-        "deobfName=" + this.deobfName + ", " +
-        "fieldsDeobfToObf=" + this.fieldsDeobfToObf + ", " +
-        "methods=" + this.methods + ']';
-    }
-  }
 }

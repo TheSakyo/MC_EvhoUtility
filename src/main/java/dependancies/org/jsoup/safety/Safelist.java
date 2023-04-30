@@ -63,10 +63,10 @@ import static dependancies.org.jsoup.internal.Normalizer.lowerCase;
  </p>
  */
 public class Safelist {
-    private Set<TagName> tagNames; // tags allowed, lower case. e.g. [p, br, span]
-    private Map<TagName, Set<AttributeKey>> attributes; // tag -> attribute[]. allowed attributes [href] for a tag.
-    private Map<TagName, Map<AttributeKey, AttributeValue>> enforcedAttributes; // always set these attribute values
-    private Map<TagName, Map<AttributeKey, Set<Protocol>>> protocols; // allowed URL protocols for attributes
+    private final Set<TagName> tagNames; // tags allowed, lower case. e.g. [p, br, span]
+    private final Map<TagName, Set<AttributeKey>> attributes; // tag -> attribute[]. allowed attributes [href] for a tag.
+    private final Map<TagName, Map<AttributeKey, AttributeValue>> enforcedAttributes; // always set these attribute values
+    private final Map<TagName, Map<AttributeKey, Set<Protocol>>> protocols; // allowed URL protocols for attributes
     private boolean preserveRelativeLinks; // option to preserve relative links
 
     /**
@@ -536,7 +536,7 @@ public class Safelist {
         // try to resolve relative urls to abs, and optionally update the attribute so output html has abs.
         // rels without a baseuri get removed
         String value = el.absUrl(attr.getKey());
-        if (value.length() == 0)
+        if (value.isEmpty())
             value = attr.getValue(); // if it could not be made abs, run as-is to allow custom unknown protocols
         if (!preserveRelativeLinks)
             attr.setValue(value);
@@ -620,7 +620,7 @@ public class Safelist {
     }
 
     abstract static class TypedValue {
-        private String value;
+        private final String value;
 
         TypedValue(String value) {
             Validate.notNull(value);

@@ -47,7 +47,7 @@ public class NMSCraftWorld {
   /**
    * Récupère une instance du Monde (monde Minecraft) en fonction du Monde demandé
    *
-   * @param world Une instance du monde a récupéré
+   * @param world Une instance du monde qu'il faut récupérer.
    *
    */
   public static ServerLevel getWorldServer(World world) {

@@ -37,24 +37,21 @@ public abstract class AbstractEmoji {
 			int ch = text.codePointAt(i);
 
 			if(ch <= 128) { sb.appendCodePoint(ch); }
-			else if(ch > 128 && (ch < 159 || (ch >= 55296 && ch <= 57343))) {
-				// Aucun caractères html illégaux
-				// voir : http://en.wikipedia.org/wiki/Character_encodings_in_HTML
-				// à la section sur les caractères illégaux
-				continue;
-			} else {
-				if(isHex) { sb.append("&#x" + Integer.toHexString(ch) + ";"); }
+			else if(!(ch < 159 || (ch >= 55296 && ch <= 57343))) {
+
+				if(isHex) { sb.append("&#x").append(Integer.toHexString(ch)).append(";"); }
 				else {
 
 					if(isSurrogate) {
 
-						double H = Math.floor((ch - 0x10000) / 0x400) + 0xD800;
+						double H = (double)((ch - 0x10000) / 0x400) + 0xD800;
 						double L = ((ch - 0x10000) % 0x400) + 0xDC00;
-						sb.append("&#"+String.format("%.0f", H)+";&#"+String.format("%.0f", L)+";");
+						sb.append("&#").append(String.format("%.0f", H)).append(";&#")
+								.append(String.format("%.0f", L)).append(";");
 
-					} else sb.append("&#" + ch + ";");
+					} else sb.append("&#").append(ch).append(";");
 				}
-			}
+            }
 		}
 		return sb.toString();
 	}

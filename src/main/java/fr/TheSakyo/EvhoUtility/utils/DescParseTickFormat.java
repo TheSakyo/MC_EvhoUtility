@@ -25,8 +25,7 @@ public final class DescParseTickFormat {
 	/***********************************************************************/
     
     
-    
-    
+
     /*******************************************************************/
 	/* MÉTHODES ET FONCTIONS UTILES POUR CONVERTIR DES TICKS MINECRAFT */
 	/* (Pour le fonctionnement du changement de temps dans le jeu)    */
@@ -34,17 +33,11 @@ public final class DescParseTickFormat {
     static {
 
         nameToTicks.put("sunrise", 23000);
-
         nameToTicks.put("day", 1000);
-
         nameToTicks.put("noon", 6000);
-
         nameToTicks.put("sunset", 12000);
-
         nameToTicks.put("night", 13000);
-
         nameToTicks.put("midnight", 18000);
-
         resetAliases.add("reset");
     }
     
@@ -53,88 +46,101 @@ public final class DescParseTickFormat {
 
         desc = desc.toLowerCase(Locale.FRENCH).replaceAll("[^A-Za-z0-9:]", "");
 
-        try {
-            return parseTicks(desc);
-        } catch (final NumberFormatException ignored) {}
+        /***********************************/
 
-        try {
-            return parse24(desc);
-        } catch (final NumberFormatException ignored) {}
+        try { return parseTicks(desc); }
+        catch (final NumberFormatException ignored) {}
 
-        try {
-            return parse12(desc);
-        } catch (final NumberFormatException ignored) {}
+        /*******************/
 
-        try {
-            return parseAlias(desc);
-        } catch (final NumberFormatException ignored) {}
+        try {  return parse24(desc); }
+        catch(final NumberFormatException ignored) {}
+
+        /*******************/
+
+        try { return parse12(desc); }
+        catch(final NumberFormatException ignored) {}
+
+        /*******************/
+
+        try { return parseAlias(desc); }
+        catch(final NumberFormatException ignored) {}
+
+        /***********************************/
+        /***********************************/
 
         throw new NumberFormatException();
     }
 
     public static long parseTicks(String desc) throws NumberFormatException {
-        if (!desc.matches("^[0-9]+ti?c?k?s?$")) {
-            throw new NumberFormatException();
-        }
 
+        if(!desc.matches("^[0-9]+ti?c?k?s?$")) throw new NumberFormatException();
         desc = desc.replaceAll("[^0-9]", "");
+
+        /***********************************/
 
         return Long.parseLong(desc) % 24000;
     }
 
     public static long parse24(String desc) throws NumberFormatException {
-        if (!desc.matches("^[0-9]{2}[^0-9]?[0-9]{2}$")) {
-            throw new NumberFormatException();
-        }
+
+        if(!desc.matches("^[0-9]{2}[^0-9]?[0-9]{2}$")) throw new NumberFormatException();
+
+        /***********************************/
 
         desc = desc.toLowerCase(Locale.FRENCH).replaceAll("[^0-9]", "");
+        if(desc.length() != 4) throw new NumberFormatException();
 
-        if (desc.length() != 4) {
-            throw new NumberFormatException();
-        }
+        /***********************************/
 
         final int hours = Integer.parseInt(desc.substring(0, 2));
         final int minutes = Integer.parseInt(desc.substring(2, 4));
+
+        /***********************************/
 
         return hoursMinutesToTicks(hours, minutes);
     }
 
     public static long parse12(String desc) throws NumberFormatException {
-        if (!desc.matches("^[0-9]{1,2}([^0-9]?[0-9]{2})?(pm|am)$")) {
-            throw new NumberFormatException();
-        }
+
+        if(!desc.matches("^[0-9]{1,2}([^0-9]?[0-9]{2})?(pm|am)$")) throw new NumberFormatException();
+
+        /***********************************/
 
         int hours = 0;
         int minutes = 0;
 
+        /**********************/
+
         desc = desc.toLowerCase(Locale.FRENCH);
-        final String parsetime = desc.replaceAll("[^0-9]", "");
+        final String parseTime = desc.replaceAll("[^0-9]", "");
 
-        if (parsetime.length() > 4) {
-            throw new NumberFormatException();
-        }
+        /***********************************/
 
-        if (parsetime.length() == 4) {
-            hours += Integer.parseInt(parsetime.substring(0, 2));
-            minutes += Integer.parseInt(parsetime.substring(2, 4));
-        } else if (parsetime.length() == 3) {
-            hours += Integer.parseInt(parsetime.substring(0, 1));
-            minutes += Integer.parseInt(parsetime.substring(1, 3));
-        } else if (parsetime.length() == 2) {
-            hours += Integer.parseInt(parsetime.substring(0, 2));
-        } else if (parsetime.length() == 1) {
-            hours += Integer.parseInt(parsetime.substring(0, 1));
-        } else {
-            throw new NumberFormatException();
-        }
+        if(parseTime.length() > 4) throw new NumberFormatException();
 
-        if (desc.endsWith("pm") && hours != 12) {
-            hours += 12;
-        }
+        /***********************************/
 
-        if (desc.endsWith("am") && hours == 12) {
-            hours -= 12;
-        }
+        if(parseTime.length() == 4) {
+
+            hours += Integer.parseInt(parseTime.substring(0, 2));
+            minutes += Integer.parseInt(parseTime.substring(2, 4));
+
+        } else if (parseTime.length() == 3) {
+
+            hours += Integer.parseInt(parseTime.substring(0, 1));
+            minutes += Integer.parseInt(parseTime.substring(1, 3));
+
+        } else if (parseTime.length() == 2) hours += Integer.parseInt(parseTime.substring(0, 2));
+        else if (parseTime.length() == 1)  hours += Integer.parseInt(parseTime.substring(0, 1));
+        else throw new NumberFormatException();
+
+        /***********************************/
+
+        if(desc.endsWith("pm") && hours != 12) hours += 12;
+        if(desc.endsWith("am") && hours == 12) hours -= 12;
+
+        /***********************************/
 
         return hoursMinutesToTicks(hours, minutes);
     }
@@ -143,7 +149,7 @@ public final class DescParseTickFormat {
         long ret = ticksAtMidnight;
         ret += (long)hours * ticksPerHour;
 
-        ret += (minutes / 60.0) * ticksPerHour;
+        ret += (long)((minutes / 60.0) * ticksPerHour);
 
         ret %= ticksPerDay;
         return ret;

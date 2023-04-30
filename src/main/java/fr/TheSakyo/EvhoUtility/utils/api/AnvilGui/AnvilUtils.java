@@ -32,7 +32,7 @@ public class AnvilUtils {
 	/**
      * L'objet {@link VersionWrapper} local pour la version du serveur.
      */
-    private static VersionWrapper WRAPPER = new VersionMatcher().match();
+    private static final VersionWrapper WRAPPER = new VersionMatcher().match();
     
 
     /**
@@ -50,7 +50,7 @@ public class AnvilUtils {
     /**
      * Le titre de l'inventaire de l'enclume
      */
-    private String inventoryTitle;
+    private final String inventoryTitle;
     
     
     /**
@@ -62,7 +62,7 @@ public class AnvilUtils {
     /**
      * L'Item qui se trouve dans l'emplacement {@link Slot#INPUT_RIGHT}.
      */
-    private ItemStack inputRight;
+    private final ItemStack inputRight;
     
     
     /**
@@ -130,7 +130,7 @@ public class AnvilUtils {
      * @param inventoryTitle Ce à quoi le texte doit déjà correspondre.
      * @param itemText Le nom de l'objet dans le premier emplacement de l'enclumeGui
      * @param inputLeft Matériau de l'objet dans le premier emplacement de l'enclumeGUI
-     * @param preventClose Indique si l'on veut empécher la fermeture de l'inventaire.
+     * @param preventClose Indique si l'on veut impeacher la fermeture de l'inventaire.
      * @param closeListener Un {@link Consumer} lorsque l'inventaire se ferme.
      * @param completeFunction Une {@link BiFunction} qui est appelée lorsque le joueur clique sur l'emplacement {@link Slot#OUTPUT}.
      */
@@ -384,7 +384,7 @@ public class AnvilUtils {
         
 
         /**
-         * Empèche la fermeture de l'interface graphique de l'enclume par l'utilisateur.
+         * Empêche la fermeture de l'interface graphique de l'enclume par l'utilisateur.
          *
          * @return L'Instance de {@link Builder}
          */
@@ -535,17 +535,15 @@ public class AnvilUtils {
          * Crée l'interface graphique de l'enclume et l'ouvre pour le joueur.
          *
          * @param player Le {@link Player} pour lequel le GUI de l'enclume doit s'ouvrir.
-         * @return L'instance {@link AnvilUtils} de ce constructeur.
          * @throws IllegalArgumentException lorsque la fonction onComplete, le plugin ou le joueur est nul.
          */
-        public AnvilUtils open(Player player) {
+        public void open(Player player) {
         	
             Validate.notNull(plugin, "Le plugin ne peut pas être nul");
             Validate.notNull(completeFunction, "La fonction complète ne peut pas être nulle");
             Validate.notNull(player, "Le joueur ne peut pas être nul");
-            return new AnvilUtils(plugin, player, title, itemText, itemLeft, itemRight, preventClose, closeListener, inputLeftClickListener, inputRightClickListener, completeFunction);
+            new AnvilUtils(plugin, player, title, itemText, itemLeft, itemRight, preventClose, closeListener, inputLeftClickListener, inputRightClickListener, completeFunction);
         }
-
     }
     
     

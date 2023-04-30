@@ -36,10 +36,10 @@ public class ModuleDisableCrafting extends Module {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPrepareItemCraft(PrepareItemCraftEvent e){
+    public void onPrepareItemCraft(PrepareItemCraftEvent e) {
 
         final List<HumanEntity> viewers = e.getViewers();
-        if(viewers.size() < 1) return;
+        if(viewers.isEmpty()) return;
 
         final World world = viewers.get(0).getWorld();
         if(!isEnabled(world)) return;

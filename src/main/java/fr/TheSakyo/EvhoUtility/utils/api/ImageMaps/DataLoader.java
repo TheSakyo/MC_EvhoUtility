@@ -9,35 +9,32 @@ public class DataLoader {
 	
 
 	/*****************************************************************/
-	/* MÉTHODE POUR RECHARGER LES DIFFERENTES IMAGEMAPS ENREGISTRÉES */
+	/* MÉTHODE POUR RECHARGER LES DIFFERENT IMAGEMAPS ENREGISTRÉES */
 	/*****************************************************************/
 	
 	public static void loadMaps() throws IOException {
 		
 		final File imageDir = new File(UtilityMain.getInstance().getDataFolder() + "/utils/maps/images/");
-		
 		final File imageMapDir = new File(UtilityMain.getInstance().getDataFolder() + "/utils/maps/saved_maps/");
-		
-		
-		
-		if(!imageDir.exists()) { if(!imageDir.mkdirs()) { imageDir.createNewFile(); } }
-		
-		
-		if(!imageMapDir.exists()) { if(!imageMapDir.mkdirs()) { imageMapDir.createNewFile(); } }
-			
-		
-		
 
-		
+		/*****************************************************/
+
+		if(!imageDir.exists()) { if(!imageDir.mkdirs()) { imageDir.createNewFile(); } }
+		if(!imageMapDir.exists()) { if(!imageMapDir.mkdirs()) { imageMapDir.createNewFile(); } }
+
+		/*****************************************************/
+
 		final File[] files = imageMapDir.listFiles(); //Vérifie tous les fichiers du dossier "ImageMapDir" avec une variable "files"
 		
-		// Vérifie si la variable n'est pas "NULL" puis met a jour les différents fichiers "imagemap" //
+		// Vérifie si la variable n'est pas "NULL" puis met à jour les différents fichiers "imagemap" //
 		if(files != null) {
 			
 			ImageMap imagemap;
-			
 			ImageMapYML config;
-			
+
+			/*****************************************************/
+			/*****************************************************/
+
 			for(File file : files) {
 				
 				if(file.getName().endsWith(".yml")) {
@@ -45,23 +42,21 @@ public class DataLoader {
 					String filename = file.getName().replaceAll(".yml", "");
 					
 					config = new ImageMapYML(filename);
-					
 					imagemap = config.read();
-					
-					
-					UtilityMain.getInstance().mapmanager.addImageMap(filename, imagemap);
-					
+
+					/*****************************************************/
+
+					UtilityMain.getInstance().mapManager.addImageMap(filename, imagemap);
 					new TaskUpdateImage(imagemap).runTaskAsynchronously(UtilityMain.getInstance());
-					
 				}
 			}
 		}
 		
-		// Vérifie si la variable n'est pas "NULL" puis met a jour les différents fichiers "imagemap" //
+		// Vérifie si la variable n'est pas "NULL" puis met à jour les différents fichiers "imagemap" //
 		
 	}
 	
 	/*****************************************************************/
-	/* MÉTHODE POUR RECHARGER LES DIFFERENTES IMAGEMAPS ENREGISTRÉES */
+	/* MÉTHODE POUR RECHARGER LES DIFFERENT IMAGEMAPS ENREGISTRÉES */
 	/*****************************************************************/
 }

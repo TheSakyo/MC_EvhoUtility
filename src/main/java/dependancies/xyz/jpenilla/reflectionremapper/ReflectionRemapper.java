@@ -27,8 +27,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.bukkit.craftbukkit.libs.net.fabricmc.mappingio.MappingReader;
-import org.bukkit.craftbukkit.libs.net.fabricmc.mappingio.tree.MemoryMappingTree;
+import net.fabricmc.mappingio.MappingReader;
+import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;

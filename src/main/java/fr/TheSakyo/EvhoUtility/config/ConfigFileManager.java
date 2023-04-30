@@ -1,18 +1,20 @@
 package fr.TheSakyo.EvhoUtility.config;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
+import net.minecraft.ChatFormatting;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 public class ConfigFileManager {
 
     //Récupère la class "Main" en tant que "static"
-    private static UtilityMain mainInstance = UtilityMain.getInstance();
+    private static final UtilityMain mainInstance = UtilityMain.getInstance();
 
 
 	/************************************************************/
@@ -24,16 +26,16 @@ public class ConfigFileManager {
 	private static void loadServerNameConfig() {
 
 		/* Chargement/Création du fichier de configuration 'servername.yml' si le serveur fonctionne sous "BungeeCord" */
-		if(mainInstance.hasBungee() == true) {
+		if(mainInstance.hasBungee()) {
 
-			if(Bukkit.getServer().getOnlinePlayers().size() == 0) {
+			if(Bukkit.getServer().getOnlinePlayers().isEmpty()) {
 
-				if(ConfigFile.getString(mainInstance.servernameconfig, "server_name") == null) {
+				if(ConfigFile.getString(mainInstance.serverNameConfig, "server_name") == null) {
 
-				   ConfigFile.set(mainInstance.servernameconfig, "server_name", "Example");
-				   ConfigFile.saveConfig(mainInstance.servernameconfig);
+				   ConfigFile.set(mainInstance.serverNameConfig, "server_name", "Example");
+				   ConfigFile.saveConfig(mainInstance.serverNameConfig);
 
-				} else { ConfigFile.reloadConfig(mainInstance.servernameconfig); }
+				} else ConfigFile.reloadConfig(mainInstance.serverNameConfig);
 			}
 		}
         /* Chargement/Création du fichier de configuration 'servername.yml' si le serveur fonctionne sous "BungeeCord" */
@@ -126,7 +128,7 @@ public class ConfigFileManager {
 		String[] headerDeathOrAchievementMessage = {
 		   "| ===== EvhoUtility Outils ===== |",
 		   " ",
-		   "*** ACTIVATION/DESACTIVATION ***",
+		   "*** ACTIVATION/DÉSACTIVATION ***",
 		   "*** MESSAGE DE MORT OU ACHIEVEMENT ***",
 		   " ",
 		   "Il vaut mieux ne pas toucher à ce fichier.",
@@ -164,13 +166,13 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'advancements.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/advancements/advancements.yml").exists()) {
 
-		   mainInstance.advconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/advancements/advancements.yml", headerAdvancements);
-		   ConfigFile.reloadConfig(mainInstance.advconfig);
+		   mainInstance.advConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/advancements/advancements.yml", headerAdvancements);
+		   ConfigFile.reloadConfig(mainInstance.advConfig);
 
 		} else {
 
-		  mainInstance.advconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/advancements/advancements.yml", headerAdvancements);
-		  ConfigFile.saveConfig(mainInstance.advconfig);
+		  mainInstance.advConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/advancements/advancements.yml", headerAdvancements);
+		  ConfigFile.saveConfig(mainInstance.advConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'advancements.yml' */
 
@@ -178,14 +180,14 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'chatformat.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/config/chatformat.yml").exists()) {
 
-			mainInstance.chatconfig = getNewConfig(mainInstance.getDataFolder(), "/config/chatformat.yml", headerchat);
-			ConfigFile.reloadConfig(mainInstance.advconfig);
+			mainInstance.chatConfig = getNewConfig(mainInstance.getDataFolder(), "/config/chatformat.yml", headerchat);
+			ConfigFile.reloadConfig(mainInstance.advConfig);
 
 		} else {
 
-			mainInstance.chatconfig = getNewConfig(mainInstance.getDataFolder(), "/config/chatformat.yml", headerchat);
-			ConfigFile.set(mainInstance.advconfig, "chat_format", "%prefix% %player% &8&l:");
-			ConfigFile.saveConfig(mainInstance.advconfig);
+			mainInstance.chatConfig = getNewConfig(mainInstance.getDataFolder(), "/config/chatformat.yml", headerchat);
+			ConfigFile.set(mainInstance.advConfig, "chat_format", "%prefix% %player% &8&l:");
+			ConfigFile.saveConfig(mainInstance.advConfig);
 
 		}
 		/* Chargement/Création du fichier de configuration 'chatformat.yml' */
@@ -194,21 +196,21 @@ public class ConfigFileManager {
 		/*Chargement/Création du fichier de configuration 'holograms.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/holograms.yml").exists()) {
 
-		   mainInstance.holoconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/holograms.yml", headerHologram);
-		   ConfigFile.reloadConfig(mainInstance.holoconfig);
+		   mainInstance.holoConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/holograms.yml", headerHologram);
+		   ConfigFile.reloadConfig(mainInstance.holoConfig);
 
 		} else {
 
-		  mainInstance.holoconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/holograms.yml", headerHologram);
-		  ConfigFile.createSection(mainInstance.holoconfig, "Holograms");
-		  ConfigFile.saveConfig(mainInstance.holoconfig);
+		  mainInstance.holoConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/holograms.yml", headerHologram);
+		  ConfigFile.createSection(mainInstance.holoConfig, "Holograms");
+		  ConfigFile.saveConfig(mainInstance.holoConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'holograms.yml' */
 
         /*Chargement/Création du fichier de configuration 'npc.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/NPC.yml").exists()) {
 
-		   mainInstance.NPCconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/NPC.yml", headerNPC);
+		   mainInstance.NPCConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/NPC.yml", headerNPC);
 
                                     /* ---------------------------------- */
 
@@ -226,25 +228,29 @@ public class ConfigFileManager {
                     StringBuilder whole = new StringBuilder();
                     BufferedReader reader = new BufferedReader(new FileReader(NPC));
 
+                    /**************************************/
+
                     while((currentLine = reader.readLine()) != null) {
 
-                        if(currentLine.startsWith("#") || currentLine.startsWith("NPC")) isEmpty = true;
-                        else isEmpty = false; break;
+                        isEmpty = currentLine.startsWith("#") || currentLine.startsWith("NPC");
+                        break;
                     }
 
-                    if(isEmpty == false) FileUtils.copyFile(NPC, NPC_BACKUP);
+                    /**************************************/
+
+                    if(!isEmpty) FileUtils.copyFile(NPC, NPC_BACKUP);
 
                 } catch(IOException ignored) {}
 
                                     /* ---------------------------------- */
 
-		   ConfigFile.reloadConfig(mainInstance.NPCconfig);
+		   ConfigFile.reloadConfig(mainInstance.NPCConfig);
 
 		} else {
 
-		  mainInstance.NPCconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/NPC.yml", headerNPC);
-		  ConfigFile.createSection(mainInstance.NPCconfig, "NPC");
-		  ConfigFile.saveConfig(mainInstance.NPCconfig);
+		  mainInstance.NPCConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/NPC.yml", headerNPC);
+		  ConfigFile.createSection(mainInstance.NPCConfig, "NPC");
+		  ConfigFile.saveConfig(mainInstance.NPCConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'holograms.yml' *
 
@@ -252,19 +258,19 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'tablist.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/config/tablist.yml").exists()) {
 
-		   mainInstance.tabconfig = getNewConfig(mainInstance.getDataFolder(), "/config/tablist.yml", headerTablist);
-		   ConfigFile.reloadConfig(mainInstance.tabconfig);
+		   mainInstance.tabConfig = getNewConfig(mainInstance.getDataFolder(), "/config/tablist.yml", headerTablist);
+		   ConfigFile.reloadConfig(mainInstance.tabConfig);
 
 		} else {
 
-		  mainInstance.tabconfig = getNewConfig(mainInstance.getDataFolder(), "/config/tablist.yml", headerTablist);
-		  ConfigFile.set(mainInstance.tabconfig, "title1", "&aExemple");
-		  ConfigFile.set(mainInstance.tabconfig, "title2", "&eExemple");
-		  ConfigFile.set(mainInstance.tabconfig, "title3", "&cExemple");
-		  ConfigFile.set(mainInstance.tabconfig, "website", "&3&oExemple.fr");
-		  ConfigFile.set(mainInstance.tabconfig, "ip", "&3&oPlay.Exemple.fr");
-		  ConfigFile.set(mainInstance.tabconfig, "ColorFooterSection", "&6");
-		  ConfigFile.saveConfig(mainInstance.tabconfig);
+		  mainInstance.tabConfig = getNewConfig(mainInstance.getDataFolder(), "/config/tablist.yml", headerTablist);
+		  ConfigFile.set(mainInstance.tabConfig, "title1", "&aExemple");
+		  ConfigFile.set(mainInstance.tabConfig, "title2", "&eExemple");
+		  ConfigFile.set(mainInstance.tabConfig, "title3", "&cExemple");
+		  ConfigFile.set(mainInstance.tabConfig, "website", "&3&oExemple.fr");
+		  ConfigFile.set(mainInstance.tabConfig, "ip", "&3&oPlay.Exemple.fr");
+		  ConfigFile.set(mainInstance.tabConfig, "ColorFooterSection", "&6");
+		  ConfigFile.saveConfig(mainInstance.tabConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'tablist.yml' */
 
@@ -272,15 +278,15 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'DeathOrAchievement.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/DeathOrAchievement.yml").exists()) {
 
-		   mainInstance.DeathOrAchievementconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/DeathOrAchievement.yml", headerDeathOrAchievementMessage);
-		   ConfigFile.reloadConfig(mainInstance.DeathOrAchievementconfig);
+		   mainInstance.DeathOrAchievementConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/DeathOrAchievement.yml", headerDeathOrAchievementMessage);
+		   ConfigFile.reloadConfig(mainInstance.DeathOrAchievementConfig);
 
 		} else {
 
-		  mainInstance.DeathOrAchievementconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/DeathOrAchievement.yml", headerDeathOrAchievementMessage);
-		  ConfigFile.set(mainInstance.DeathOrAchievementconfig, "DeathMessage", "on");
-		  ConfigFile.set(mainInstance.DeathOrAchievementconfig, "AchievementMessage", "on");
-		  ConfigFile.saveConfig(mainInstance.DeathOrAchievementconfig);
+		  mainInstance.DeathOrAchievementConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/DeathOrAchievement.yml", headerDeathOrAchievementMessage);
+		  ConfigFile.set(mainInstance.DeathOrAchievementConfig, "DeathMessage", "on");
+		  ConfigFile.set(mainInstance.DeathOrAchievementConfig, "AchievementMessage", "on");
+		  ConfigFile.saveConfig(mainInstance.DeathOrAchievementConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'DeathOrAchievement.yml' */
 
@@ -288,14 +294,14 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'zone.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/zone.yml").exists()) {
 
-		   mainInstance.zoneconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/zone.yml", headerZone);
-		   ConfigFile.reloadConfig(mainInstance.zoneconfig);
+		   mainInstance.zoneConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/zone.yml", headerZone);
+		   ConfigFile.reloadConfig(mainInstance.zoneConfig);
 
 		} else {
 
-		  mainInstance.zoneconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/zone.yml", headerZone);
-		  ConfigFile.createSection(mainInstance.zoneconfig, "ZONE");
-		  ConfigFile.saveConfig(mainInstance.zoneconfig);
+		  mainInstance.zoneConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/zone.yml", headerZone);
+		  ConfigFile.createSection(mainInstance.zoneConfig, "ZONE");
+		  ConfigFile.saveConfig(mainInstance.zoneConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'zone.yml' */
 
@@ -303,14 +309,14 @@ public class ConfigFileManager {
 		/* Chargement/Création du fichier de configuration 'playerSkin.yml' */
 		if(getConfigFile(mainInstance.getDataFolder(), "/utils/playerSkin.yml").exists()) {
 
-		   mainInstance.playerSkinconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/playerSkin.yml", headerplayerSkin);
-		   ConfigFile.reloadConfig(mainInstance.playerSkinconfig);
+		   mainInstance.playerSkinConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/playerSkin.yml", headerplayerSkin);
+		   ConfigFile.reloadConfig(mainInstance.playerSkinConfig);
 
 		} else {
 
-		  mainInstance.playerSkinconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/playerSkin.yml", headerplayerSkin);
-		  ConfigFile.createSection(mainInstance.playerSkinconfig, "SKIN");
-		  ConfigFile.saveConfig(mainInstance.playerSkinconfig);
+		  mainInstance.playerSkinConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/playerSkin.yml", headerplayerSkin);
+		  ConfigFile.createSection(mainInstance.playerSkinConfig, "SKIN");
+		  ConfigFile.saveConfig(mainInstance.playerSkinConfig);
 		}
 		/* Chargement/Création du fichier de configuration 'zone.yml' */
 
@@ -344,48 +350,49 @@ public class ConfigFileManager {
         if(getConfigFile(mainInstance.getDataFolder(), "/utils/world.yml").exists()) {
 
             //Code couleur utile pour des informations au niveau de la console//
-            String GI = ChatColor.GRAY.toString() + ChatColor.ITALIC.toString();
-            String YI = ChatColor.YELLOW.toString() + ChatColor.ITALIC.toString();
+            String GI = ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString();
+            String YI = ChatFormatting.YELLOW.toString() + ChatFormatting.ITALIC.toString();
             //Code couleur utile pour des informations au niveau de la console//
 
+            /******************************/
+
             mainInstance.console.sendMessage(mainInstance.prefix + GI + "Actualisation des mondes...");
+            mainInstance.worldConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/world.yml", headerworld);
+            ConfigFile.reloadConfig(mainInstance.worldConfig);
 
-            mainInstance.worldconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/world.yml", headerworld);
-            ConfigFile.reloadConfig(mainInstance.worldconfig);
+            /******************************/
 
-            ConfigurationSection configSection = ConfigFile.getConfigurationSection(mainInstance.worldconfig, "serverworlds");
-            Set<String> sectionString = configSection.getKeys(false);
+            ConfigurationSection configSection = ConfigFile.getConfigurationSection(mainInstance.worldConfig, "serverworlds");
+            if(configSection != null) {
 
-            if(sectionString != null) {
+                Set<String> sectionString = configSection.getKeys(false);
 
-                for(String name: sectionString) {
+                /******************************/
+
+                for(String name : sectionString) {
 
                     File file = new File(name);
 
+                    /************************/
+
                     if(file.exists()) {
 
-                        if(Bukkit.getServer().getWorld(name) == null) {
-
-                            // Recharge le monde souhaité
-                            new WorldHandler(mainInstance, name);
-
-                        } else { mainInstance.console.sendMessage(mainInstance.prefix + YI + name + ChatColor.RESET + " : " + ChatColor.GREEN + "OK"); }
+                        // Recharge le monde souhaité
+                        if(Bukkit.getServer().getWorld(name) == null)  new WorldHandler(mainInstance, name);
+                        else mainInstance.console.sendMessage(mainInstance.prefix + YI + name + ChatFormatting.RESET + " : " + ChatFormatting.GREEN + "OK");
                     }
                 }
 
-            } else {
+                /******************************/
 
-                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world"+ ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
-                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world_nether" + ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
-                mainInstance.console.sendMessage(mainInstance.prefix + YI + "world_the_end" + ChatColor.RESET + " : " + ChatColor.GREEN + "OK");
+                mainInstance.console.sendMessage(mainInstance.prefix + ChatFormatting.DARK_GREEN + "Les mondes ont été recharger !");
+
             }
-
-            mainInstance.console.sendMessage(mainInstance.prefix + ChatColor.DARK_GREEN + "Les mondes ont été recharger !");
-
+            
         } else {
 
-            mainInstance.worldconfig = getNewConfig(mainInstance.getDataFolder(), "/utils/world.yml", headerworld);
-            ConfigFile.saveConfig(mainInstance.worldconfig);
+            mainInstance.worldConfig = getNewConfig(mainInstance.getDataFolder(), "/utils/world.yml", headerworld);
+            ConfigFile.saveConfig(mainInstance.worldConfig);
         }
         /* Chargement/Création du fichier de configuration 'world.yml' */
     }
@@ -396,8 +403,8 @@ public class ConfigFileManager {
     /* Petite Méthode pour vider la config 'world.yml' */
     public static void clearKeyUtilityWorldConfig() {
 
-        for(String str : ConfigFile.getKeys(mainInstance.worldconfig)) {  ConfigFile.removeKey(mainInstance.worldconfig, str); }
-        ConfigFile.saveConfig(mainInstance.worldconfig);
+        for(String str : ConfigFile.getKeys(mainInstance.worldConfig)) ConfigFile.removeKey(mainInstance.worldConfig, str);
+        ConfigFile.saveConfig(mainInstance.worldConfig);
     }
     /* Petite Méthode pour vider la config 'world.yml' */
 
@@ -411,49 +418,53 @@ public class ConfigFileManager {
  
     /*
     * Obtient une nouvelle configuration avec l'en-tête
-    * @param filePath - Chemin d'accés au fichier
+    * @param filePath - Chemin d'accès au fichier
     * @return - 'New ConfigFile'
     */
     public static ConfigFile getNewConfig(File DataFolder, String filePath, String[] header) {
  
         File file = getConfigFile(DataFolder, filePath);
- 
+
+        /******************************/
+
         if(!file.exists()) {
 
             prepareFile(DataFolder, filePath);
- 
             if(header != null && header.length != 0) setHeader(file, header);
         }
- 
-        ConfigFile config = new ConfigFile(getConfigContent(DataFolder, filePath), file, getCommentsNum(file), UtilityMain.getInstance());
-        return config;
- 
+
+        /******************************/
+
+        return new ConfigFile(getConfigContent(DataFolder, filePath), file, getCommentsNum(file), UtilityMain.getInstance());
     }
  
     /*
     * Obtient une nouvelle configuration
-    * @param filePath - Chemin d'accés au fichier
+    * @param filePath - Chemin d'accès au fichier
     * @return - 'New ConfigFile'
     */
     public static ConfigFile getNewConfig(File DataFolder, String filePath) { return getNewConfig(DataFolder, filePath, null); }
  
     /*
     * Obtient le fichier de configuration à partir de la chaîne
-    * @param file - Chemin d'accés au fichier
+    * @param file - Chemin d'accès au fichier
     * @return - 'New file object'
     */
     public static File getConfigFile(File DataFolder, String file) {
  
-        if(file.isEmpty() || file == null) return null;
-
+        if(file.isEmpty()) return null;
         File configFile;
- 
+
+        /******************************/
+
         if(file.contains("/")) {
  
             if(file.startsWith("/")) configFile = new File(DataFolder + file.replace("/", File.separator));
             else configFile = new File(DataFolder + File.separator + file.replace("/", File.separator));
 
-        } else { configFile = new File(DataFolder, file); }
+        } else configFile = new File(DataFolder, file);
+
+        /******************************/
 
         return configFile;
     }
@@ -461,70 +472,85 @@ public class ConfigFileManager {
     
     /*
     * Lit le fichier et place les commentaires SnakeYAML
-    * @param filePath - Chemin d'accés au fichier
+    * @param filePath - Chemin d'accès au fichier
     * @return - Fichier en tant que flux d'entrée
     */
     public static Reader getConfigContent(File file) {
  
         if(!file.exists()) return null;
- 
+
+        /******************************/
+
         try {
 
             int commentNum = 0;
- 
+
+            /**********************/
+
             String addLine;
             String currentLine;
             String pluginName = getPluginName();
- 
+
+            /**********************/
+
             StringBuilder whole = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(file));
- 
+
+            /***************************/
+
             while((currentLine = reader.readLine()) != null) {
  
                 if(currentLine.startsWith("#")) {
                     addLine = currentLine.replaceFirst("#", pluginName + "_COMMENT_" + commentNum + ":");
-                    whole.append(addLine + "\n");
+                    whole.append(addLine).append("\n");
                     commentNum++;
  
-                } else whole.append(currentLine + "\n");
+                } else whole.append(currentLine).append("\n");
             }
-            
-            Reader configStream = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF8"));
- 
+
+            /***************************/
+
+            Reader configStream = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+
+            /**********************/
+
             reader.close();
             return configStream;
  
-        } catch(IOException e) { e.printStackTrace(); return null; }
- 
+        } catch(IOException e) {
+
+            e.printStackTrace(System.err);
+            return null;
+        }
     }
     
     /*
     * Obtient le contenu de la configuration à partir du fichier
-    * @param filePath - Chemin d'accés au fichier
+    * @param filePath - Chemin d'accès au fichier
     * @return - fichier prêt
     */
     public static Reader getConfigContent(File DataFolder, String filePath) { return getConfigContent(getConfigFile(DataFolder, filePath)); }
  
     /*
     * Créé un nouveau fichier pour la configuration et y copier la ressource
-    * @param file - Chemin d'accés au fichier
+    * @param file - Chemin d'accès au fichier
     * @param resource - Ressource à copier
     */
     public static void prepareFile(File DataFolder, String filePath, String resource) {
  
         File file = getConfigFile(DataFolder, filePath);
- 
         if(file.exists()) { return; }
- 
+
+        /*************************************************/
+
         try {
 
             file.getParentFile().mkdirs();
             file.createNewFile();
  
-            if(resource != null && !resource.isEmpty()) { copyResource(UtilityMain.getInstance().getResource(resource), file); }
+            if(resource != null && !resource.isEmpty()) copyResource(UtilityMain.getInstance().getResource(resource), file);
  
-        } catch(IOException e) { e.printStackTrace(); }
- 
+        } catch(IOException e) { e.printStackTrace(System.err); }
     }
  
     /*
@@ -536,55 +562,74 @@ public class ConfigFileManager {
     /*
     * Ajoute un bloc d'en-tête à la configuration
     * @param file - Fichier Config
-    * @param header - Lignes d'en-téte
+    * @param header - Lignes d'en-tête
     */
     public static void setHeader(File file, String[] header) {
  
         if(!file.exists()) { return; }
- 
+
+        /******************************/
+
         try {
 
             String currentLine;
             StringBuilder config = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(file));
- 
-            while((currentLine = reader.readLine()) != null) { config.append(currentLine + "\n"); }
- 
+
+            /***********************/
+
+            while((currentLine = reader.readLine()) != null) { config.append(currentLine).append("\n"); }
+
+            /***********************/
+
             reader.close();
             config.append("# +----------------------------------------------------+ #\n");
- 
+
+            /********************************************************/
+
             for(String line : header) {
  
-                if(line.length() > 50) { continue; }
- 
-                int lenght = (50 - line.length()) / 2;
-                StringBuilder finalLine = new StringBuilder(line);
- 
-                for(int i = 0; i < lenght; i++) {
+                if(line.length() > 50) continue;
+                StringBuilder finalLine = getStringBuilder(line);
+                config.append("# < ").append(finalLine.toString()).append(" > #\n");
+            }
 
-                    finalLine.append(" ");
-                    finalLine.reverse();
-                    finalLine.append(" ");
-                    finalLine.reverse();
-                }
+            /********************************************************/
+
+            config.append("# +----------------------------------------------------+ #");
+
+            /***********************/
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(prepareConfigString(config.toString()));
+            writer.flush();
+            writer.close();
  
-                if(line.length() % 2 != 0) { finalLine.append(" "); }
- 
-                config.append("# < " + finalLine.toString() + " > #\n");
- 
-        }
- 
-        config.append("# +----------------------------------------------------+ #");
- 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write(prepareConfigString(config.toString()));
-        writer.flush();
-        writer.close();
- 
-        } catch(IOException e) { e.printStackTrace(); }
- 
+        } catch(IOException e) { e.printStackTrace(System.err); }
     }
- 
+    
+    @NotNull
+    private static StringBuilder getStringBuilder(String line) {
+
+        int length = (50 - line.length()) / 2;
+        StringBuilder finalLine = new StringBuilder(line);
+
+        /***********************/
+
+        for(int i = 0; i < length; i++) {
+
+            finalLine.append(" ");
+            finalLine.reverse();
+            finalLine.append(" ");
+            finalLine.reverse();
+        }
+
+        /***********************/
+
+        if(line.length() % 2 != 0) { finalLine.append(" "); }
+        return finalLine;
+    }
+
     /*
     * Obtient des commentaires du fichier
     * @param file - Fichier
@@ -593,36 +638,50 @@ public class ConfigFileManager {
     private static int getCommentsNum(File file) {
  
         if(!file.exists()) { return 0; }
- 
+
+        /********************************************************/
+
         try {
+
             int comments = 0;
             String currentLine;
- 
+
+            /***********************/
+
             BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            /***********************/
+
+            while((currentLine = reader.readLine()) != null) { if(currentLine.startsWith("#")) comments++; }
+
+            /***********************/
+
+            reader.close();
+            return comments;
  
-            while((currentLine = reader.readLine()) != null) { if(currentLine.startsWith("#")) { comments++; } }
- 
-        reader.close();
-        return comments;
- 
-        } catch(IOException e) { e.printStackTrace(); return 0; }
- 
+        } catch(IOException e) { e.printStackTrace(System.err); return 0; }
     }
  
     private static String prepareConfigString(String configString) {
  
         int lastLine = 0;
         int headerLine = 0;
- 
+
+        /********************************************************/
+
         String[] lines = configString.split("\n");
         StringBuilder config = new StringBuilder();
- 
+
+        /********************************************************/
+
         for(String line : lines) {
  
             if(line.startsWith(getPluginName() + "_COMMENT_")) {
 
                 String comment = "#" + line.trim().substring(line.indexOf(":") + 1);
- 
+
+                /***********************************/
+
                 if(comment.startsWith("# +-")) {
  
                     /*
@@ -633,15 +692,19 @@ public class ConfigFileManager {
  
                     if(headerLine == 0) {
 
-                        config.append(comment + "\n");
- 
+                        config.append(comment).append("\n");
+
+                        /***********************/
+
                         lastLine = 0;
                         headerLine = 1;
  
-                    } else if(headerLine == 1) {
+                    } else {
 
-                        config.append(comment + "\n\n");
- 
+                        config.append(comment).append("\n\n");
+
+                        /***********************/
+
                         lastLine = 0;
                         headerLine = 0;
                     }
@@ -657,19 +720,22 @@ public class ConfigFileManager {
  
                     if(comment.startsWith("# ' ")) { normalComment = comment.substring(0, comment.length() - 1).replaceFirst("# ' ", "# "); }
                     else { normalComment = comment; }
- 
-                    if(lastLine == 0) { config.append(normalComment + "\n"); }
-                    else if(lastLine == 1) { config.append("\n" + normalComment + "\n"); }
+
+                    /***********************/
+
+                    if(lastLine == 0) { config.append(normalComment).append("\n"); }
+                    else { config.append("\n").append(normalComment).append("\n"); }
+
+                    /***********************/
 
                     lastLine = 0;
                 }
  
-            } else { config.append(line + "\n"); lastLine = 1; }
+            } else { config.append(line).append("\n"); lastLine = 1; }
  
         }
  
      return config.toString();
- 
     }
  
  
@@ -679,8 +745,11 @@ public class ConfigFileManager {
     * @param file - Fichier Config
     */
     public static void saveConfig(String configString, File file) {
+
         String configuration = prepareConfigString(configString);
- 
+
+        /*********************************/
+
         try {
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -688,10 +757,10 @@ public class ConfigFileManager {
             writer.flush();
             writer.close();
  
-        } catch(IOException e) { e.printStackTrace(); }
- 
+        } catch(IOException e) { e.printStackTrace(System.err); }
     }
- 
+
+    @SuppressWarnings("deprecation")
     public static String getPluginName() { return UtilityMain.getInstance().getDescription().getName(); }
  
     /*
@@ -704,17 +773,21 @@ public class ConfigFileManager {
         try {
 
             OutputStream out = new FileOutputStream(file);
- 
+
+            /*************************************/
+
             int lenght;
             byte[] buf = new byte[1024];
- 
+
+            /*************************************/
+
             while((lenght = resource.read(buf)) > 0) { out.write(buf, 0, lenght); }
- 
+
+            /*************************************/
+
             out.close();
             resource.close();
  
-        } catch(Exception e) { e.printStackTrace(); }
- 
+        } catch(Exception e) { e.printStackTrace(System.err); }
     }
- 
 }

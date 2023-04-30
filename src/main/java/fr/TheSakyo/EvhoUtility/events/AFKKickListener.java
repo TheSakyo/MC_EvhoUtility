@@ -19,18 +19,18 @@ public class AFKKickListener implements Listener {
 	BukkitScheduler Run = Bukkit.getServer().getScheduler();
 	
 	/* Récupère la class "Main" */
-    private static UtilityMain mainInstance = UtilityMain.getInstance();
+    private static final UtilityMain mainInstance = UtilityMain.getInstance();
 	/* Récupère la class "Main" */
-    
-    
-    
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
- /* PARTIE EVENEMENENT POUR LE SYSTEME D'AFK */ 
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */    
-    
+
+
+
+ /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+ /* PARTIE ÉVÈNEMENT POUR LE SYSTÈME D'AFK */
+ /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
     /**********************************************************/
-	/* APPEL D'UNE METHODE AFK AVEC CES DIFFERENTS EVENEMENTS */ 
-	/**********************************************************/
+    /* APPEL D'UNE METHODE AFK AVEC CES DIFFÉRENTS ÉVÈNEMENTS */
+    /**********************************************************/
     
     // Appel la méthode AFK si le joueur bouge //
     @EventHandler
@@ -55,7 +55,8 @@ public class AFKKickListener implements Listener {
 
         if(mainInstance.time.containsKey(p.getUniqueId())) {
 
-            if(mainInstance.time.get(p.getUniqueId()) >= 900) { mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); return; } //Annule le joueur étaht 'AFK'
+            //Annule le joueur étant 'AFK'
+            if(mainInstance.time.get(p.getUniqueId()) >= 900) mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0);
         }
     }
     // Appel la méthode AFK si le joueur parle dans le tchat //
@@ -64,7 +65,7 @@ public class AFKKickListener implements Listener {
     
     // Appel la méthode AFK si le joueur éxécute une commande, sauf si la commande est "/afk" //
     @EventHandler
-    public void onPlayerCommad(PlayerCommandPreprocessEvent e) {
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
 
         Player p = e.getPlayer();
 
@@ -73,7 +74,8 @@ public class AFKKickListener implements Listener {
 
             if(mainInstance.time.containsKey(p.getUniqueId())) {
 
-                if(mainInstance.time.get(p.getUniqueId()) >= 900) { mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); return; } //Annule le joueur étaht 'AFK'
+                //Annule le joueur étant 'AFK'
+                if(mainInstance.time.get(p.getUniqueId()) >= 900) mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0);
             }
         }
     }
@@ -88,7 +90,9 @@ public class AFKKickListener implements Listener {
 
         if(mainInstance.time.containsKey(p.getUniqueId())) {
 
-                if(mainInstance.time.get(p.getUniqueId()) >= 900) { mainInstance.afk.runAFK(p.getUniqueId(), null, 0); return; } //Annule le joueur étaht 'AFK'
+            //Annule le joueur étant 'AFK'
+            if(mainInstance.time.get(p.getUniqueId()) >= 900) mainInstance.afk.runAFK(p.getUniqueId(), null, 0);
+
         }
     }
 
@@ -100,8 +104,7 @@ public class AFKKickListener implements Listener {
             if(mainInstance.time.get(p.getUniqueId()) >= 900) {
 
                 mainInstance.AFKRun.get(p.getUniqueId()).cancel(); //Annule la boucle pour le joueur
-                mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); //Annule le joueur étaht 'AFK'
-                return;
+                mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); //Annule le joueur étant 'AFK'
             }
         }
     }
@@ -116,8 +119,7 @@ public class AFKKickListener implements Listener {
             if(mainInstance.time.get(p.getUniqueId()) >= 900) {
 
                 mainInstance.AFKRun.get(p.getUniqueId()).cancel(); //Annule la boucle pour le joueur
-                mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); //Annule le joueur étaht 'AFK'
-                return;
+                mainInstance.afk.runAFK(p.getUniqueId(), Boolean.FALSE, 0); //Annule le joueur étant 'AFK'
             }
         }
     }
@@ -125,11 +127,12 @@ public class AFKKickListener implements Listener {
     
     
     /**********************************************************/
-	/* APPEL D'UNE METHODE AFK AVEC CES DIFFERENTS EVENEMENTS */ 
+	/* APPEL D'UNE METHODE AFK AVEC CES DIFFÉRENTS ÉVÈNEMENTS */
 	/**********************************************************/
 
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
- /* PARTIE EVENEMENENT POUR LE SYSTEME D'AFK */ 
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */  
+
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    /* PARTIE ÉVÈNEMENT POUR LE SYSTÈME D'AFK */
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 }
  

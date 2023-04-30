@@ -9,9 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_17_R1.scoreboard.CraftScoreboard;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +21,10 @@ import java.util.Map;
 /*************************************************************/
 public class TeamPlayer {
 
-    private static UtilityMain mainInstance = UtilityMain.getInstance(); // Instance de la 'Class' "Main"
-    public static Map<Group, PlayerTeam> groupTeams = new HashMap<Group, PlayerTeam>(); // Liste de tous les groupes du Serveur.
+    private static final UtilityMain mainInstance = UtilityMain.getInstance(); // Instance de la 'Class' "Main"
+    public static Map<Group, PlayerTeam> groupTeams = new HashMap<>(); // Liste de tous les groupes du Serveur.
 
-    public static Map<String, PlayerTeam> customTeams = new HashMap<String, PlayerTeam>(); // Liste de tous les teams personnalisé.
+    public static Map<String, PlayerTeam> customTeams = new HashMap<>(); // Liste de tous les teams personnalisé.
 
     						/* ---------------------------------------------------*/
 							/* ---------------------------------------------------*/
@@ -35,15 +34,17 @@ public class TeamPlayer {
      */
     public static void loadTeams() {
 
-        GroupManager groupManager = mainInstance.luckapi.getGroupManager(); // Récupère la Class pour gérér les Groupes "LuckPerms"
+        GroupManager groupManager = mainInstance.luckApi.getGroupManager(); // Récupère la Class pour gérer les Groupes "LuckPerms"
 		groupManager.loadAllGroups(); // On Charge tous les Groupes du Serveur
+
+        /*****************************************************/
 
 		// _-_ ⬇️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬇️ _-_ //
 		for(Group group : groupManager.getLoadedGroups()) {
 
 			String displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe
 
-			while(displayName == null) displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe en question tant qu'ellee est nule
+			while(displayName == null) displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe en question tant qu'elle est null
 
 			char firstChar = displayName.charAt(0); // Récupère le premier caractère du nom d'affichage du Groupe
 
@@ -51,28 +52,28 @@ public class TeamPlayer {
 
 			String groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question
 
-            while(groupColor == null) groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question tant qu'ellee est nule
+            while(groupColor == null) groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question tant qu'elle est null
 
-			// Récupère le nom d'affichage du Groupe en remplacant quelque caractères
+			// Récupère le nom d'affichage du Groupe en remplaçant quelque caractères
 			String groupDisplayName = groupTeam.replaceFirst("_", "");
 
 													/* ------------------------- */
 
-			// On vérifie si le groupe il a un poids, si c'est le cas, on lui ajoute au début du nom de Team.
+			// On vérifie si le groupe a un poids, si c'est le cas, on lui ajoute au début du nom de Team.
 			if(group.getWeight().isPresent()) groupTeam = firstChar + groupTeam;
 
-			// Sinon on lui ajoute le poids	 atant 0 au début du nom de Team.
+			// Sinon, on lui ajoute le poids	étant 0 au début du nom de Team.
 			else groupTeam = "y" + groupTeam;
 
 													/* ------------------------- */
 
-            // Récupère le Préfix à la 'Team' adapté avec le Groupe en remplacant notamment certains caractères
-			String prefix = groupColor + ChatColor.BOLD + groupDisplayName.replace("+", ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + "+") +  ChatColor.WHITE + " | ";
+            // Récupère le Préfix à la 'Team' adapté avec le Groupe en replacement notamment certains caractères
+			String prefix = groupColor + ChatFormatting.BOLD + groupDisplayName.replace("+", ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "+") +  ChatFormatting.WHITE + " | ";
 
             Component playerPrefix = CraftChatMessage.fromString(ColorUtils.format(prefix))[0];
             Component displayNameComponent = CraftChatMessage.fromString(groupDisplayName)[0];
 
-            ChatFormatting formatingColor = ColorUtils.convertChatFormattingColor(ColorUtils.getLastChatColorByString(groupColor));
+            ChatFormatting formattingColor = ColorUtils.getLastChatFormattingByString(groupColor);
             Team.Visibility visibility = Team.Visibility.ALWAYS;
 
             if(!groupTeams.containsKey(group)) {
@@ -83,7 +84,7 @@ public class TeamPlayer {
                 playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
 
                 // À partir de la Team, on définit sa couleur étant la couleur du grade
-                playerTeam.setColor(formatingColor);
+                playerTeam.setColor(formattingColor);
 
                 playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
                 // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
@@ -99,7 +100,7 @@ public class TeamPlayer {
                 if(playerTeam.getDisplayName() != displayNameComponent) playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
 
                 // À partir de la Team, on définit sa couleur étant la couleur du grade
-                if(playerTeam.getColor() != formatingColor) playerTeam.setColor(formatingColor);
+                if(playerTeam.getColor() != formattingColor) playerTeam.setColor(formattingColor);
 
                 if(playerTeam.getNameTagVisibility() != visibility) playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
                 // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
@@ -108,12 +109,12 @@ public class TeamPlayer {
             }
 										/* ----------------------------------------- */
 		}
-		// _-_ ⬆️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team'  ⬆️ _-_ //
+		// _-_ ⬆️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬆️ _-_ //
 
                      /* ----------------------------------------------------------------------------- */
 
         // ⬇️ Recharge la 'Team' personnalisé "custom" ⬇️ //
-        PlayerTeam customTeam = null; //Permettra se récupèré la 'Team' personnalisé
+        PlayerTeam customTeam; //Permettra de récupérer la 'Team' personnalisé
 
         // Vérifie si la team existe, si c'est le cas, on la récupère sinon, on crée une nouvelle //
         if(customTeams.containsKey("custom")) customTeam = customTeams.get("custom");

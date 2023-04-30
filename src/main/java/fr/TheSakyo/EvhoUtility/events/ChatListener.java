@@ -2,7 +2,6 @@ package fr.TheSakyo.EvhoUtility.events;
 
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
 import fr.TheSakyo.EvhoUtility.utils.custom.methods.ColorUtils;
-import io.papermc.paper.event.player.AbstractChatEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 /*****************************************************************/
-/* PARTIE EVENEMENT POUR ACTUALISER LE FORMAT DU GRADE DU JOUEUR */
+/* PARTIE ÉVÈNEMENT POUR ACTUALISER LE FORMAT DU GRADE DU JOUEUR */
 /*****************************************************************/
 public class ChatListener implements Listener {
 
@@ -27,18 +26,18 @@ public class ChatListener implements Listener {
     /* Récupère la class "Main" + un évènement compatible LuckPerms */
 
 
+  /***********************************************************/
+  /* PARTIE ÉVÈNEMENT LORSQU'UN JOUEUR ÉCRIT DANS LE TCHAT  */
   /*********************************************************/
-  /* PARTIE EVENEMENT LOSQU'UN JOUEUR ÉCRIT DANS LE TCHAT  */
-  /********************************************************/
 
-     // *** Évenement lorsque le parle dans le tchat *** //
+     // *** Évènement lorsque le parle dans le tchat *** //
      @EventHandler
 	 public void onAsyncChat(AsyncChatEvent e) {
 
-        List<UUID> playersNotified = new ArrayList<UUID>();
+        List<UUID> playersNotified = new ArrayList<>();
 
         String message = ColorUtils.format(CustomMethod.ComponentToString(e.message()));
-        String parts[] = message.split(" ");
+        String[] parts = message.split(" ");
 
         for(String part: parts) {
 
@@ -54,11 +53,10 @@ public class ChatListener implements Listener {
             }
         }
 	 }
-    // *** Évenement lorsque le parle dans le tchat *** //
+    // *** Évènement lorsque le parle dans le tchat *** //
 
-  /*********************************************************/
-  /* PARTIE EVENEMENT LOSQU'UN JOUEUR ÉCRIT DANS LE TCHAT  */
-  /********************************************************/
-
+    /***********************************************************/
+    /* PARTIE ÉVÈNEMENT LORSQU'UN JOUEUR ÉCRIT DANS LE TCHAT  */
+    /*********************************************************/
 }
 

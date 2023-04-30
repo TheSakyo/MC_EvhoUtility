@@ -46,6 +46,7 @@ public final class ReflectionProxyFactory {
    * @throws IllegalArgumentException when the specified proxy interface is malformed or invalid for the current environment
    * @see Proxies
    */
+  @SuppressWarnings("unchecked")
   public <I> I reflectionProxy(final Class<I> proxyInterface) {
     return (I) Proxy.newProxyInstance(
       this.classLoader,

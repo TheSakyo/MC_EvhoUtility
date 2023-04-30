@@ -14,15 +14,13 @@ public class EventRegistry {
     private final Plugin plugin;
     private final List<Listener> listeners = new ArrayList<>();
 
-    public EventRegistry(Plugin plugin){
-        this.plugin = plugin;
-    }
+    public EventRegistry(Plugin plugin) { this.plugin = plugin; }
 
     /**
-     * Registers a listener and returns <code>true</code> if the listener was not already registered.
+     * Enregistre un auditeur et renvoie <code>vrai</code> si l'auditeur n'a pas déjà été enregistré.
      *
      * @param listener The {@link Listener} to register.
-     * @return Whether or not the listener was successfully registered.
+     * @return L'enregistrement de l'auditeur est réussi ou non.
      */
     public boolean registerListener(Listener listener) {
 
@@ -35,14 +33,14 @@ public class EventRegistry {
     }
 
     /**
-     * Unregisters a listener and returns <code>true</code> if the listener was already registered.
+     * Désenregistre un auditeur et renvoie <code>true</code> si l'auditeur était déjà enregistré.
      *
      * @param listener The {@link Listener} to register.
-     * @return Whether or not the listener was successfully unregistered.
+     * @return Si l'auditeur a été désenregistré avec succès.
      */
     public boolean unregisterListener(Listener listener) {
 
-        if(!listeners.contains(listener)){ return false; }
+        if(!listeners.contains(listener)) { return false; }
 
         listeners.remove(listener);
         HandlerList.unregisterAll(listener);

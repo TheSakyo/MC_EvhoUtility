@@ -1,6 +1,7 @@
 package fr.TheSakyo.EvhoUtility.config;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
+import net.minecraft.ChatFormatting;
 import org.bukkit.*;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -12,34 +13,47 @@ import java.lang.reflect.InvocationTargetException;
 
 public class WorldHandler {
 
-    private UtilityMain main;
+    private final UtilityMain main;
 
-    public WorldHandler(UtilityMain pluginMain, String worldname) {this.main = pluginMain; LoadingWorlds(worldname); }
+    public WorldHandler(UtilityMain pluginMain, String worldName) {this.main = pluginMain; LoadingWorlds(worldName); }
 
-    private void LoadingWorlds(String worldname) {
+
+    /**********************************************************************************/
+    /**********************************************************************************/
+
+
+    private void LoadingWorlds(String worldName) {
 
         //Code couleur utile pour des informations au niveau de la console//
-        String RI = ChatColor.RED.toString() + ChatColor.ITALIC.toString();
-        String GI = ChatColor.GRAY.toString() + ChatColor.ITALIC.toString();
-        String YI = ChatColor.YELLOW.toString() + ChatColor.ITALIC.toString();
+        String RI = ChatFormatting.RED.toString() + ChatFormatting.ITALIC.toString();
+        String GI = ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString();
+        String YI = ChatFormatting.YELLOW.toString() + ChatFormatting.ITALIC.toString();
         //Code couleur utile pour des informations au niveau de la console//
 
-        main.console.sendMessage(main.prefix + GI + "Rechargement du monde " + YI + worldname + GI + "......");
+        /*************************************************/
+
+        main.console.sendMessage(main.prefix + GI + "Rechargement du monde " + YI + worldName + GI + "......");
         main.console.sendMessage(GI + "...");
         main.console.sendMessage(GI + "...");
 
-        WorldType type = WorldType.getByName(ConfigFile.getString(main.worldconfig, "serverworlds." + worldname + ".Type"));
-        World.Environment env = World.Environment.valueOf(ConfigFile.getString(main.worldconfig, "serverworlds." + worldname + ".Environment"));
-        boolean bool = Boolean.getBoolean(ConfigFile.getString(main.worldconfig, "serverworlds." + worldname + ".Structure"));
+        /*************************************************/
 
-        main.console.sendMessage(main.prefix + GI + "Actualisation du monde " + YI + worldname + GI + "......");
+        WorldType type = WorldType.getByName(ConfigFile.getString(main.worldConfig, "serverworlds." + worldName + ".Type"));
+        World.Environment env = World.Environment.valueOf(ConfigFile.getString(main.worldConfig, "serverworlds." + worldName + ".Environment"));
+        boolean bool = Boolean.getBoolean(ConfigFile.getString(main.worldConfig, "serverworlds." + worldName + ".Structure"));
+
+        /*************************************************/
+
+        main.console.sendMessage(main.prefix + GI + "Actualisation du monde " + YI + worldName + GI + "......");
         main.console.sendMessage(GI + "...");
         main.console.sendMessage(GI + "...");
+
+        /*************************************************/
 
         try {
 
-            ChunkGenerator generator = (ChunkGenerator)Class.forName(ConfigFile.getString(main.worldconfig, "serverworlds." + worldname + ".Generator")).getDeclaredConstructor().newInstance();
-            WorldCreator wc = new WorldCreator(worldname).type(type).environment(env).generateStructures(bool);
+            ChunkGenerator generator = (ChunkGenerator)Class.forName(ConfigFile.getString(main.worldConfig, "serverworlds." + worldName + ".Generator")).getDeclaredConstructor().newInstance();
+            WorldCreator wc = new WorldCreator(worldName).type(type).environment(env).generateStructures(bool);
             Bukkit.getServer().createWorld(wc);
 
         } catch(ClassNotFoundException | NullPointerException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -48,11 +62,15 @@ public class WorldHandler {
             main.console.sendMessage(GI + "...");
             main.console.sendMessage(GI + "...");
 
-            WorldCreator wc = new WorldCreator(worldname).type(type).environment(env).generateStructures(bool);
+            /******************************/
+
+            WorldCreator wc = new WorldCreator(worldName).type(type).environment(env).generateStructures(bool);
             Bukkit.getServer().createWorld(wc);
         }
 
-        main.console.sendMessage(main.prefix + YI + worldname + ChatColor.RESET + " : " + ChatColor.GREEN + "Chargé");
+        /*************************************************/
+
+        main.console.sendMessage(main.prefix + YI + worldName + ChatFormatting.RESET + " : " + ChatFormatting.GREEN + "Chargé");
     }
 }
 /*********************************************/

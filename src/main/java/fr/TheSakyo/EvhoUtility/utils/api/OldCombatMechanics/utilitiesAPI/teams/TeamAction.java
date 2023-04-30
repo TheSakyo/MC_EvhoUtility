@@ -16,7 +16,7 @@ public enum TeamAction {
 
     public int getMinecraftId() { return minecraftId; }
 
-    public static TeamAction fromId(int id){
+    public static TeamAction fromId(int id) {
 
         for(TeamAction rule : values()) {
 

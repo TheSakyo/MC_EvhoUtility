@@ -2,15 +2,14 @@ package fr.TheSakyo.EvhoUtility.commands.others;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ListIterator;
 
 import fr.TheSakyo.EvhoUtility.config.ConfigFile;
 import fr.TheSakyo.EvhoUtility.config.ConfigFileManager;
 import fr.TheSakyo.EvhoUtility.config.WorldHandler;
 import fr.TheSakyo.EvhoUtility.utils.custom.CustomMethod;
+import net.minecraft.ChatFormatting;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -20,7 +19,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import fr.TheSakyo.EvhoUtility.UtilityMain;
@@ -31,18 +30,18 @@ import org.bukkit.generator.ChunkGenerator;
 public class WorldCommand implements CommandExecutor {
 
 	/* Récupère la class "Main" */
-	private UtilityMain main;
+	private final UtilityMain main;
 	public WorldCommand(UtilityMain pluginMain) { this.main = pluginMain; }
 	/* Récupère la class "Main" */
 
 
-	String GI = ChatColor.GRAY.toString() + ChatColor.ITALIC.toString(); //Code couleur utile pour les messages au tchatt//
+	String GI = ChatFormatting.GRAY.toString() + ChatFormatting.ITALIC.toString(); // Code couleur utile pour les messages au tchat //
 
-	// Variables ChatColor //
-	String W = ChatColor.WHITE.toString();
-	String GB = ChatColor.GOLD.toString() + ChatColor.BOLD.toString();
-	String Y = ChatColor.YELLOW.toString();
-	// Variables ChatColor //
+	// Variables ChatFormatting //
+	String W = ChatFormatting.WHITE.toString();
+	String GB = ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString();
+	String Y = ChatFormatting.YELLOW.toString();
+	// Variables ChatFormatting //
 
 
 	/***********************************************/
@@ -53,9 +52,9 @@ public class WorldCommand implements CommandExecutor {
 
 		if(sender instanceof Player p) {
 
-			if (!p.hasPermission("evhoutility.world")) {
+			if(!p.hasPermission("evhoutility.world")) {
 
-				p.sendMessage(main.prefix + ChatColor.RED + "Vous n'avez pas les permissions requises !");
+				p.sendMessage(main.prefix + ChatFormatting.RED + "Vous n'avez pas les permissions requises !");
 				return true;
 			}
 		}
@@ -64,186 +63,123 @@ public class WorldCommand implements CommandExecutor {
 
 			if(sender instanceof Player p) {
 
-				p.sendMessage(main.prefix + ChatColor.RED + "Veuillez entrer des arguments ! <create, remove, load, tp, list ou info> [<worldname>] [<worldtype>]");
-				return true;
+				p.sendMessage(main.prefix + ChatFormatting.RED + "Veuillez entrer des arguments ! <create, remove, load, tp, list ou info> [<worldname>] [<worldtype>]");
 
-			} else {
+            } else {
 
-				sender.sendMessage(main.prefix + ChatColor.RED + "Veuillez entrer des arguments ! <create, remove, load, list ou info> [<worldname>] [<worldtype>]");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Veuillez entrer des arguments ! <create, remove, load, list ou info> [<worldname>] [<worldtype>]");
 				sender.sendMessage(" ");
-				sender.sendMessage(main.prefix + ChatColor.RED + "L'Argument <tp> fonctionne qu'en jeux !");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "L'Argument <tp> fonctionne qu'en jeux !");
 
-				return true;
-			}
+            }
 
-		} else if(args.length == 1) {
+            return true;
+
+        } else if(args.length == 1) {
 
 			if(sender instanceof Player p) {
 
-				if(args[0].equalsIgnoreCase("list")) {
+				if(args[0].equalsIgnoreCase("list")) listOfExistingWorlds(p);
+				else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("load")) {
 
-					if(Bukkit.getServer().getWorlds().size() == 0) {
-
-						p.sendMessage(main.prefix + ChatColor.RED + "Aucun monde(s) dans le serveur !");
-
-					} else if(Bukkit.getServer().getWorlds().size() == 1) {
-
-						p.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement le monde " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + Bukkit.getServer().getWorlds().get(0) + ChatColor.GRAY + " dans le serveur !");
-
-					} else {
-
-						p.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
-						p.sendMessage(" ");
-						p.sendMessage(" ");
-
-						p.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Liste des mondes dans le serveur :");
-
-						for(World world : Bukkit.getServer().getWorlds()) {
-
-							CraftWorld cw = (CraftWorld)world;
-
-							p.sendMessage(" ");
-
-							if(world.getGenerator() != null && world.getPopulators().isEmpty()) { p.sendMessage(ChatColor.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":VOID" + W + ")"); }
-
-							else { p.sendMessage(ChatColor.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")"); }
-
-						}
-
-						p.sendMessage(" ");
-						p.sendMessage(" ");
-						p.sendMessage(ChatColor.GRAY + "===========================");
-
-					}
-
-				} else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("load")) {
-
-					p.sendMessage(main.prefix + ChatColor.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
+					p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
 					return true;
 
 				} else if(args[0].equalsIgnoreCase("create")) {
 
-					p.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
+					p.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
 					return true;
 
 				} else if(args[0].equalsIgnoreCase("info")) {
 
-
-					p.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+					p.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 					p.sendMessage(" ");
 					p.sendMessage(" ");
 
-					p.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Information du monde :");
+					p.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Information du monde :");
 
 					p.sendMessage(" ");
-					p.sendMessage(ChatColor.WHITE + "- " + GB + "Nom du monde" + W + " (" + Y + p.getWorld().getName() + W + ")");
+					p.sendMessage(ChatFormatting.WHITE + "- " + GB + "Nom du monde" + W + " (" + Y + p.getWorld().getName() + W + ")");
 					p.sendMessage(" ");
-					p.sendMessage(ChatColor.WHITE + "- " + GB + "Nombre de joueur(s) dans le monde" + W + " (" + Y + p.getWorld().getPlayers().size() + W + ")");
+					p.sendMessage(ChatFormatting.WHITE + "- " + GB + "Nombre de joueur(s) dans le monde" + W + " (" + Y + p.getWorld().getPlayers().size() + W + ")");
 					p.sendMessage(" ");
+
+					/******************************************/
 
 					CraftWorld cw = (CraftWorld)p.getWorld();
 
-					if(p.getWorld().getGenerator() != null && p.getWorld().getPopulators().isEmpty()) { p.sendMessage(ChatColor.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + cw.getEnvironment().name() + ":VOID" + W + ")"); }
-					else { p.sendMessage(ChatColor.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + p.getWorld().getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")"); }
+					/******************************************/
+
+					if(p.getWorld().getGenerator() != null && p.getWorld().getPopulators().isEmpty()) p.sendMessage(ChatFormatting.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + cw.getEnvironment().name() + ":VOID" + W + ")");
+					else p.sendMessage(ChatFormatting.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + p.getWorld().getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")");
+
+					/******************************************/
 
 					p.sendMessage(" ");
 					p.sendMessage(" ");
-					p.sendMessage(ChatColor.GRAY + "===========================");
+					p.sendMessage(ChatFormatting.GRAY + "===========================");
 
 
 				} else { p.performCommand("world"); }
 
 			} else {
 
-				if(args[0].equalsIgnoreCase("list")) {
-
-					if(Bukkit.getServer().getWorlds().size() == 0) {
-
-						sender.sendMessage(main.prefix + ChatColor.RED + "Aucun monde(s) dans le serveur !");
-
-					} else if(Bukkit.getServer().getWorlds().size() == 1) {
-
-						sender.sendMessage(main.prefix + ChatColor.GRAY + "Il y'a seulement le monde " + ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + Bukkit.getServer().getWorlds().get(0) + ChatColor.GRAY + " dans le serveur !");
-
-					} else {
-
-						sender.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
-						sender.sendMessage(" ");
-						sender.sendMessage(" ");
-
-						sender.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Liste des mondes dans le serveur :");
-
-						for(World world : Bukkit.getServer().getWorlds()) {
-
-							CraftWorld cw = (CraftWorld)world;
-
-							sender.sendMessage(" ");
-
-							if(world.getGenerator() != null && world.getPopulators().isEmpty()) { sender.sendMessage(ChatColor.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":VOID" + W + ")"); }
-							else { sender.sendMessage(ChatColor.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")"); }
-
-						}
-
-						sender.sendMessage(" ");
-						sender.sendMessage(" ");
-						sender.sendMessage(ChatColor.GRAY + "===========================");
-
-					}
-
-				} else if(args[0].equalsIgnoreCase("create")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]"); }
-
-				else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("load") || args[0].equalsIgnoreCase("info")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>"); }
-
-				else if(args[0].equalsIgnoreCase("tp")) { sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour effectuer cette commande !"); }
-
-				else { Bukkit.getServer().dispatchCommand(sender, "world"); }
-
+				if(args[0].equalsIgnoreCase("list")) listOfExistingWorlds(sender);
+				else if(args[0].equalsIgnoreCase("create")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
+				else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("load") || args[0].equalsIgnoreCase("info")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
+				else if(args[0].equalsIgnoreCase("tp")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour effectuer cette commande !");
+				else Bukkit.getServer().dispatchCommand(sender, "world");
 			}
 
 		} else if(args.length == 2) {
 
-			String worldname = args[1];
+			String worldName = args[1];
 
-			if(args[0].equalsIgnoreCase("create")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]"); }
+			if(args[0].equalsIgnoreCase("create")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
 
 			else if(args[0].equalsIgnoreCase("remove")) {
 
-				ConfigurationSection WorldSection = ConfigFile.getConfigurationSection(main.worldconfig, "serverworlds");
+				ConfigurationSection WorldSection = ConfigFile.getConfigurationSection(main.worldConfig, "serverworlds");
 
 							/* ------------------------------------------ */
 
-				if(WorldSection.contains(worldname)) {
+				if(WorldSection.contains(worldName)) {
 
-						ConfigFile.removeKey(main.worldconfig, "serverworlds." + worldname);
-						ConfigFile.saveConfig(main.worldconfig);
-						sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du fichier de configuation !");;
+						ConfigFile.removeKey(main.worldConfig, "serverworlds." + worldName);
+						ConfigFile.saveConfig(main.worldConfig);
+						sender.sendMessage(main.prefix + GI + "Le monde " + ChatFormatting.GOLD + worldName + GI + " a été supprimer du fichier de configuration !");
 
-				} else { sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " est introuvable dans le fichier de configuation !"); }
+				} else sender.sendMessage(main.prefix + GI + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " est introuvable dans le fichier de configuation !");
 
 							/* ------------------------------------------ */
 
-				if(Bukkit.getServer().getWorld(worldname) != null) {
+				if(Bukkit.getServer().getWorld(worldName) != null) {
 
-					if(Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_the_end")) {
+					if(Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_the_end")) {
 
-					  sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas supprimer un monde par défaut ! Vous pouvez supprimer ce genre de monde manuellement !");
+					  sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas supprimer un monde par défaut ! Vous pouvez supprimer ce genre de monde manuellement !");
 					  return true;
 					}
 
+					/******************************************************************************/
 
 					for(Player player : Bukkit.getServer().getOnlinePlayers()) {
 
-						if(player.getWorld() == Bukkit.getServer().getWorld(worldname)) {
+						if(player.getWorld() == Bukkit.getServer().getWorld(worldName)) {
 
-						  sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas supprimer ce monde si des joueurs se trouve à l'intérieur !");
+						  sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas supprimer ce monde si des joueurs se trouve à l'intérieur !");
 						  return true;
 						}
 					}
 
-					Bukkit.getServer().unloadWorld(worldname, false);
+					/******************************************************/
+
+					Bukkit.getServer().unloadWorld(worldName, false);
+
+					/******************************************************/
 
 					// Supprime le dossier du Monde, s'il existe //
-					File file = new File(Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + worldname + "/");
+					File file = new File(Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + worldName + "/");
 					if(file.exists()) {
 
 						try { FileUtils.deleteDirectory(file); }
@@ -251,269 +187,280 @@ public class WorldCommand implements CommandExecutor {
 					}
 					// Supprime le dossier du Monde, s'il existe //
 
-					sender.sendMessage(main.prefix + GI + "Le monde " + ChatColor.GOLD + worldname + GI + " a été supprimer du serveur !");
+					/******************************************************************************/
 
+					sender.sendMessage(main.prefix + GI + "Le monde " + ChatFormatting.GOLD + worldName + GI + " a été supprimer du serveur !");
 					UtilityConfigWorld(); //Recharge le fichier de configuration des mondes du Plugin
 
-				} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " n'éxiste pas !"); }
+				} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " n'éxiste pas !");
 
 			} else if(args[0].equalsIgnoreCase("load")) {
 
-				File file = new File(Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + worldname + "/");
+				File file = new File(Bukkit.getServer().getWorldContainer().getAbsolutePath() + "/" + worldName + "/");
+
+				/**************************************************/
 
 				if(file.exists()) {
 
 				   for(Player player : Bukkit.getServer().getOnlinePlayers()) {
 
-					  if(player.getWorld() == Bukkit.getServer().getWorld(worldname)) {
+					  if(player.getWorld() == Bukkit.getServer().getWorld(worldName)) {
 
-						 sender.sendMessage(main.prefix + ChatColor.RED + "Vous ne pouvez pas recharger ce monde si des joueurs se trouve à l'intérieur !");
+						 sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous ne pouvez pas recharger ce monde si des joueurs se trouve à l'intérieur !");
 						 return true;
 					  }
 				   }
 
-				   sender.sendMessage(main.prefix + GI + "Rechargement du monde " + ChatColor.GOLD.toString() + ChatColor.ITALIC.toString() + worldname + GI + "......");
+				  /******************************************************/
 
-				    // Recharge le monde souhaité
-					new WorldHandler(main, worldname);
+				   sender.sendMessage(main.prefix + GI + "Rechargement du monde " + ChatFormatting.GOLD.toString() + ChatFormatting.ITALIC.toString() + worldName + GI + "......");
 
-					UtilityConfigWorld(); //Recharge le fichier de configuration des mondes du Plugin
+				   // Recharge le monde souhait
+				   new WorldHandler(main, worldName);
 
-				   sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été recharger !");
+				  /******************************************************/
 
-				} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " est introuvable !"); }
+				  UtilityConfigWorld(); //Recharge le fichier de configuration des mondes du Plugin
+				  sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été recharger !");
+
+				} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " est introuvable !");
 
 			} else if(args[0].equalsIgnoreCase("tp")) {
 
 				if(sender instanceof Player p) {
 
-					if(Bukkit.getServer().getWorld(worldname) == null) {
+					if(Bukkit.getServer().getWorld(worldName) == null) {
 
-						p.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " n'éxiste pas !");
+						p.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " n'éxiste pas !");
 
 					} else {
 
-						if(Bukkit.getServer().getWorld(worldname) == p.getWorld()) {
+						if(Bukkit.getServer().getWorld(worldName) == p.getWorld()) {
 
-							p.sendMessage(main.prefix + ChatColor.RED + "Vous êtes déja dans le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " !");
+							p.sendMessage(main.prefix + ChatFormatting.RED + "Vous êtes déja dans le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " !");
 							return true;
 						}
 
-						if(Bukkit.getServer().getWorld(worldname).getEnvironment().equals(Environment.NETHER)) {
+						/***********************************************/
 
-							p.teleport(Bukkit.getServer().getWorld(worldname).getSpawnLocation().zero());
+						if(Bukkit.getServer().getWorld(worldName).getEnvironment().equals(Environment.NETHER)) p.teleport(Bukkit.getServer().getWorld(worldName).getSpawnLocation().zero());
+						else p.teleport(Bukkit.getServer().getWorld(worldName).getSpawnLocation());
 
-						} else {
+						/***********************************************/
 
-							p.teleport(Bukkit.getServer().getWorld(worldname).getSpawnLocation());
-						}
-
-						p.sendMessage(main.prefix + GI + "Vous avez été téléporter dans le monde " + ChatColor.GOLD + worldname);
+						p.sendMessage(main.prefix + GI + "Vous avez été téléporter dans le monde " + ChatFormatting.GOLD + worldName);
 					}
 
-				} else {
+				} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Vous devez être en jeux pour vous téléportez dans un monde !");
 
-				   sender.sendMessage(main.prefix + ChatColor.RED + "Vous devez être en jeux pour vous téléportez dans un monde !");
-				}
-
-			} else if(args[0].equalsIgnoreCase("list")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world list"); }
+			} else if(args[0].equalsIgnoreCase("list")) sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world list");
 
 			else if(args[0].equalsIgnoreCase("info")) {
 
-				World world = Bukkit.getServer().getWorld(worldname);
+				World world = Bukkit.getServer().getWorld(worldName);
 				CraftWorld cw = (CraftWorld)world;
 
 				if(world == null) {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " n'éxiste pas !");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " n'éxiste pas !");
 
 				} else {
 
-					sender.sendMessage(ChatColor.GRAY + "========= " + main.prefix + ChatColor.GRAY + "=========");
+					sender.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
 					sender.sendMessage(" ");
 					sender.sendMessage(" ");
 
-					sender.sendMessage(ChatColor.AQUA.toString() + ChatColor.UNDERLINE.toString() + "Information du monde :");
+					sender.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Information du monde :");
 
 					sender.sendMessage(" ");
-					sender.sendMessage(ChatColor.WHITE + "- " + GB + "Nom du monde" + W + " (" + Y + world.getName() + W + ")");
+					sender.sendMessage(ChatFormatting.WHITE + "- " + GB + "Nom du monde" + W + " (" + Y + world.getName() + W + ")");
 					sender.sendMessage(" ");
-					sender.sendMessage(ChatColor.WHITE + "- " + GB + "Nombre de joueur(s) dans le monde" + W + " (" + Y + world.getPlayers().size() + W + ")");
+					sender.sendMessage(ChatFormatting.WHITE + "- " + GB + "Nombre de joueur(s) dans le monde" + W + " (" + Y + world.getPlayers().size() + W + ")");
 					sender.sendMessage(" ");
 
-
-					if(world.getGenerator() != null && world.getPopulators().isEmpty()) { sender.sendMessage(ChatColor.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + world.getEnvironment().name() + ":VOID" + W + ")"); }
-					else { sender.sendMessage(ChatColor.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + world.getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")"); }
+					if(world.getGenerator() != null && world.getPopulators().isEmpty()) sender.sendMessage(ChatFormatting.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + world.getEnvironment().name() + ":VOID" + W + ")");
+					else sender.sendMessage(ChatFormatting.WHITE + "- " + GB + "Type du monde" + W + " (" + Y + world.getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")");
 
 					sender.sendMessage(" ");
 					sender.sendMessage(" ");
-					sender.sendMessage(ChatColor.GRAY + "===========================");
-
+					sender.sendMessage(ChatFormatting.GRAY + "===========================");
 				}
 
-			} else { Bukkit.getServer().dispatchCommand(sender, "world"); }
+			} else Bukkit.getServer().dispatchCommand(sender, "world");
 
 		} else if(args.length == 3) {
 
-			String worldname = args[1];
+			String worldName = args[1];
+			String worldType = args[2];
 
-			String worldtype = args[2];
+			String GDI = ChatFormatting.GOLD.toString() + ChatFormatting.ITALIC.toString();
 
-			String GDI = ChatColor.GOLD.toString() + ChatColor.ITALIC.toString();
-
+			/******************************************************************/
 
 			if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("load")) {
 
-				sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
 				return true;
 
-			} else if(args[0].equalsIgnoreCase("list")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world list"); return true; }
+			} else if(args[0].equalsIgnoreCase("list")) {
 
-			else if(args[0].equalsIgnoreCase("create")) {
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world list");
+				return true;
 
-				if(Bukkit.getWorld(worldname) != null) {
+			} else if(args[0].equalsIgnoreCase("create")) {
 
-					if(Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_the_end")) {
+				if(Bukkit.getWorld(worldName) != null) {
 
-					  sender.sendMessage(main.prefix + ChatColor.RED + "Le nom que vous avez définit est un nom utilisé comme monde par défaut, essayez un autre nom !");
+					if(Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_the_end")) {
 
+					  sender.sendMessage(main.prefix + ChatFormatting.RED + "Le nom que vous avez définit est un nom utilisé comme monde par défaut, essayez un autre nom !");
 					  return true;
 					}
 				}
 
-				if(worldtype.equalsIgnoreCase("VOID")) {
+				if(worldType.equalsIgnoreCase("VOID")) {
 
-					if(Bukkit.getServer().getWorld(worldname) == null) {
+					if(Bukkit.getServer().getWorld(worldName) == null) {
 
-					   sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldname + GI + "......");
+					   sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldName + GI + "......");
+					   getVOIDWorldGenerator(worldName, WorldType.FLAT, Environment.NORMAL, new VoidGenerator());
+					   sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été créer !");
 
-					   getVOIDWorldGenerator(worldname, WorldType.FLAT, Environment.NORMAL, new VoidGenerator());
-
-					   sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été créer !");
-
-					} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " éxiste déjà !"); }
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " éxiste déjà !");
 
 					return true;
 
-				} else if(worldtype.equalsIgnoreCase("NORMAL") || worldtype.equalsIgnoreCase("NETHER")
-						|| worldtype.equalsIgnoreCase("END") || worldtype.equalsIgnoreCase("FLAT")) {
+				} else if(worldType.equalsIgnoreCase("NORMAL") || worldType.equalsIgnoreCase("NETHER")
+						|| worldType.equalsIgnoreCase("END") || worldType.equalsIgnoreCase("FLAT")) {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> " + worldtype + " <'structure:' true|false>");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> " + worldType + " <'structure:' true|false>");
 					return true;
 
 				} else {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Le type de monde est pas valide ! Essayez <VOID, NORMAL, FLAT, NETHER ou END>");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Le type de monde est pas valide ! Essayez <VOID, NORMAL, FLAT, NETHER ou END>");
 					return true;
 				}
 
-			} else if(args[0].equalsIgnoreCase("info")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world info [<worldname>]"); return true; }
+			} else if(args[0].equalsIgnoreCase("info")) {
+
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world info [<worldname>]");
+				return true;
+			}
+
+			/**************************************/
 
 			Bukkit.getServer().dispatchCommand(sender, "world");
 
 		} else if(args.length == 4) {
 
-			String worldname = args[1];
-
-			String worldtype = args[2];
-
+			String worldName = args[1];
+			String worldType = args[2];
 			Boolean structure = Boolean.parseBoolean(args[3]);
+			String GDI = ChatFormatting.GOLD.toString() + ChatFormatting.ITALIC.toString();
 
-			String GDI = ChatColor.GOLD.toString() + ChatColor.ITALIC.toString();
+			/***************************************/
 
 			/* Vérifie si l'argument "structure" est bien égal à 'true' ou 'false' */
-			if(args[3].equalsIgnoreCase("true")) { structure.equals(true); }
-			else if(args[3].equalsIgnoreCase("false")) { structure.equals(false); }
-			else { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]"); return true; }
+			if(args[3].equalsIgnoreCase("true")) structure.equals(true);
+			else if(args[3].equalsIgnoreCase("false")) structure.equals(false);
+			else {
+
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
+				return true;
+			}
 			/* Vérifie si l'argument "structure" est bien égal à 'true' ou 'false' */
+
+			/***************************************/
 
 			if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("load")) {
 
-				sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
 				return true;
 
-			} else if(args[0].equalsIgnoreCase("list")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world list"); return true; }
+			} else if(args[0].equalsIgnoreCase("list")) {
+
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world list");
+				return true;
+			}
 
 			else if(args[0].equalsIgnoreCase("create")) {
 
-				if(Bukkit.getWorld(worldname) != null) {
+				if(Bukkit.getWorld(worldName) != null) {
 
-					if(Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldname).getName().equalsIgnoreCase("world_the_end")) {
+					if(Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_nether") || Bukkit.getServer().getWorld(worldName).getName().equalsIgnoreCase("world_the_end")) {
 
-						sender.sendMessage(main.prefix + ChatColor.RED + "Le nom que vous avez définit est un nom utilisé comme monde par défaut, essayez un autre nom !");
-
+						sender.sendMessage(main.prefix + ChatFormatting.RED + "Le nom que vous avez définit est un nom utilisé comme monde par défaut, essayez un autre nom !");
 						return true;
 					}
 				}
 
-				if(worldtype.equalsIgnoreCase("VOID")) {
+				if(worldType.equalsIgnoreCase("VOID")) {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> VOID");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> VOID");
 					return true;
 
-				} else if(worldtype.equalsIgnoreCase("NORMAL")) {
+				} else if(worldType.equalsIgnoreCase("NORMAL")) {
 
-					if(Bukkit.getServer().getWorld(worldname) == null) {
+					if(Bukkit.getServer().getWorld(worldName) == null) {
 
-						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldname + GI + "......");
+						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldName + GI + "......");
+						getDefaultWorldGenerator(worldName, WorldType.LARGE_BIOMES, Environment.NORMAL, null, structure);
+						sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été créer !");
 
-						getDefaultWorldGenerator(worldname, WorldType.LARGE_BIOMES, Environment.NORMAL, null, structure);
-
-						sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été créer !");
-
-					} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " éxiste déjà !"); }
-
-					return true;
-
-				} else if(worldtype.equalsIgnoreCase("FLAT")) {
-
-					if(Bukkit.getServer().getWorld(worldname) == null) {
-
-						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldname + GI + "......");
-
-						getSuperFlatWorldGenerator(worldname, WorldType.FLAT, Environment.NORMAL, new FlatGenerator(), structure);
-
-						sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été créer !");
-
-					} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " éxiste déjà !"); }
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " éxiste déjà !");
 
 					return true;
 
-				} else if(worldtype.equalsIgnoreCase("NETHER")) {
+				} else if(worldType.equalsIgnoreCase("FLAT")) {
 
-					if(Bukkit.getServer().getWorld(worldname) == null) {
+					if(Bukkit.getServer().getWorld(worldName) == null) {
 
-						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldname + GI + "......");
+						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldName + GI + "......");
+						getSuperFlatWorldGenerator(worldName, WorldType.FLAT, Environment.NORMAL, new FlatGenerator(), structure);
+						sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été créer !");
 
-						getDefaultWorldGenerator(worldname, WorldType.NORMAL, Environment.NETHER, null, structure);
-
-						sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été créer !");
-
-					} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " éxiste déjà !"); }
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " éxiste déjà !");
 
 					return true;
 
-				} else if(worldtype.equalsIgnoreCase("END")) {
+				} else if(worldType.equalsIgnoreCase("NETHER")) {
 
-					if(Bukkit.getServer().getWorld(worldname) == null) {
+					if(Bukkit.getServer().getWorld(worldName) == null) {
 
-						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldname + GI + "......");
+						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldName + GI + "......");
+						getDefaultWorldGenerator(worldName, WorldType.NORMAL, Environment.NETHER, null, structure);
+						sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été créer !");
 
-						getDefaultWorldGenerator(worldname, WorldType.NORMAL, Environment.THE_END, null, structure);
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " éxiste déjà !");
 
-						sender.sendMessage(main.prefix + ChatColor.GREEN + "Le monde " + ChatColor.GOLD + worldname + ChatColor.GREEN + " a été créer !");
+					return true;
 
-					} else { sender.sendMessage(main.prefix + ChatColor.RED + "Le monde " + ChatColor.GOLD + worldname + ChatColor.RED + " éxiste déjà !"); }
+				} else if(worldType.equalsIgnoreCase("END")) {
+
+					if(Bukkit.getServer().getWorld(worldName) == null) {
+
+						sender.sendMessage(main.prefix + GI + "Création du monde " + GDI + worldName + GI + "......");
+						getDefaultWorldGenerator(worldName, WorldType.NORMAL, Environment.THE_END, null, structure);
+						sender.sendMessage(main.prefix + ChatFormatting.GREEN + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.GREEN + " a été créer !");
+
+					} else sender.sendMessage(main.prefix + ChatFormatting.RED + "Le monde " + ChatFormatting.GOLD + worldName + ChatFormatting.RED + " éxiste déjà !");
 
 					return true;
 
 				} else {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Le type de monde est pas valide ! Essayez <VOID, NORMAL, FLAT, NETHER ou END>");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Le type de monde est pas valide ! Essayez <VOID, NORMAL, FLAT, NETHER ou END>");
 					return true;
 				}
 
-			} else if(args[0].equalsIgnoreCase("info")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world info [<worldname>]"); return true; }
+			} else if(args[0].equalsIgnoreCase("info")) {
+
+				sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world info [<worldname>]");
+				return true;
+			}
+
+			/**************************************/
 
 			Bukkit.getServer().dispatchCommand(sender, "world");
 
@@ -521,18 +468,32 @@ public class WorldCommand implements CommandExecutor {
 
 				if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("load")) {
 
-					sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world " + args[0].toLowerCase() + " <worldname>");
 					return true;
 
-				} else if(args[0].equalsIgnoreCase("list")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world list"); return true; }
+				} else if(args[0].equalsIgnoreCase("list")) {
 
-				else if(args[0].equalsIgnoreCase("info")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world info [<worldname>]"); return true; }
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world list");
+					return true;
+				}
 
-				else if(args[0].equalsIgnoreCase("create")) { sender.sendMessage(main.prefix + ChatColor.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]"); return true; }
+				else if(args[0].equalsIgnoreCase("info")) {
 
-				Bukkit.getServer().dispatchCommand(sender, "world");
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world info [<worldname>]");
+					return true;
+				}
 
-			}
+				else if(args[0].equalsIgnoreCase("create")) {
+
+					sender.sendMessage(main.prefix + ChatFormatting.RED + "Essayez /world create <worldname> <worldtype> ['structure:'<true|false>]");
+					return true;
+				}
+
+				/**************************************/
+
+			Bukkit.getServer().dispatchCommand(sender, "world");
+		}
+
 		return false;
 	}
 	/***********************************************/
@@ -547,17 +508,17 @@ public class WorldCommand implements CommandExecutor {
 	/**********************************************/
 
 	// Créer un monde (option monde vide) //
-	public void getVOIDWorldGenerator(String worldname, WorldType worldtype, Environment environment, VoidGenerator generator) {
+	public void getVOIDWorldGenerator(String worldName, WorldType worldType, Environment environment, VoidGenerator generator) {
 
-		WorldCreator wc = new WorldCreator(worldname);
+		WorldCreator wc = new WorldCreator(worldName);
 
-		wc.type(worldtype);
+		wc.type(worldType);
 	    wc.environment(environment);
 	    wc.generator(generator);
 		wc.generateStructures(false);
 	    wc.createWorld();
 
-	    World world = Bukkit.getServer().getWorld(worldname); // Récupère le monde créé
+	    World world = Bukkit.getServer().getWorld(worldName); // Récupère le monde créé
 
 		// Ajoute au point de spawn du monde des blocs en bedrock dans un rayon de 2.
 	    CustomMethod.setTypeBlocks(world.getSpawnLocation().getBlock(), 2, Material.BEDROCK);
@@ -569,11 +530,11 @@ public class WorldCommand implements CommandExecutor {
 
 
 	// Créer un monde (option monde SuperPlat) //
-	public void getSuperFlatWorldGenerator(String worldname, WorldType worldtype, Environment environment, FlatGenerator generator, boolean structure) {
+	public void getSuperFlatWorldGenerator(String worldName, WorldType worldType, Environment environment, FlatGenerator generator, boolean structure) {
 
-		WorldCreator wc = new WorldCreator(worldname);
+		WorldCreator wc = new WorldCreator(worldName);
 
-		wc.type(worldtype);
+		wc.type(worldType);
 	    wc.environment(environment);
 	    wc.generator(generator);
 	    wc.generateStructures(structure);
@@ -585,11 +546,11 @@ public class WorldCommand implements CommandExecutor {
 
 
 	// Créer un monde (option basique) //
-	public void getDefaultWorldGenerator(String worldname, WorldType worldtype, Environment environment, ChunkGenerator generator, boolean structure) {
+	public void getDefaultWorldGenerator(String worldName, WorldType worldType, Environment environment, ChunkGenerator generator, boolean structure) {
 
-		WorldCreator wc = new WorldCreator(worldname);
+		WorldCreator wc = new WorldCreator(worldName);
 
-		wc.type(worldtype);
+		wc.type(worldType);
 	    wc.environment(environment);
 	    if(generator != null) wc.generator(generator);
 		wc.generateStructures(structure);
@@ -611,32 +572,85 @@ public class WorldCommand implements CommandExecutor {
 	public static void UtilityConfigWorld() {
 
 		UtilityMain mainInstance = UtilityMain.getInstance();
-
 		ConfigFileManager.loadUtilityWorldConfig(); //Recharge le fichier de configuration 'world.yml' du Plugin
-
 		ConfigFileManager.clearKeyUtilityWorldConfig(); //Supprime les éléments du fichier de configuration 'world.yml' du Plugin
 
+		/************************************************/
+		/************************************************/
 
-		// Recréer proprement les sauvegarde de chaques mondes enregistrés le fichier de configuration 'world.yml' //
-		for(ListIterator<World> world = Bukkit.getServer().getWorlds().listIterator(); world.hasNext();) {
+		// Recréer proprement les sauvegarde de chaque monde enregistré le fichier de configuration 'world.yml' //
+        for(World w : Bukkit.getServer().getWorlds()) {
 
-			World w = world.next();
-			CraftWorld cw = (CraftWorld)w;
+            CraftWorld cw = (CraftWorld) w;
 
-			ChunkGenerator generator = w.getGenerator();
+            ChunkGenerator generator = w.getGenerator();
 
-			ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".UID", w.getUID().toString());
-			ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".Type", cw.getWorldType().getName());
-			ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".Environment", w.getEnvironment().name());
-			if(generator == null) { ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".Generator", "none"); }
-			else { ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".Generator", generator.getClass().getName()); }
-			ConfigFile.set(mainInstance.worldconfig, "serverworlds." + w.getName() + ".Structure",  Boolean.toString(w.canGenerateStructures()));
-		}
-		// Recréer proprement les sauvegarde de chaques mondes enregistrés le fichier de configuration 'world.yml' //
+            ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".UID", w.getUID().toString());
+            ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".Type", cw.getWorldType().getName());
+            ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".Environment", w.getEnvironment().name());
 
-		ConfigFile.saveConfig(mainInstance.worldconfig); // Sauvegarde le fichier de configuration 'world.yml'
+			/************************************************/
+
+            if(generator == null) ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".Generator", "none");
+            else ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".Generator", generator.getClass().getName());
+
+			/************************************************/
+
+			ConfigFile.set(mainInstance.worldConfig, "serverworlds." + w.getName() + ".Structure", Boolean.toString(w.canGenerateStructures()));
+        }
+		// Recréer proprement les sauvegarde de chaque monde enregistré le fichier de configuration 'world.yml' //
+
+		/************************************************/
+		/************************************************/
+
+		ConfigFile.saveConfig(mainInstance.worldConfig); // Sauvegarde le fichier de configuration 'world.yml'
 	}
 	/********************************************************************************************/
 	/* PARTIE ENREGISTREMENT DES MONDES DU SERVEUR VERS UN FICHIER DE CONFIGURATION "world.yml" */
 	/*******************************************************************************************/
+
+
+	/**************************************************************************************/
+	/**************************************************************************************/
+
+	private void listOfExistingWorlds(CommandSender sender) {
+
+		if(Bukkit.getServer().getWorlds().isEmpty()) {
+
+			sender.sendMessage(main.prefix + ChatFormatting.RED + "Aucun monde(s) dans le serveur !");
+
+		} else if(Bukkit.getServer().getWorlds().size() == 1) {
+
+			sender.sendMessage(main.prefix + ChatFormatting.GRAY + "Il y'a seulement le monde " + ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + Bukkit.getServer().getWorlds().get(0) + ChatFormatting.GRAY + " dans le serveur !");
+
+		} else {
+
+			sender.sendMessage(ChatFormatting.GRAY + "========= " + main.prefix + ChatFormatting.GRAY + "=========");
+			sender.sendMessage(" ");
+			sender.sendMessage(" ");
+
+			sender.sendMessage(ChatFormatting.AQUA.toString() + ChatFormatting.UNDERLINE.toString() + "Liste des mondes dans le serveur :");
+
+			/*************************************************/
+			/*************************************************/
+
+			for(World world : Bukkit.getServer().getWorlds()) {
+
+				CraftWorld cw = (CraftWorld)world;
+				sender.sendMessage(" ");
+
+				/******************************************/
+
+				if(world.getGenerator() != null && world.getPopulators().isEmpty()) sender.sendMessage(ChatFormatting.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":VOID" + W + ")");
+				else sender.sendMessage(ChatFormatting.WHITE + "- " + GB + world.getName() + W + " (" + Y + world.getEnvironment().name() + ":" + cw.getWorldType().getName() + W + ")");
+			}
+
+			/*************************************************/
+			/*************************************************/
+
+			sender.sendMessage(" ");
+			sender.sendMessage(" ");
+			sender.sendMessage(ChatFormatting.GRAY + "===========================");
+		}
+	}
 }
