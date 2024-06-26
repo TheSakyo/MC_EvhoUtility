@@ -209,8 +209,10 @@ commands:
      
    proxycommand:
      description: Commande alias de 'proxycmd' (EvhoUtility)
-     
-          
+
+   resetplayer:
+     description: Commande pour réinitialiser entièrement les joueurs
+
 permissions:
    evhoutility.reload:
      description: Permission pour la commande /utilityreload (EvhoUtility)
@@ -464,6 +466,9 @@ permissions:
      description: Permission pour écrire en convertissant le texte avec des émojis définit (EvhoUtility)
      default: op
 
+   evhoutility.resetplayer:
+     description: Permission pour réinitaliser entièrement les joueurs (EvhoUtility)
+     default: op
 
    OldCombatMechanics.*:
      description: Donne accès à toutes les permissions du OCM (EvhoUtility)
