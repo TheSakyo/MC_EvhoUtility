@@ -102,9 +102,7 @@ public class ResetBoardCommand implements CommandExecutor {
 
         return false;
     }
-
     /******************************************************************/
     /* PARTIE COMMANDE POUR REMETTRE À ZÉRO LE SCOREBOARD D'UN JOUEUR */
     /******************************************************************/
-
 }

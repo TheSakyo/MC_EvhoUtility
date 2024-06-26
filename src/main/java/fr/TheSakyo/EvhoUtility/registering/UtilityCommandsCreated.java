@@ -135,6 +135,8 @@ public class UtilityCommandsCreated {
 	 	//Commande pour sélectionner une Zone et ensuite donner un accès quelconque à un grade
 	 	main.getCommand("zone").setExecutor(new ZoneCommand(main));
 
+		//Commande permettant de réinitialiser entièrement un joueur
+		main.getCommand("resetplayer").setExecutor(new ResetPlayer(main));
 
 		//Commande pour créer des 'NPC'
 		main.getCommand("npc").setExecutor(new NPCCommand(main));

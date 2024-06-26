@@ -16,6 +16,8 @@ import io.netty.buffer.Unpooled;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.Packet;
@@ -23,10 +25,12 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.scores.PlayerTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -664,6 +668,46 @@ public class PlayerEntity extends CraftPlayer {
 
 
   /* ----------------------------------------------------------------------------------------------------------------- */
+
+	/**
+	 * Réinitialise un joueur en utilisant son nom.
+	 *
+	 * Cette méthode réinitialise l'inventaire, les niveaux d'expérience, la nourriture, la santé
+	 * et la position du joueur, et envoie un paquet de réapparition au client.
+	 *
+	 * @param playerName Le nom du joueur à réinitialiser.
+	 */
+	public static void resetPlayerByName(String playerName) {
+
+		Player player = Bukkit.getPlayer(playerName);
+		if(player == null) throw new NullPointerException("Player is null !");
+
+		/**********************************************/
+
+		ServerPlayer nmsPlayer = ((CraftPlayer)player).getHandle();
+		GameProfile profile = new GameProfile(nmsPlayer.getUUID(), nmsPlayer.displayName);
+		CraftPlayer craftPlayer = nmsPlayer.getBukkitEntity();
+		ServerLevel serverLevel = nmsPlayer.level().getMinecraftWorld();
+
+		nmsPlayer.getInventory().clearContent();
+		nmsPlayer.getEnderChestInventory().clearContent();
+		nmsPlayer.setExperienceLevels(0);
+		nmsPlayer.setExperiencePoints(0);
+		nmsPlayer.getFoodData().setFoodLevel(20);
+		nmsPlayer.getFoodData().setSaturation(20);
+		nmsPlayer.setHealth(nmsPlayer.getMaxHealth());
+
+		/**********************************************/
+
+		nmsPlayer.setPos(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+		ClientboundRespawnPacket packet =  new ClientboundRespawnPacket(nmsPlayer.level().dimensionTypeId(),
+				nmsPlayer.getRespawnDimension(), BiomeManager.obfuscateSeed(serverLevel.getSeed()),
+				nmsPlayer.gameMode.getGameModeForPlayer(), nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
+				serverLevel.isDebug(), serverLevel.isFlat(), (byte)3, Optional.of(GlobalPos.of(serverLevel.dimension(), nmsPlayer.getOnPos())),
+				nmsPlayer.portalCooldown);
+
+		PlayerEntity.sendPacket(packet);
+	}
 
 	/**
 	 * Récupère l'UUID d'un Joueur à travers sn Pseudonyme depuis les Serveurs de Mojang.
