@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 
-public class ResetPlayer implements CommandExecutor {
+public class ResetPlayerCommand implements CommandExecutor {
 
     /* Récupère la class "Main" */
     private final UtilityMain main;
-    public ResetPlayer(UtilityMain pluginMain) { this.main = pluginMain; }
+    public ResetPlayerCommand(UtilityMain pluginMain) { this.main = pluginMain; }
     /* Récupère la class "Main" */
 
 
