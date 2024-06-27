@@ -34,82 +34,91 @@ public class TeamPlayer {
      */
     public static void loadTeams() {
 
-        GroupManager groupManager = mainInstance.luckApi.getGroupManager(); // Récupère la Class pour gérer les Groupes "LuckPerms"
-		groupManager.loadAllGroups(); // On Charge tous les Groupes du Serveur
+        Bukkit.getScheduler().scheduleSyncDelayedTask(mainInstance, () -> {
 
-        /*****************************************************/
+            GroupManager groupManager = mainInstance.luckApi.getGroupManager(); // Récupère la Class pour gérer les Groupes "LuckPerms"
+            groupManager.loadAllGroups(); // On Charge tous les Groupes du Serveur
 
-		// _-_ ⬇️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬇️ _-_ //
-		for(Group group : groupManager.getLoadedGroups()) {
+            /*****************************************************/
 
-			String displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe
+            // _-_ ⬇️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬇️ _-_ //
+            for(Group group : groupManager.getLoadedGroups()) {
 
-			while(displayName == null) displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe en question tant qu'elle est null
+                Runnable task = () -> {
 
-			char firstChar = displayName.charAt(0); // Récupère le premier caractère du nom d'affichage du Groupe
+                    String displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe
 
-			String groupTeam = displayName.replaceFirst(String.valueOf(firstChar), ""); // Récupère le nom de la Team qui sera le groupe en question
+                    while(displayName == null) displayName = group.getDisplayName(); // Récupère le Nom d'Affichage du groupe en question tant qu'elle est null
 
-			String groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question
+                    char firstChar = displayName.charAt(0); // Récupère le premier caractère du nom d'affichage du Groupe
 
-            while(groupColor == null) groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question tant qu'elle est null
+                    String groupTeam = displayName.replaceFirst(String.valueOf(firstChar), ""); // Récupère le nom de la Team qui sera le groupe en question
 
-			// Récupère le nom d'affichage du Groupe en remplaçant quelque caractères
-			String groupDisplayName = groupTeam.replaceFirst("_", "");
+                    String groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question
 
-													/* ------------------------- */
+                    while(groupColor == null) groupColor = group.getCachedData().getMetaData().getSuffix(); // Récupère la couleur du groupe en question tant qu'elle est null
 
-			// On vérifie si le groupe a un poids, si c'est le cas, on lui ajoute au début du nom de Team.
-			if(group.getWeight().isPresent()) groupTeam = firstChar + groupTeam;
+                    // Récupère le nom d'affichage du Groupe en remplaçant quelque caractères
+                    String groupDisplayName = groupTeam.replaceFirst("_", "");
 
-			// Sinon, on lui ajoute le poids	étant 0 au début du nom de Team.
-			else groupTeam = "y" + groupTeam;
+                    /* ------------------------- */
 
-													/* ------------------------- */
+                    // On vérifie si le groupe a un poids, si c'est le cas, on lui ajoute au début du nom de Team.
+                    if(group.getWeight().isPresent()) groupTeam = firstChar + groupTeam;
 
-            // Récupère le Préfix à la 'Team' adapté avec le Groupe en replacement notamment certains caractères
-			String prefix = groupColor + ChatFormatting.BOLD + groupDisplayName.replace("+", ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "+") +  ChatFormatting.WHITE + " | ";
+                        // Sinon, on lui ajoute le poids	étant 0 au début du nom de Team.
+                    else groupTeam = "y" + groupTeam;
 
-            Component playerPrefix = CraftChatMessage.fromString(ColorUtils.format(prefix))[0];
-            Component displayNameComponent = CraftChatMessage.fromString(groupDisplayName)[0];
+                    /* ------------------------- */
 
-            ChatFormatting formattingColor = ColorUtils.getLastChatFormattingByString(groupColor);
-            Team.Visibility visibility = Team.Visibility.ALWAYS;
+                    // Récupère le Préfix à la 'Team' adapté avec le Groupe en replacement notamment certains caractères
+                    String prefix = groupColor + ChatFormatting.BOLD + groupDisplayName.replace("+", ChatFormatting.GOLD.toString() + ChatFormatting.BOLD.toString() + "+") +  ChatFormatting.WHITE + " | ";
 
-            if(!groupTeams.containsKey(group)) {
+                    Component playerPrefix = CraftChatMessage.fromString(ColorUtils.format(prefix))[0];
+                    Component displayNameComponent = CraftChatMessage.fromString(groupDisplayName)[0];
 
-                // ⬇️ Recharge une 'Team' pour le Groupe en question ⬇️ //
-                PlayerTeam playerTeam = new PlayerTeam(((CraftScoreboard)Bukkit.getServer().getScoreboardManager().getMainScoreboard()).getHandle(), groupTeam);
-                playerTeam.setPlayerPrefix(playerPrefix); // Ajoute le Préfix à la Team
-                playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
+                    ChatFormatting formattingColor = ColorUtils.getLastChatFormattingByString(groupColor);
+                    Team.Visibility visibility = Team.Visibility.ALWAYS;
 
-                // À partir de la Team, on définit sa couleur étant la couleur du grade
-                playerTeam.setColor(formattingColor);
+                    if(!groupTeams.containsKey(group)) {
 
-                playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
-                // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
+                        // ⬇️ Recharge une 'Team' pour le Groupe en question ⬇️ //
+                        PlayerTeam playerTeam = new PlayerTeam(((CraftScoreboard)Bukkit.getServer().getScoreboardManager().getMainScoreboard()).getHandle(), groupTeam);
+                        playerTeam.setPlayerPrefix(playerPrefix); // Ajoute le Préfix à la Team
+                        playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
 
-                groupTeams.putIfAbsent(group, playerTeam); // Ajoute la nouvelle team du Groupe
+                        // À partir de la Team, on définit sa couleur étant la couleur du grade
+                        playerTeam.setColor(formattingColor);
 
-            } else {
+                        playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
+                        // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
 
-                // ⬇️ Recharge une 'Team' pour le Groupe en question ⬇️ //
-                PlayerTeam playerTeam = groupTeams.get(group);
+                        groupTeams.putIfAbsent(group, playerTeam); // Ajoute la nouvelle team du Groupe
 
-                if(playerTeam.getPlayerPrefix() != playerPrefix) playerTeam.setPlayerPrefix(playerPrefix); // Ajoute le Préfix à la Team
-                if(playerTeam.getDisplayName() != displayNameComponent) playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
+                    } else {
 
-                // À partir de la Team, on définit sa couleur étant la couleur du grade
-                if(playerTeam.getColor() != formattingColor) playerTeam.setColor(formattingColor);
+                        // ⬇️ Recharge une 'Team' pour le Groupe en question ⬇️ //
+                        PlayerTeam playerTeam = groupTeams.get(group);
 
-                if(playerTeam.getNameTagVisibility() != visibility) playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
-                // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
+                        if(playerTeam.getPlayerPrefix() != playerPrefix) playerTeam.setPlayerPrefix(playerPrefix); // Ajoute le Préfix à la Team
+                        if(playerTeam.getDisplayName() != displayNameComponent) playerTeam.setDisplayName(displayNameComponent); // Ajoute un Nom d'Affichage pour la Team
 
-                groupTeams.replace(group, playerTeam); // Remplace la team du Groupe
+                        // À partir de la Team, on définit sa couleur étant la couleur du grade
+                        if(playerTeam.getColor() != formattingColor) playerTeam.setColor(formattingColor);
+
+                        if(playerTeam.getNameTagVisibility() != visibility) playerTeam.setNameTagVisibility(visibility); // Visibilité de la Team
+                        // ⬆️ Recharge une 'Team' pour le Groupe en question ⬆️ //
+
+                        groupTeams.replace(group, playerTeam); // Remplace la team du Groupe
+                    }
+                };
+
+                /* ----------------------------------------- */
+
+                Bukkit.getScheduler().runTaskLater(mainInstance, task, 1000L);
             }
-										/* ----------------------------------------- */
-		}
-		// _-_ ⬆️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬆️ _-_ //
+            // _-_ ⬆️ On Boucle sur tous les Groupes du Serveur et on leur attribue à chacun une 'Team' ⬆️ _-_ //
+        }, 20 * 3);
 
                      /* ----------------------------------------------------------------------------- */
 
